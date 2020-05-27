@@ -33,13 +33,13 @@ public partial class ItemNameAttributeType : ItemNameType
     private string _attributeName;
     #endregion
     
-    /// <summary>
-    /// ItemNameAttributeType class constructor
-    /// </summary>
-    public ItemNameAttributeType()
-    {
-        this._attributeName = "val";
-    }
+    ///// <summary>
+    ///// ItemNameAttributeType class constructor
+    ///// </summary>
+    //public ItemNameAttributeType()
+    //{
+    //    this._attributeName = "val";
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute(DataType="NCName")]
     [System.ComponentModel.DefaultValueAttribute("val")]

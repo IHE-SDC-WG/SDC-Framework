@@ -35,13 +35,13 @@ public partial class RuleListItemMatchTargetsType : ExtensionBaseType
     private RuleListItemMatchTargetsTypeAttributeToMatch _attributeToMatch;
     #endregion
     
-    /// <summary>
-    /// RuleListItemMatchTargetsType class constructor
-    /// </summary>
-    public RuleListItemMatchTargetsType()
-    {
-        this._attributeToMatch = RuleListItemMatchTargetsTypeAttributeToMatch.associatedValue;
-    }
+    ///// <summary>
+    ///// RuleListItemMatchTargetsType class constructor
+    ///// </summary>
+    //public RuleListItemMatchTargetsType()
+    //{
+    //    this._attributeToMatch = RuleListItemMatchTargetsTypeAttributeToMatch.associatedValue;
+    //}
     
     /// <summary>
     /// Takes the @name of one or more target ListItem elements.

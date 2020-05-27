@@ -2780,7 +2780,15 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
     }
+    public partial class ItemNameAttributeType
+    {
+        protected ItemNameAttributeType(){}
 
+        public ItemNameAttributeType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._attributeName = "val";
+        }
+    }
     public partial class NameType
     {
         protected NameType() { }
@@ -2821,7 +2829,17 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         } //{if (elementName.Length > 0) ElementName = elementName; }
     }
-
+    public partial class ListItemParameterType
+    {
+        protected ListItemParameterType(){}
+        public ListItemParameterType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            
+            this._dataType = "string";
+            this._listItemAttribute = "associatedValue";
+        }
+        
+    }
     public partial class ParameterItemType
     {
         protected ParameterItemType() { }
@@ -2831,6 +2849,106 @@ namespace SDC.Schema
             this._sourceItemAttribute = "val";
         }
 
+    }
+
+    public partial class PredAlternativesType
+    {        
+        public PredAlternativesType() { }
+        public PredAlternativesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+            this._minAnswered = 1;
+            this._maxAnswered = 0;
+        }
+    }
+    public partial class PredEvalAttribValuesType
+    {
+        protected PredEvalAttribValuesType() { }
+        public PredEvalAttribValuesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+            this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
+        }
+    }
+    public partial class PredGuardTypeSelectionSets
+    {
+        protected PredGuardTypeSelectionSets() { }
+        public PredGuardTypeSelectionSets(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+        }
+    }
+
+    public partial class PredSingleSelectionSetsType
+    {
+        protected PredSingleSelectionSetsType() { }
+        public PredSingleSelectionSetsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._maxSelections = ((short)(1));
+        }
+    }
+
+    public partial class RuleAutoActivateType
+    {
+        protected RuleAutoActivateType() { }
+        public RuleAutoActivateType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._onlyIf = false;
+            this._setVisibility = toggleType.@true;
+            this._setEnabled = toggleType.@true;
+            this._setExpanded = toggleType.@true;
+            this._x_removeResponsesWhenDeactivated = false;
+        }
+    }
+    public partial class RuleAutoSelectType
+    {
+        protected RuleAutoSelectType() { }
+        public RuleAutoSelectType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._onlyIf = false;
+        }
+    }
+
+    public partial class RuleListItemMatchTargetsType
+    {
+        protected RuleListItemMatchTargetsType() { }
+        public RuleListItemMatchTargetsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._attributeToMatch = RuleListItemMatchTargetsTypeAttributeToMatch.associatedValue;
+        }
+    }
+
+    public partial class SelectionSetsActionType
+    {
+        protected SelectionSetsActionType() { }
+        public SelectionSetsActionType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+        }
+    }
+
+    public partial class ValidationTypeSelectionSets
+    {
+        protected ValidationTypeSelectionSets() { }
+        public ValidationTypeSelectionSets(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+        }
+    }
+
+    public partial class ValidationTypeSelectionTest
+    {
+        protected ValidationTypeSelectionTest() { }
+        public ValidationTypeSelectionTest (BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+        }
+    }
+    public partial class PredSelectionTestType
+    {
+        protected PredSelectionTestType() { }
+        public PredSelectionTestType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        { }
     }
 
     public partial class CallFuncType 
@@ -2844,6 +2962,7 @@ namespace SDC.Schema
     }
     partial class CallFuncBaseType
     {
+        protected CallFuncBaseType() { }
         public CallFuncBaseType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
             this._returnList = false;
@@ -2851,6 +2970,16 @@ namespace SDC.Schema
             this._allowNull = true;
         }
     }
+
+    partial class CallFuncBoolType
+    {
+        protected CallFuncBoolType() { }
+        public CallFuncBoolType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+        }
+    }
+
 
     #endregion
 

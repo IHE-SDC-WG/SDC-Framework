@@ -66,17 +66,17 @@ public partial class RuleAutoActivateType : ExtensionBaseType
     private bool _x_removeResponsesWhenDeactivated;
     #endregion
     
-    /// <summary>
-    /// RuleAutoActivateType class constructor
-    /// </summary>
-    public RuleAutoActivateType()
-    {
-        this._onlyIf = false;
-        this._setVisibility = toggleType.@true;
-        this._setEnabled = toggleType.@true;
-        this._setExpanded = toggleType.@true;
-        this._x_removeResponsesWhenDeactivated = false;
-    }
+    ///// <summary>
+    ///// RuleAutoActivateType class constructor
+    ///// </summary>
+    //public RuleAutoActivateType()
+    //{
+    //    this._onlyIf = false;
+    //    this._setVisibility = toggleType.@true;
+    //    this._setEnabled = toggleType.@true;
+    //    this._setExpanded = toggleType.@true;
+    //    this._x_removeResponsesWhenDeactivated = false;
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute(DataType="NMTOKENS")]
     public virtual string selectedItemSet

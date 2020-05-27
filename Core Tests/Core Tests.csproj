@@ -18,4 +18,8 @@
     <ProjectReference Include="..\SDC.Schema\SDC.Schema.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Test files\" />
+  </ItemGroup>
+
 </Project>

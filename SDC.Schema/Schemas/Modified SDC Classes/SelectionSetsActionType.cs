@@ -35,13 +35,13 @@ public partial class SelectionSetsActionType : PredSingleSelectionSetsType
     private bool _not;
     #endregion
     
-    /// <summary>
-    /// SelectionSetsActionType class constructor
-    /// </summary>
-    public SelectionSetsActionType()
-    {
-        this._not = false;
-    }
+    ///// <summary>
+    ///// SelectionSetsActionType class constructor
+    ///// </summary>
+    //public SelectionSetsActionType()
+    //{
+    //    this._not = false;
+    //}
     
     [System.Xml.Serialization.XmlElementAttribute(Order=0)]
     public virtual ActionsType Actions

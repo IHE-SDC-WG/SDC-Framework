@@ -61,15 +61,15 @@ public abstract partial class CallFuncBaseType : ExtensionBaseType
     private string _returnVal;
     #endregion
     
-    /// <summary>
-    /// CallFuncBaseType class constructor
-    /// </summary>
-    public CallFuncBaseType()
-    {
-        this._returnList = false;
-        this._listDelimiter = "|";
-        this._allowNull = true;
-    }
+    ///// <summary>
+    ///// CallFuncBaseType class constructor
+    ///// </summary>
+    //public CallFuncBaseType()
+    //{
+    //    this._returnList = false;
+    //    this._listDelimiter = "|";
+    //    this._allowNull = true;
+    //}
     
     [System.Xml.Serialization.XmlElementAttribute("FunctionURI", typeof(anyURI_Stype), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("LocalFunctionName", typeof(anyURI_Stype), Order=0)]

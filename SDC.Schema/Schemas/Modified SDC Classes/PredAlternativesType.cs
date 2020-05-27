@@ -55,15 +55,15 @@ public partial class PredAlternativesType : FuncBoolBaseType
     private string _itemNames;
     #endregion
     
-    /// <summary>
-    /// PredAlternativesType class constructor
-    /// </summary>
-    public PredAlternativesType()
-    {
-        this._not = false;
-        this._minAnswered = 1;
-        this._maxAnswered = 0;
-    }
+    ///// <summary>
+    ///// PredAlternativesType class constructor
+    ///// </summary>
+    //public PredAlternativesType()
+    //{
+    //    this._not = false;
+    //    this._minAnswered = 1;
+    //    this._maxAnswered = 0;
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute()]
     [System.ComponentModel.DefaultValueAttribute(false)]

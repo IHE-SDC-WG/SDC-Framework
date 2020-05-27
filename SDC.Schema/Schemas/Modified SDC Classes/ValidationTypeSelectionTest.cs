@@ -31,13 +31,13 @@ public partial class ValidationTypeSelectionTest : PredSelectionTestType
     private bool _not;
     #endregion
     
-    /// <summary>
-    /// ValidationTypeSelectionTest class constructor
-    /// </summary>
-    public ValidationTypeSelectionTest()
-    {
-        this._not = false;
-    }
+    ///// <summary>
+    ///// ValidationTypeSelectionTest class constructor
+    ///// </summary>
+    //public ValidationTypeSelectionTest()
+    //{
+    //    this._not = false;
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute()]
     [System.ComponentModel.DefaultValueAttribute(false)]

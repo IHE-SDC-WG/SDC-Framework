@@ -50,13 +50,13 @@ public partial class RuleAutoSelectType : ExtensionBaseType
     private string _targetNameSelectList;
     #endregion
     
-    /// <summary>
-    /// RuleAutoSelectType class constructor
-    /// </summary>
-    public RuleAutoSelectType()
-    {
-        this._onlyIf = false;
-    }
+    ///// <summary>
+    ///// RuleAutoSelectType class constructor
+    ///// </summary>
+    //public RuleAutoSelectType()
+    //{
+    //    this._onlyIf = false;
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute(DataType="NMTOKENS")]
     public virtual string selectedItemSet

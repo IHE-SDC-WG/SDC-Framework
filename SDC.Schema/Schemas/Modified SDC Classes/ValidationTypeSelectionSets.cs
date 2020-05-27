@@ -31,13 +31,13 @@ public partial class ValidationTypeSelectionSets : PredSingleSelectionSetsType
     private bool _not;
     #endregion
     
-    /// <summary>
-    /// ValidationTypeSelectionSets class constructor
-    /// </summary>
-    public ValidationTypeSelectionSets()
-    {
-        this._not = false;
-    }
+    ///// <summary>
+    ///// ValidationTypeSelectionSets class constructor
+    ///// </summary>
+    //public ValidationTypeSelectionSets()
+    //{
+    //    this._not = false;
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute()]
     [System.ComponentModel.DefaultValueAttribute(false)]

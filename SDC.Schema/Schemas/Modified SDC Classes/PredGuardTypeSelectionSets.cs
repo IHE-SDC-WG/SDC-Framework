@@ -31,13 +31,13 @@ public partial class PredGuardTypeSelectionSets : PredSingleSelectionSetsType
     private bool _not;
     #endregion
     
-    /// <summary>
-    /// PredGuardTypeSelectionSets class constructor
-    /// </summary>
-    public PredGuardTypeSelectionSets()
-    {
-        this._not = false;
-    }
+    ///// <summary>
+    ///// PredGuardTypeSelectionSets class constructor
+    ///// </summary>
+    //public PredGuardTypeSelectionSets()
+    //{
+    //    this._not = false;
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute()]
     [System.ComponentModel.DefaultValueAttribute(false)]

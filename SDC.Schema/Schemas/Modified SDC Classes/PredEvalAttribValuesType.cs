@@ -112,14 +112,14 @@ public partial class PredEvalAttribValuesType : FuncBoolBaseType
     private string _hasAssociatedValueGTE;
     #endregion
     
-    /// <summary>
-    /// PredEvalAttribValuesType class constructor
-    /// </summary>
-    public PredEvalAttribValuesType()
-    {
-        this._not = false;
-        this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
-    }
+    ///// <summary>
+    ///// PredEvalAttribValuesType class constructor
+    ///// </summary>
+    //public PredEvalAttribValuesType()
+    //{
+    //    this._not = false;
+    //    this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute()]
     [System.ComponentModel.DefaultValueAttribute(false)]

@@ -46,13 +46,13 @@ public partial class PredSingleSelectionSetsType : FuncBoolBaseType
     private short _maxSelections;
     #endregion
     
-    /// <summary>
-    /// PredSingleSelectionSetsType class constructor
-    /// </summary>
-    public PredSingleSelectionSetsType()
-    {
-        this._maxSelections = ((short)(1));
-    }
+    ///// <summary>
+    ///// PredSingleSelectionSetsType class constructor
+    ///// </summary>
+    //public PredSingleSelectionSetsType()
+    //{
+    //    this._maxSelections = ((short)(1));
+    //}
     
     /// <summary>
     /// Set of @name references for a set ListItems, delimited by

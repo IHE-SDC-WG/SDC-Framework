@@ -37,13 +37,13 @@ public partial class CallFuncBoolType : CallFuncBaseType
     private string _validationMessage;
     #endregion
     
-    /// <summary>
-    /// CallFuncBoolType class constructor
-    /// </summary>
-    public CallFuncBoolType()
-    {
-        this._not = false;
-    }
+    ///// <summary>
+    ///// CallFuncBoolType class constructor
+    ///// </summary>
+    //public CallFuncBoolType()
+    //{
+    //    this._not = false;
+    //}
     
     /// <summary>
     /// If @not="true" then the logical value of the conditions of the parent element is negated; true becomes false and false becomes true.

@@ -40,14 +40,14 @@ public partial class ListItemParameterType : ExtensionBaseType
     private string _listItemAttribute;
     #endregion
     
-    /// <summary>
-    /// ListItemParameterType class constructor
-    /// </summary>
-    public ListItemParameterType()
-    {
-        this._dataType = "string";
-        this._listItemAttribute = "associatedValue";
-    }
+    ///// <summary>
+    ///// ListItemParameterType class constructor
+    ///// </summary>
+    //public ListItemParameterType()
+    //{
+    //    this._dataType = "string";
+    //    this._listItemAttribute = "associatedValue";
+    //}
     
     [System.Xml.Serialization.XmlAttributeAttribute()]
     [System.ComponentModel.DefaultValueAttribute("string")]
