@@ -125,11 +125,35 @@ namespace SDC.Schema
         BaseType DataTypeObject { get; set; }
         RichTextType AddTextAfterResponse { get; set; }
     }
-
     public interface IMoveRemove
     {
         public bool Remove();
         public bool Move(ExtensionBaseType ebtTarget = null, int newListIndex = -1);
+    }
+    public interface ICoding
+    {    }
+    public interface IEvents
+    { }
+
+    public interface IContacts
+    {  }
+    public interface IClone
+    {
+        BaseType CloneSubtree();
+    }
+    public interface IRules
+    {    }
+    public interface IAction    
+    {
+        
+    }
+    public interface IOrganization
+    {
+        
+    }
+    public interface IPerson
+    {
+        
     }
     public interface INavigate
     {
@@ -149,31 +173,6 @@ namespace SDC.Schema
     {
         string GetNewCkey();
 
-    }
-    public interface IClone
-    {
-        BaseType CloneSubtree();
-    }
-    public interface ICoding
-    {
-        
-    }
-    public interface IRules
-    {
-        
-    }
-    public interface IAction    
-    {
-        
-    }
-    public interface IOrganization
-    {
-        
-    }
-
-    public interface IPerson
-    {
-        
     }
 
 }

@@ -38,7 +38,10 @@ namespace MSTestsCore
         public void DeserializeDemogFormDesignFromPath()
         {
             BaseType.ClearTopNode();
-            string path = @".\Test files\Demog CCO Lung Surgery.xml";
+            //string path = @".\Test files\Demog CCO Lung Surgery.xml";
+
+            string path = Path.Combine(".", "Test files", "Demog CCO Lung Surgery.xml");
+            //if (!File.Exists(path)) path = @"/Test files/Demog CCO Lung Surgery.xml";
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             DemogFormDesignType FD = DemogFormDesignType.DeserializeFromXmlPath(path);
             var myXML = FD.GetXml(); 
@@ -49,7 +52,8 @@ namespace MSTestsCore
         public void DeserializePkgFromPath()
         {
             BaseType.ClearTopNode();
-            string path = @".\Test files\..Sample SDCPackage.xml";
+            //string path = @".\Test files\..Sample SDCPackage.xml";
+            string path = Path.Combine(".", "Test files", "..Sample SDCPackage.xml");
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             var Pkg = RetrieveFormPackageType.DeserializeFromXmlPath(path);
             FormDesignType FD = (FormDesignType)Pkg.Nodes.Values.Where(n => n.GetType() == typeof(FormDesignType)).FirstOrDefault();
@@ -79,7 +83,8 @@ namespace MSTestsCore
         public void DeserializeDEFromPath()
         {
             BaseType.ClearTopNode();
-            string path = @".\Test files\DE sample.xml";
+            //string path = @".\Test files\DE sample.xml";
+            string path = Path.Combine(".", "Test files", "DE sample.xml");
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             DataElementType DE = DataElementType.DeserializeFromXmlPath(path);
             var myXML = DE.GetXml();
@@ -89,7 +94,8 @@ namespace MSTestsCore
         public void DeserializeDEFromXml()
         {
             BaseType.ClearTopNode();
-            string path = @".\Test files\DE sample.xml";
+            //string path = @".\Test files\DE sample.xml";
+            string path = Path.Combine(".", "Test files", "DE sample.xml");
             string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             DataElementType DE = DataElementType.DeserializeFromXml(sdcFile);
             var myXML = DE.GetXml();
@@ -102,7 +108,8 @@ namespace MSTestsCore
         {
             BaseType.ClearTopNode();
             //string path = @".\Test files\CCO Lung Surgery.xml";
-            string path = @".\Test files\Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml";
+            //string path = @".\Test files\Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml";
+            string path = Path.Combine(".", "Test files", "Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml");
             //string path = @".\Test files\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml";
             string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             

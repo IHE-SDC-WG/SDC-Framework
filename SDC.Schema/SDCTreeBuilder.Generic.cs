@@ -34,28 +34,29 @@ namespace SDC.Schema
         {   }
         #endregion
 
-        #region New
+        #region INew
         //FormDesignType CreateForm(bool addHeader, bool addFooter, string formID, string lineage, string version, string fullURI);
         //FormDesignType CreateFormFromTemplatePath(string path, string formID, string lineage, string version, string fullURI);
         //FormDesignType CreateFormFromTemplateXML(string xml, string formID, string lineage, string version, string fullURI);
         //bool RemoveFormFromPackage(RetrieveFormPackageType pkg, FormDesignType form);
         #endregion
 
-        #region Package (ToDo)
+        #region IPackage (ToDo)
 
         #endregion
 
-        #region DataElement (ToDo)
+        #region IDataElement (ToDo)
 
         #endregion
 
-        #region Demog Form (ToDo)
+        #region IDemogForm (ToDo)
 
         #endregion
 
-        #region Map (ToDo)
+        #region IMap (ToDo)
 
         #endregion
+
         #region IFormDesign      
         SectionItemType ITreeBuilder.AddHeader(FormDesignType fd)
         {
@@ -86,6 +87,7 @@ namespace SDC.Schema
         }
 
         #endregion
+
         #region ITopNode (empty)
         //default implementations for many methods are included directly in the ITopNode definition file
         #endregion
@@ -93,6 +95,7 @@ namespace SDC.Schema
         #region IBaseType (TBD)
 
         #endregion
+
         #region IParentType (TBD)
 
         #endregion
@@ -214,6 +217,46 @@ namespace SDC.Schema
         }
         #endregion
         #endregion 
+
+        #region IDisplayedType
+        BlobType ITreeBuilder.AddBlob(DisplayedType dtParent, int insertPosition)
+        {
+            var blob = new BlobType(dtParent);
+            if (dtParent.BlobContent == null) dtParent.BlobContent = new List<BlobType>();
+            var count = dtParent.BlobContent.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            dtParent.BlobContent.Insert(insertPosition, blob);
+            return blob;
+        }
+        LinkType ITreeBuilder.AddLink(DisplayedType dtParent, int insertPosition)
+        {
+            var link = new LinkType(dtParent);
+
+            if (dtParent.Link == null) dtParent.Link = new List<LinkType>();
+            var count = dtParent.Link.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            dtParent.Link.Insert(insertPosition, link);
+            link.order = link.ObjectID;
+
+            var rtf = new RichTextType(link);
+            link.LinkText = rtf;
+
+            return link;
+        }
+        ContactType ITreeBuilder.AddContact(DisplayedType dtParent, int insertPosition)
+        {
+            if (dtParent.Contact == null) dtParent.Contact = new List<ContactType>();
+            var ct = new ContactType(dtParent);
+            var count = dtParent.Contact.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            dtParent.Contact.Insert(insertPosition, ct);
+            return ct;
+        }
+        #endregion
+
+        #region IDisplayedTypeMember (empty)
+        //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
+        #endregion
 
         #region IChildItemsParent
         SectionItemType ITreeBuilder.AddChildSection<T>(T T_Parent, string id, int insertPosition)
@@ -473,75 +516,6 @@ namespace SDC.Schema
         }
         #endregion
 
-
-        #region IDisplayedType
-        BlobType ITreeBuilder.AddBlob(DisplayedType dtParent, int insertPosition)
-        {
-            var blob = new BlobType(dtParent);
-            if (dtParent.BlobContent == null) dtParent.BlobContent = new List<BlobType>();
-            var count = dtParent.BlobContent.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            dtParent.BlobContent.Insert(insertPosition, blob);
-            return blob;
-        }
-        LinkType ITreeBuilder.AddLink(DisplayedType dtParent, int insertPosition)
-        {
-            var link = new LinkType(dtParent);
-
-            if (dtParent.Link == null) dtParent.Link = new List<LinkType>();
-            var count = dtParent.Link.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            dtParent.Link.Insert(insertPosition, link);
-            link.order = link.ObjectID;
-
-            var rtf = new RichTextType(link);
-            link.LinkText = rtf;
-
-            return link;
-        }
-        ContactType ITreeBuilder.AddContact(DisplayedType dtParent, int insertPosition)
-        {
-            if (dtParent.Contact == null) dtParent.Contact = new List<ContactType>();
-            var ct = new ContactType(dtParent);
-            var count = dtParent.Contact.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            dtParent.Contact.Insert(insertPosition, ct);
-            return ct;
-        }
-        #region Events and Guards
-        EventType ITreeBuilder.AddOnEnterEvent(DisplayedType dt)
-        {
-            throw new NotImplementedException();
-        }
-
-        OnEventType ITreeBuilder.AddOnEventEvent(DisplayedType dt)
-        {
-            throw new NotImplementedException();
-        }
-
-        EventType ITreeBuilder.AddOnExitEvent(DisplayedType dt)
-        {
-            throw new NotImplementedException();
-        }
-        PredGuardType ITreeBuilder.AddActivateIf(DisplayedType dt)
-        {
-            throw new NotImplementedException();
-        }
-
-        PredGuardType ITreeBuilder.AddDeActivateIf(DisplayedType dt)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #endregion
-
-        #region IDisplayedTypeMember (empty)
-        //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
-        #endregion
-
-
         #region IQuestionItem
 
         QuestionEnum ITreeBuilder.GetQuestionSubtype(QuestionItemBaseType q)
@@ -676,7 +650,6 @@ namespace SDC.Schema
         { throw new NotImplementedException(); }
         #endregion
 
-
         #region IListField (empty)
         //nothing to support here
         #endregion
@@ -704,7 +677,6 @@ namespace SDC.Schema
         ListItemType ITreeBuilder.ConvertToLI(bool testOnly) { throw new NotImplementedException(); }
         DisplayedType ITreeBuilder.ConvertToDI(bool testOnly) { throw new NotImplementedException(); } //abort if children of LI are present
         ListItemType ITreeBuilder.ConvertToLIR(bool testOnly) { throw new NotImplementedException(); }
-
         bool ITreeBuilder.IsMoveAllowedToList<S, T>(S source, T target, out string error)
         {
             error = "";
@@ -804,7 +776,6 @@ namespace SDC.Schema
             return false;
         }
 
-
         #endregion
 
         #region IResponse
@@ -825,143 +796,6 @@ namespace SDC.Schema
         public bool Move(ExtensionBaseType ebtTarget = null, int newListIndex = -1) { throw new NotImplementedException(); }
         #endregion
 
-        #region INavigate
-                protected int GetListIndex<T>(List<T> list, T node) where T:notnull //TODO: could make this an interface feature of all list children
-        {
-            int i = 0;
-            foreach (T n in list)
-            {
-                if ((object)n == (object)node) return i;
-                i++;
-            }            
-            return -1; //object was not found in list
-        }
-        bool ITreeBuilder.IsItemChangeAllowed<S, T>(S source, T target)
-        {
-            ChildItemsType ci;
-            switch (source)
-            {
-                case SectionItemType _:
-                case QuestionItemType _:
-                case ListItemType _:
-                    ci = (source as ChildItemsType);
-                    switch (target)
-                    {
-                        case SectionItemType _:
-                        case QuestionItemType _:
-                        case ListItemType _:
-                            return true;
-                        case ButtonItemType _:
-                        case DisplayedType _:                        
-                            if (ci is null) return true;
-                            if (ci.ChildItemsList is null) return true;
-                            if (ci.ChildItemsList.Count == 0) return true;
-                            return false;
-                        case InjectFormType j:
-                            return false;
-                        default: return false;
-                    }
-                case ButtonItemType b:
-                    break;
-                case DisplayedType d:
-                    break;
-                case InjectFormType j:
-                    return false;
-                default:
-                    break;
-            }
-
-
-        return false;
-        }
-        protected BaseType GetParent(BaseType item) { return item.ParentNode; }
-        protected int GetIndex(BaseType item) { throw new NotImplementedException(); }
-        protected List<BaseType> GetList(BaseType item) 
-        {   //get the list object that points to the item node
-            //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
-            //Work out how to return a list of the exact type <T>.
-
-            var pn = item.ParentNode;
-            List<BaseType> list;
-
-            switch (item.GetType().Name)
-            {
-                case "Extension":
-                    list = (pn as ExtensionBaseType).Extension.Cast<BaseType>().ToList();
-                    return list;
-                case "Comment":
-                    list = (pn as ExtensionBaseType).Comment.Cast<BaseType>().ToList();
-                    return list;
-                case "Property":
-                    list = (pn as ExtensionBaseType).Property.Cast<BaseType>().ToList();
-                    return list;
-                case "OnEvent":
-                    list = (pn as FormDesignType).OnEvent.Cast<BaseType>().ToList();
-                    if (list != null) return list;
-                    list = (pn as DisplayedType).OnEvent.Cast<BaseType>().ToList();
-                    if (list != null) return list;
-                    break;
-                case "Section":
-                case "ListItem":
-                case "Question":
-                case "Header":
-                case "Body":
-                case "Footer":
-                    list = (pn as ChildItemsType).Items.Cast<BaseType>().ToList();
-                    return list;
-                case "BlobContent":
-                    list = (pn as DisplayedType).BlobContent.Cast<BaseType>().ToList();
-                    return list;
-                case "CodedValue":
-                    list = (pn as DisplayedType).CodedValue.Cast<BaseType>().ToList();
-                    return list;
-                case "Contact":
-                    list = (pn as DisplayedType).Contact.Cast<BaseType>().ToList();
-                    return list;
-                case "Link":
-                    list = (pn as DisplayedType).Link.Cast<BaseType>().ToList();
-                    return list;
-                case "OnEnter":
-                    list = (pn as DisplayedType).OnEnter.Cast<BaseType>().ToList();
-                    return list;
-                case "OnSelect":
-                    list = (pn as ListItemBaseType).OnSelect.Cast<BaseType>().ToList();
-                    return list;
-                case "OnDeselect":
-                    list = (pn as ListItemBaseType).OnDeselect.Cast<BaseType>().ToList();
-                    return list;
-                case "xx":
-                    list = (pn as DisplayedType).BlobContent.Cast<BaseType>().ToList();
-                    return list;
-
-
-
-                default:
-                    break;
-
-
-
-            }
-
-
-            return null;
-        }
-        protected bool IsList(object o)
-        {
-            if (o == null) return false;
-            return o is List<BaseType> &&  // is Ilist &&
-                   o.GetType().IsGenericType &&
-                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
-        }
-
-        protected bool IsArray(object[] o) { throw new NotImplementedException(); }
-        BaseType ITreeBuilder.GetPreviousSib(BaseType item) { throw new NotImplementedException(); } //in list
-        BaseType ITreeBuilder.GetNextSib(BaseType item) { throw new NotImplementedException(); } //in list
-        BaseType ITreeBuilder.GetPrevious(BaseType item) { throw new NotImplementedException(); }
-        BaseType ITreeBuilder.GetNext(BaseType item) { throw new NotImplementedException(); }
-
-        #endregion
-
         #region IVal (ToDo)
 
         #endregion
@@ -978,21 +812,16 @@ namespace SDC.Schema
 
         #endregion
 
-        #region IIdenitfiers (ToDo)
+        #region IIdentifiers (ToDo)
 
         #endregion
-
-        #region IClone (ToDo)
-
-        #endregion
-
 
         #region Data Helpers
-        protected virtual DataTypes_DEType AddDataTypesDE(
-          ResponseFieldType rfParent,          
+        DataTypes_DEType ITreeBuilder.AddDataTypesDE(
+          ResponseFieldType rfParent,
           ItemChoiceType dataTypeEnum = ItemChoiceType.@string,
           dtQuantEnum quantifierEnum = dtQuantEnum.EQ,
-          object value=null)
+          object value = null)
         {
             rfParent.Response = new DataTypes_DEType(rfParent);
 
@@ -1070,7 +899,7 @@ namespace SDC.Schema
                                     var sTest = DateTime.Parse(value.ToString());
                                     dt.val = sTest;
                                 }
-                                catch (Exception ) //ex)
+                                catch (Exception) //ex)
                                 { }
                         }
                         dt.quantEnum = quantifierEnum;
@@ -1294,42 +1123,42 @@ namespace SDC.Schema
             return rfParent.Response;
 
         }
-        protected virtual dtQuantEnum AssignQuantifier(string quantifier)
-    {
-        var dtQE = new dtQuantEnum();
-
-        switch (quantifier)
+        dtQuantEnum ITreeBuilder.AssignQuantifier(string quantifier)
         {
-            case "EQ":
-                dtQE = dtQuantEnum.EQ;
-                break;
-            case "GT":
-                dtQE = dtQuantEnum.GT;
-                break;
-            case "GTE":
-                dtQE = dtQuantEnum.GTE;
-                break;
-            case "LT":
-                dtQE = dtQuantEnum.LT;
-                break;
-            case "LTE":
-                dtQE = dtQuantEnum.LTE;
-                break;
-            case "APPROX":
-                dtQE = dtQuantEnum.APPROX;
-                break;
-            case "":
-                dtQE = dtQuantEnum.EQ;
-                break;
-            case null:
-                dtQE = dtQuantEnum.EQ;
-                break;
-            default:
-                dtQE = dtQuantEnum.EQ;
-                break;
+            var dtQE = new dtQuantEnum();
+
+            switch (quantifier)
+            {
+                case "EQ":
+                    dtQE = dtQuantEnum.EQ;
+                    break;
+                case "GT":
+                    dtQE = dtQuantEnum.GT;
+                    break;
+                case "GTE":
+                    dtQE = dtQuantEnum.GTE;
+                    break;
+                case "LT":
+                    dtQE = dtQuantEnum.LT;
+                    break;
+                case "LTE":
+                    dtQE = dtQuantEnum.LTE;
+                    break;
+                case "APPROX":
+                    dtQE = dtQuantEnum.APPROX;
+                    break;
+                case "":
+                    dtQE = dtQuantEnum.EQ;
+                    break;
+                case null:
+                    dtQE = dtQuantEnum.EQ;
+                    break;
+                default:
+                    dtQE = dtQuantEnum.EQ;
+                    break;
+            }
+            return dtQE;
         }
-        return dtQE;
-    }
         HTML_Stype ITreeBuilder.AddHTML(RichTextType rt)
         {
             HTML_Stype html = null;
@@ -1368,7 +1197,162 @@ namespace SDC.Schema
 
         #endregion
 
-        #region Rules
+        #region IContact (File)
+        ContactType ITreeBuilder.AddContact(FileType ftParent, int insertPosition)
+        {
+            ContactsType c;
+            if (ftParent.Contacts == null)
+                c = AddContactsListToFileType(ftParent);
+            else
+                c = ftParent.Contacts;
+            var ct = new ContactType(c);
+            var count = c.Contact.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            c.Contact.Insert(insertPosition, ct);
+            //TODO: Need to be able to add multiple people/orgs by reading the data source or ORM
+            var p = ((ITreeBuilder)this).AddPerson(ct);
+            var org = ((ITreeBuilder)this).AddOrganization(ct);
+
+            return ct;
+        }
+        private ContactsType AddContactsListToFileType(FileType ftParent)
+        {
+            if (ftParent.Contacts == null)
+                ftParent.Contacts = new ContactsType(ftParent);
+
+            return ftParent.Contacts; //returns a .NET List<ContactType>
+
+        }
+        #endregion
+
+        #region IOrganization
+        OrganizationType ITreeBuilder.AddOrganization(ContactType contactParent)
+        {
+            var ot = new OrganizationType(contactParent);
+            contactParent.Organization = ot;
+
+            return ot;
+        }
+        OrganizationType ITreeBuilder.AddOrganization(JobType jobParent)
+        {
+            var ot = new OrganizationType(jobParent);
+            jobParent.Organization = ot;
+
+            return ot;
+        }
+        OrganizationType ITreeBuilder.AddOrganizationItems(OrganizationType ot)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region IPerson
+        PersonType ITreeBuilder.AddPerson(ContactType contactParent)
+        {
+
+            var newPerson = new PersonType(contactParent);
+            contactParent.Person = newPerson;
+
+            AddPersonItems(newPerson);  //AddFillPersonItems?
+
+            return newPerson;
+        }
+        PersonType ITreeBuilder.AddPerson(DisplayedType dtParent, int insertPosition)
+        {
+            List<ContactType> contactList;
+            if (dtParent.Contact == null)
+            {
+                contactList = new List<ContactType>();
+                dtParent.Contact = contactList;
+            }
+            else
+                contactList = dtParent.Contact;
+            var newContact = new ContactType(dtParent); //newContact will contain a person child
+            var count = contactList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            contactList.Insert(insertPosition, newContact);
+
+            var newPerson = ((ITreeBuilder)this).AddPerson(newContact);
+
+            return newPerson;
+        }
+        PersonType ITreeBuilder.AddContactPerson(OrganizationType otParent, int insertPosition)
+        {
+            List<PersonType> contactPersonList;
+            if (otParent.ContactPerson == null)
+            {
+                contactPersonList = new List<PersonType>();
+                otParent.ContactPerson = contactPersonList;
+            }
+            else
+                contactPersonList = otParent.ContactPerson;
+
+            var newPerson = new PersonType(otParent);
+            AddPersonItems(newPerson);
+
+            var count = contactPersonList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            contactPersonList.Insert(insertPosition, newPerson);
+
+            return newPerson;
+        }
+        protected virtual PersonType AddPersonItems(PersonType pt)  //AddFillPersonItems, make this abstract and move to subclass?
+        {
+            pt.PersonName = new NameType(pt);//TODO: Need separate method(s) for this
+            //pt.Alias = new NameType();
+            //pt.PersonName.FirstName.val = (string)drFormDesign["FirstName"];  //TODO: replace with real data
+            //pt.PersonName.LastName.val = (string)drFormDesign["LastName"];  //TODO: replace with real data
+
+            pt.Email = new List<EmailType>();//TODO: Need separate method(s) for this
+            var email = new EmailType(pt);//TODO: Need separate method(s) for this
+            pt.Email.Add(email);
+
+            pt.Phone = new List<PhoneType>();//TODO: Need separate method(s) for this
+            pt.Job = new List<JobType>();//TODO: Need separate method(s) for this
+
+            pt.Role = new string_Stype(pt, "Role");
+
+            pt.StreetAddress = new List<AddressType>();//TODO: Need separate method(s) for this
+            pt.Identifier = new List<IdentifierType>();
+
+            pt.Usage = new string_Stype(pt, "Usage");
+
+            pt.WebURL = new List<anyURI_Stype>();//TODO: Need separate method(s) for this
+
+            return pt;
+        }
+
+        #endregion
+
+        #region IEventsAndGuards
+        EventType ITreeBuilder.AddOnEnterEvent(DisplayedType dt)
+        {
+            throw new NotImplementedException();
+        }
+
+        OnEventType ITreeBuilder.AddOnEventEvent(DisplayedType dt)
+        {
+            throw new NotImplementedException();
+        }
+
+        EventType ITreeBuilder.AddOnExitEvent(DisplayedType dt)
+        {
+            throw new NotImplementedException();
+        }
+        PredGuardType ITreeBuilder.AddActivateIf(DisplayedType dt)
+        {
+            throw new NotImplementedException();
+        }
+
+        PredGuardType ITreeBuilder.AddDeActivateIf(DisplayedType dt)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion        
+
+        #region IRules
         protected virtual RulesType AddRulesTypeToDisplayedType(DisplayedType parent)
         {
             throw new NotImplementedException();
@@ -1565,138 +1549,146 @@ namespace SDC.Schema
 
         #endregion
 
-        #region IContact (File)
-
-        ContactType ITreeBuilder.AddContact(FileType ftParent, int insertPosition)
+        #region INavigate
+                protected int GetListIndex<T>(List<T> list, T node) where T:notnull //TODO: could make this an interface feature of all list children
         {
-            ContactsType c;
-            if (ftParent.Contacts == null)
-                c = AddContactsListToFileType(ftParent);
-            else
-                c = ftParent.Contacts;
-            var ct = new ContactType(c);
-            var count = c.Contact.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            c.Contact.Insert(insertPosition, ct);
-            //TODO: Need to be able to add multiple people/orgs by reading the data source or ORM
-            var p = ((ITreeBuilder)this).AddPerson(ct);
-            var org = ((ITreeBuilder)this).AddOrganization(ct);
-
-            return ct;
+            int i = 0;
+            foreach (T n in list)
+            {
+                if ((object)n == (object)node) return i;
+                i++;
+            }            
+            return -1; //object was not found in list
         }
-        private ContactsType AddContactsListToFileType(FileType ftParent)
+        bool ITreeBuilder.IsItemChangeAllowed<S, T>(S source, T target)
         {
-            if (ftParent.Contacts == null)
-                ftParent.Contacts = new ContactsType(ftParent);
+            ChildItemsType ci;
+            switch (source)
+            {
+                case SectionItemType _:
+                case QuestionItemType _:
+                case ListItemType _:
+                    ci = (source as ChildItemsType);
+                    switch (target)
+                    {
+                        case SectionItemType _:
+                        case QuestionItemType _:
+                        case ListItemType _:
+                            return true;
+                        case ButtonItemType _:
+                        case DisplayedType _:                        
+                            if (ci is null) return true;
+                            if (ci.ChildItemsList is null) return true;
+                            if (ci.ChildItemsList.Count == 0) return true;
+                            return false;
+                        case InjectFormType j:
+                            return false;
+                        default: return false;
+                    }
+                case ButtonItemType b:
+                    break;
+                case DisplayedType d:
+                    break;
+                case InjectFormType j:
+                    return false;
+                default:
+                    break;
+            }
 
-            return ftParent.Contacts; //returns a .NET List<ContactType>
 
+        return false;
         }
+        protected BaseType GetParent(BaseType item) { return item.ParentNode; }
+        protected int GetIndex(BaseType item) { throw new NotImplementedException(); }
+        protected List<BaseType> GetList(BaseType item) 
+        {   //get the list object that points to the item node
+            //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
+            //Work out how to return a list of the exact type <T>.
+
+            var pn = item.ParentNode;
+            List<BaseType> list;
+
+            switch (item.GetType().Name)
+            {
+                case "Extension":
+                    list = (pn as ExtensionBaseType).Extension.Cast<BaseType>().ToList();
+                    return list;
+                case "Comment":
+                    list = (pn as ExtensionBaseType).Comment.Cast<BaseType>().ToList();
+                    return list;
+                case "Property":
+                    list = (pn as ExtensionBaseType).Property.Cast<BaseType>().ToList();
+                    return list;
+                case "OnEvent":
+                    list = (pn as FormDesignType).OnEvent.Cast<BaseType>().ToList();
+                    if (list != null) return list;
+                    list = (pn as DisplayedType).OnEvent.Cast<BaseType>().ToList();
+                    if (list != null) return list;
+                    break;
+                case "Section":
+                case "ListItem":
+                case "Question":
+                case "Header":
+                case "Body":
+                case "Footer":
+                    list = (pn as ChildItemsType).Items.Cast<BaseType>().ToList();
+                    return list;
+                case "BlobContent":
+                    list = (pn as DisplayedType).BlobContent.Cast<BaseType>().ToList();
+                    return list;
+                case "CodedValue":
+                    list = (pn as DisplayedType).CodedValue.Cast<BaseType>().ToList();
+                    return list;
+                case "Contact":
+                    list = (pn as DisplayedType).Contact.Cast<BaseType>().ToList();
+                    return list;
+                case "Link":
+                    list = (pn as DisplayedType).Link.Cast<BaseType>().ToList();
+                    return list;
+                case "OnEnter":
+                    list = (pn as DisplayedType).OnEnter.Cast<BaseType>().ToList();
+                    return list;
+                case "OnSelect":
+                    list = (pn as ListItemBaseType).OnSelect.Cast<BaseType>().ToList();
+                    return list;
+                case "OnDeselect":
+                    list = (pn as ListItemBaseType).OnDeselect.Cast<BaseType>().ToList();
+                    return list;
+                case "xx":
+                    list = (pn as DisplayedType).BlobContent.Cast<BaseType>().ToList();
+                    return list;
+
+
+
+                default:
+                    break;
+
+
+
+            }
+
+
+            return null;
+        }
+        protected bool IsList(object o)
+        {
+            if (o == null) return false;
+            return o is List<BaseType> &&  // is Ilist &&
+                   o.GetType().IsGenericType &&
+                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
+        }
+
+        protected bool IsArray(object[] o) { throw new NotImplementedException(); }
+        BaseType ITreeBuilder.GetPreviousSib(BaseType item) { throw new NotImplementedException(); } //in list
+        BaseType ITreeBuilder.GetNextSib(BaseType item) { throw new NotImplementedException(); } //in list
+        BaseType ITreeBuilder.GetPrevious(BaseType item) { throw new NotImplementedException(); }
+        BaseType ITreeBuilder.GetNext(BaseType item) { throw new NotImplementedException(); }
+
         #endregion
 
-        #region IOrganization
-        OrganizationType ITreeBuilder.AddOrganization(ContactType contactParent)
-        {
-            var ot = new OrganizationType(contactParent);
-            contactParent.Organization = ot;
-
-            return ot;
-        }
-
-        OrganizationType ITreeBuilder.AddOrganization(JobType jobParent)
-        {
-            var ot = new OrganizationType(jobParent);
-            jobParent.Organization = ot;
-
-            return ot;
-        }
-
-        OrganizationType ITreeBuilder.AddOrganizationItems(OrganizationType ot)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IPerson
-        PersonType ITreeBuilder.AddPerson(ContactType contactParent)
-        {
-
-            var newPerson = new PersonType(contactParent);
-            contactParent.Person = newPerson;
-
-            AddPersonItems(newPerson);  //AddFillPersonItems?
-
-            return newPerson;
-        }
-
-        PersonType ITreeBuilder.AddPerson(DisplayedType dtParent, int insertPosition)
-        {
-            List<ContactType> contactList;
-            if (dtParent.Contact == null)
-            {
-                contactList = new List<ContactType>();
-                dtParent.Contact = contactList;
-            }
-            else
-                contactList = dtParent.Contact;
-            var newContact = new ContactType(dtParent); //newContact will contain a person child
-            var count = contactList.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            contactList.Insert(insertPosition, newContact);
-
-            var newPerson = ((ITreeBuilder)this).AddPerson(newContact);
-
-            return newPerson;
-        }
-
-        PersonType ITreeBuilder.AddContactPerson(OrganizationType otParent, int insertPosition)
-        {
-            List<PersonType> contactPersonList;
-            if (otParent.ContactPerson == null)
-            {
-                contactPersonList = new List<PersonType>();
-                otParent.ContactPerson = contactPersonList;
-            }
-            else
-                contactPersonList = otParent.ContactPerson;
-
-            var newPerson = new PersonType(otParent);
-            AddPersonItems(newPerson);
-
-            var count = contactPersonList.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            contactPersonList.Insert(insertPosition, newPerson);
-
-            return newPerson;
-        }
-
-        protected virtual PersonType AddPersonItems(PersonType pt)  //AddFillPersonItems, make this abstract and move to subclass?
-        {
-            pt.PersonName = new NameType(pt);//TODO: Need separate method(s) for this
-            //pt.Alias = new NameType();
-            //pt.PersonName.FirstName.val = (string)drFormDesign["FirstName"];  //TODO: replace with real data
-            //pt.PersonName.LastName.val = (string)drFormDesign["LastName"];  //TODO: replace with real data
-
-            pt.Email = new List<EmailType>();//TODO: Need separate method(s) for this
-            var email = new EmailType(pt);//TODO: Need separate method(s) for this
-            pt.Email.Add(email);
-
-            pt.Phone = new List<PhoneType>();//TODO: Need separate method(s) for this
-            pt.Job = new List<JobType>();//TODO: Need separate method(s) for this
-
-            pt.Role = new string_Stype(pt, "Role");
-
-            pt.StreetAddress = new List<AddressType>();//TODO: Need separate method(s) for this
-            pt.Identifier = new List<IdentifierType>();
-
-            pt.Usage = new string_Stype(pt, "Usage");
-
-            pt.WebURL = new List<anyURI_Stype>();//TODO: Need separate method(s) for this
-
-            return pt;
-        }
-
+        #region IClone (ToDo)
+        BaseType ITreeBuilder.CloneSubtree(BaseType top) 
+        { throw new NotImplementedException(); }
         #endregion
 
         #region Helpers
@@ -1704,7 +1696,7 @@ namespace SDC.Schema
         {
             throw new NotImplementedException();
         }
-        protected virtual XmlElement StringToXMLElement(string rawXML)
+        XmlElement StringToXMLElement(string rawXML)
         {
             var xe = XElement.Parse(rawXML, LoadOptions.PreserveWhitespace);
             var doc = new XmlDocument();

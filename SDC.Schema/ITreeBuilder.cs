@@ -47,7 +47,6 @@ namespace SDC.Schema
         PropertyType AddProperty(ExtensionBaseType dtParent, int insertPosition = -1);
         #endregion
 
-
         #region IExtensionBaseTypeMember (Extension, Comment, Property)
         //ExtensionBaseType AddExtensionBaseTypeItems(ExtensionBaseType ebt);        
         #region Extension        
@@ -67,14 +66,20 @@ namespace SDC.Schema
         #endregion
         #endregion
 
-        #region DisplayedType helpers
+        #region IDisplayedType
 
         LinkType AddLink(DisplayedType dtParent, int insertPosition = -1);
         BlobType AddBlob(DisplayedType dtParent, int insertPosition = -1);
+        ContactType AddContact(DisplayedType dtParent, int insertPosition = -1);
+
         //bool RemoveLink(DisplayedType dtParent, int removePosition = -1);
         //bool RemoveBlob(DisplayedType dtParent, int removePosition = -1);
         //allow move to new parents?  Moving allowed from ebt to ebt
         //void MoveAllowedEBT(string movingItemObjectID, string targetItemObjectID, int insertPosition);
+        #endregion
+
+        #region IDisplayedTypeMember (empty)
+        //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
         #endregion
 
         #region IChildItemsParent
@@ -107,7 +112,6 @@ namespace SDC.Schema
         bool IsDisplayedItem(BaseType target);
 
         #endregion
-
        
         #region IQuestionItem
 
@@ -130,7 +134,6 @@ namespace SDC.Schema
         ListItemType AddListItemResponse(ListType lt, string id = "", int insertPosition = -1); //check that no ListFieldType object is present
         DisplayedType AddDisplayedItemToList(ListType lt, string id = "", int insertPosition = -1);
         #endregion
-
 
         #region IListField (empty)
         //nothing to support here
@@ -173,13 +176,67 @@ namespace SDC.Schema
         UnitsType AddUnits(ResponseFieldType rfParent);
         #endregion
 
-        #region Coding
+        #region IMoveRemove
+        public bool Remove(); 
+        public bool Move(ExtensionBaseType ebtTarget = null, int newListIndex = -1);
+        #endregion
+
+        #region IVal (ToDo)
+
+        #endregion
+
+        #region IValNumeric (ToDo)
+
+        #endregion
+
+        #region IValDateTime (ToDo)
+
+        #endregion
+
+        #region IValInteger (ToDo)
+
+        #endregion
+
+        #region IIdentifiers (ToDo)
+
+        #endregion
+
+        #region Data Helpers
+        DataTypes_DEType AddDataTypesDE(
+            ResponseFieldType rfParent,
+            ItemChoiceType dataTypeEnum = ItemChoiceType.@string,
+            dtQuantEnum quantifierEnum = dtQuantEnum.EQ,
+            object value = null);
+        dtQuantEnum AssignQuantifier(string quantifier);
+
+        HTML_Stype AddHTML(RichTextType rt);
+        #endregion
+
+        #region ICoding
         CodingType AddCodedValue(DisplayedType dt, int insertPosition = -1);
         CodingType AddCodedValue(LookupEndPointType lep, int insertPosition = -1);
         UnitsType AddUnits(CodingType ctParent);
         #endregion
 
-        #region Events
+        #region IContact (File)
+        ContactType AddContact(FileType ftParent, int insertPosition = -1);
+        #endregion
+
+        #region IOrganization
+        OrganizationType AddOrganization(ContactType contactParent);
+        OrganizationType AddOrganization(JobType jobParent);
+        OrganizationType AddOrganizationItems(OrganizationType ot);
+
+        #endregion
+
+        #region IPerson
+        PersonType AddPerson(ContactType contact);
+        PersonType AddPerson(DisplayedType dt, int insertPosition = -1);
+        PersonType AddContactPerson(OrganizationType otParent, int insertPosition = -1);
+
+        #endregion
+
+        #region IEventsAndGuards
         PredGuardType AddActivateIf(DisplayedType dt);
         PredGuardType AddDeActivateIf(DisplayedType dt);
         EventType AddOnEnterEvent(DisplayedType dt);
@@ -187,18 +244,11 @@ namespace SDC.Schema
         EventType AddOnExitEvent(DisplayedType dt);
         #endregion
 
-        #region Contacts
-
-        ContactType AddContact(DisplayedType dtParent, int insertPosition = -1);
-        ContactType AddContact(FileType ftParent, int insertPosition = -1);
-        OrganizationType AddOrganization(ContactType contactParent);
-        OrganizationType AddOrganization(JobType jobParent);
-        OrganizationType AddOrganizationItems(OrganizationType ot);
-        PersonType AddPerson(ContactType contact);
-        PersonType AddPerson(DisplayedType dt, int insertPosition = -1);
-        PersonType AddContactPerson(OrganizationType otParent, int insertPosition = -1);
+        #region IRules
+        
         #endregion
-        #region  Actions
+
+        #region  IActions
         public ActActionType AddActAction(ActionsType at, int insertPosition = -1);
         public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(ActionsType at, int insertPosition = -1);
         //public abstract ActSetPropertyType AddSetProperty(ActionsType at);
@@ -223,8 +273,7 @@ namespace SDC.Schema
 
         #endregion
 
-
-        #region Navigation
+        #region INavigate
         BaseType GetPreviousSib(BaseType item);
         BaseType GetNextSib(BaseType item);
         BaseType GetPrevious(BaseType item);
@@ -232,13 +281,16 @@ namespace SDC.Schema
 
         #endregion
 
+        #region IClone (ToDo)
+        BaseType CloneSubtree(BaseType top);
+        #endregion
 
-        #region Resources
-        HTML_Stype AddHTML(RichTextType rt);
+        #region Helpers
         string CreateName(BaseType bt);
         bool IsItemChangeAllowed<S, T>(S source, T target)
             where S : notnull, IdentifiedExtensionType
             where T : IdentifiedExtensionType;
         #endregion
+
     }
 }
