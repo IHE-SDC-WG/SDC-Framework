@@ -20,19 +20,25 @@ namespace SDC.Schema
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        Dictionary<int, BaseType> Nodes { get; }
+        Dictionary<Guid, BaseType> Nodes { get; }
 
         /// <summary>
         /// Dictionary.  Given a NodeID, return the *parent* node's object reference
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        Dictionary<int, BaseType> ParentNodes { get; }
+
+        Dictionary<Guid, BaseType> ParentNodes { get; }
         ///// <summary>
         ///// Dictionary.  Given a NodeID, return the *previous* node's object reference
         ///// </summary>
         //[System.Xml.Serialization.XmlIgnore]
         //Dictionary<int, BaseType> PreviousNodes { get; }
+        ///// <summary>
+        ///// Given an Item Node's URI, returns the Item's object reference as IdentifiedExtensionType.
+        ///// </summary>
+        //Dictionary<String, IdentifiedExtensionType> IdentExtNodes{ get; }
+
 
         /// <summary>
         /// Returns SDC XML from the SDC object tree.  THe XML top node is determined by the top-level object tree node:
@@ -72,13 +78,9 @@ namespace SDC.Schema
             Nodes.Values.Where(n => n.name == name).First();
         BaseType GetNodeFromObjectID(int objectID)
         {
-            Nodes.TryGetValue(ObjectID, out BaseType n);
+            Nodes.TryGetValue(ObjectGUID, out BaseType n);
             return n;
         }
-
-
-
-
 
         #region Utilities
         //Tenum ConvertStringToEnum<Tenum>(string inputString) where Tenum : struct;
@@ -114,8 +116,6 @@ namespace SDC.Schema
 
         bool RemoveNodeTree(ref BaseType topNodeToRemove, out Dictionary<int, BaseType> dict, bool removeNodes = true)
         {
-            
-
             var desc = Descendants(topNodeToRemove);
             dict = new Dictionary<int, BaseType>();
             dict.Add(topNodeToRemove.ObjectID, topNodeToRemove);
@@ -138,8 +138,8 @@ namespace SDC.Schema
                 {
                     foreach (var n in desc)
                     {
-                        Nodes.Remove(n.Value.ObjectID);
-                        ParentNodes.Remove(n.Value.ObjectID);
+                        Nodes.Remove(n.Value.ObjectGUID);
+                        ParentNodes.Remove(n.Value.ObjectGUID);
                     }
                 }
                 return true;
@@ -210,8 +210,7 @@ namespace SDC.Schema
             return d;
 
         }
-
-
+        
         #region GetItems
 
         IdentifiedExtensionType GetItem(string id)
@@ -335,6 +334,13 @@ namespace SDC.Schema
                     t => ((ResponseFieldType)t).name == name).First();
             return rf;
         }
+        //BaseType GetResponseValByQuestionID(string id)
+        //{
+
+        //    var Q = GetQuestion(id);
+        //    return Q.ResponseField_Item.Response.Item;
+
+        //}
         PropertyType GetPropertyByName(string name)
         {
             PropertyType p;

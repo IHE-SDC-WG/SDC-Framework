@@ -15,19 +15,30 @@ using System.Security.Claims;
 namespace MSTestsCore
 {
     [TestClass]
-    public class UnitTest1
+    public class SDC_XML
     {
         [TestMethod]
         public void TestMethod1()
         {
             var serializer = new XmlSerializer(typeof(BaseType));
+
+            (int curr, int prev) Fib(int i)
+            {
+                if (i == 0) return (1, 0);
+                var (curr, prev) = Fib(i - 1);
+                return (curr + prev, curr);
+            }
+
+            var a = Fib(9);
+            var b = a.ToTuple();
         }
 
        
         [TestMethod]
         public void DeserializeDemogFormDesignFromPath()
         {
-            string path = "C:\\SDC\\Demog CCO Lung Surgery.xml";
+            BaseType.ClearTopNode();
+            string path = @".\Test files\Demog CCO Lung Surgery.xml";
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             DemogFormDesignType FD = DemogFormDesignType.DeserializeFromXmlPath(path);
             var myXML = FD.GetXml(); 
@@ -37,7 +48,8 @@ namespace MSTestsCore
         [TestMethod]
         public void DeserializePkgFromPath()
         {
-            string path = "C:\\SDC\\..Sample SDCPackage.xml";
+            BaseType.ClearTopNode();
+            string path = @".\Test files\..Sample SDCPackage.xml";
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             var Pkg = RetrieveFormPackageType.DeserializeFromXmlPath(path);
             FormDesignType FD = (FormDesignType)Pkg.Nodes.Values.Where(n => n.GetType() == typeof(FormDesignType)).FirstOrDefault();
@@ -66,19 +78,32 @@ namespace MSTestsCore
         [TestMethod]
         public void DeserializeDEFromPath()
         {
-            string path = "C:\\Users\\rmoldwi\\OneDrive\\One Drive Documents\\SDC\\SDC Git Repo\\sdc-schema-package\\DE sample.xml";
+            BaseType.ClearTopNode();
+            string path = @".\Test files\DE sample.xml";
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             DataElementType DE = DataElementType.DeserializeFromXmlPath(path);
             var myXML = DE.GetXml();
             Debug.Print(myXML);
 
         }
+        public void DeserializeDEFromXml()
+        {
+            BaseType.ClearTopNode();
+            string path = @".\Test files\DE sample.xml";
+            string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
+            DataElementType DE = DataElementType.DeserializeFromXml(sdcFile);
+            var myXML = DE.GetXml();
+            Debug.Print(myXML);
+
+        }
+
         [TestMethod]
         public void DeserializeFormDesignFromPath()
         {
-            //string path = "C:\\SDC\\CCO Lung Surgery.xml";
-            string path = "C:\\Users\\rmoldwi\\OneDrive\\Desktop\\SDCLocal\\Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml";
-            //string path = "C:\\SDC\\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml";
+            BaseType.ClearTopNode();
+            //string path = @".\Test files\CCO Lung Surgery.xml";
+            string path = @".\Test files\Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml";
+            //string path = @".\Test files\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml";
             string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             
             var FD = FormDesignType.DeserializeFromXmlPath(path);
@@ -92,14 +117,15 @@ namespace MSTestsCore
                     q => ((QuestionItemType)q).ID == "58218.100004300").FirstOrDefault();
 
                 var DI = Q.AddChildDisplayedItem("DDDDD");//should add to end of the <List>
-                DI.name = DI.ID; DI.title = DI.ID;
+                DI.name = DI.ID; 
+                DI.title = DI.ID;
 
                 var P = Q.AddProperty(); P.name = "PPPPP"; P.propName = "PPPPP";
                 var S = Q.AddChildSection("SSSSS", 0); S.name = "SSSSS";
             //Q.Move(new SectionItemType(), -1); Q.AddComment(); Q.Remove();
             //var li = new ListItemType(Q.ListField_Item.List,"abc" ); var b = li.SelectIf.returnVal; var rv = li.OnSelect[0].returnVal;
             
-                DisplayedType DI1 = (DisplayedType)FD.Nodes.Values.Where(n => n.name == DI.ID).First();
+                DisplayedType DI1 = (DisplayedType)FD.Nodes.Values.Where(n => n.name == DI.ID)?.First();
                 DisplayedType DI2 = (DisplayedType)Q.ChildItemsNode.Items[0];
                 QuestionItemType Q1 = (QuestionItemType)DI2.ParentNode.ParentNode;
             myXML = SDCHelpers.XmlReorder(FD.GetXml());
@@ -124,10 +150,10 @@ namespace MSTestsCore
         }
     }
 
-    public class MyClass
+    public class SdcComponents1
     {
         
-        public MyClass()
+        public SdcComponents1()
         {
             
         }
@@ -141,7 +167,7 @@ namespace MSTestsCore
 
     }
     [TestClass]
-    public class Tests
+    public class SdcComponents2
     {
         private TestContext testContextInstance;
 

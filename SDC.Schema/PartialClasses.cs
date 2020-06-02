@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -26,17 +27,17 @@ namespace SDC.Schema
         //TODO: add ID, lineage, baseURI, version, etc to this constructor? (only ID is required)
         {
             sdcTreeBuilder = treeBuilder;
-            IdentExtNodes = new Dictionary<String, IdentifiedExtensionType>();  //reset this static IdentExtNodes Dictionary of IET IDs for the current form
+            //IdentExtNodes = new Dictionary<String, IdentifiedExtensionType>();  //reset this static IdentExtNodes Dictionary of IET IDs for the current form
 
             //if (fillData) FillBaseTypeItem();  //this must be run after sdcTreeBuilder is assigned, and all sdcTreeBuilder data objects are initialized.
         }
         public void Clear()
         {
             //reset and clean up some items that might hold references to this object, keeping it alive
-            ResetStaticBase();
+            ClearTopNode();
             Nodes = null;
             ParentNodes = null;
-            IdentExtNodes = null;
+            //IdentExtNodes = null;
             sdcTreeBuilder = null;
             ((ITopNode)this).MaxObjectID = 0;
             Body = null;
@@ -51,7 +52,6 @@ namespace SDC.Schema
         }
         ~FormDesignType()
         {
-
         }
         #endregion
 
@@ -65,9 +65,10 @@ namespace SDC.Schema
             }
             else return false;
         }
-        public void EditFinish()
+
+    public void EditFinish()
         {
-            BaseType.ResetStaticBase();
+            BaseType.ClearTopNode();
         }
 
         public SectionItemType AddBody()
@@ -104,10 +105,13 @@ namespace SDC.Schema
         int ITopNode.MaxObjectID { get; set; } //internal
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> Nodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> Nodes { get; private set; } = new Dictionary<Guid, BaseType>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> ParentNodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> ParentNodes { get; private set; } = new Dictionary<Guid, BaseType>();
+        //[System.Xml.Serialization.XmlIgnore]
+        //[JsonIgnore]
+        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
         //[System.Xml.Serialization.XmlIgnore]
         //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
         [System.Xml.Serialization.XmlIgnore]
@@ -142,43 +146,43 @@ namespace SDC.Schema
         #endregion
 
         #region Dictionaries
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, IdentifiedExtensionType> IdentifiedTypes;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, SectionItemType> Sections;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, QuestionItemType> Questions;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, ListItemType> ListItemsAll;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, ListItemResponseFieldType> ListItemResponses;
-        //public static Dictionary<string, ResponseFieldType> Responses;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, InjectFormType> InjectedItems;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, DisplayedType> DisplayedItems;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, ButtonItemType> Buttons;
-        [System.Xml.Serialization.XmlIgnore]
-        [NonSerialized]
-        [JsonIgnore]
-        public Dictionary<string, BaseType> NamedNodes;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, IdentifiedExtensionType> IdentifiedTypes;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, SectionItemType> Sections;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, QuestionItemType> Questions;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, ListItemType> ListItemsAll;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, ListItemResponseFieldType> ListItemResponses;
+        ////public static Dictionary<string, ResponseFieldType> Responses;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, InjectFormType> InjectedItems;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, DisplayedType> DisplayedItems;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, ButtonItemType> Buttons;
+        //[System.Xml.Serialization.XmlIgnore]
+        //[NonSerialized]
+        //[JsonIgnore]
+        //public Dictionary<string, BaseType> NamedNodes;
 
         #endregion
 
@@ -218,7 +222,6 @@ namespace SDC.Schema
         #endregion
         #endregion
     }
-
     public partial class DataElementType : ITopNode
     {
         protected DataElementType() : base()
@@ -240,13 +243,17 @@ namespace SDC.Schema
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> Nodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> Nodes { get; private set; } = new Dictionary<Guid, BaseType>();
         /// <summary>
         /// Dictionary.  Given a NodeID, return the *parent* Node's object reference
         /// </summary
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> ParentNodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> ParentNodes { get; private set; } = new Dictionary<Guid, BaseType>();
+        //[System.Xml.Serialization.XmlIgnore]
+        //[JsonIgnore]
+        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
+
         //[System.Xml.Serialization.XmlIgnore]
         //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
         [System.Xml.Serialization.XmlIgnore]
@@ -263,7 +270,7 @@ namespace SDC.Schema
         }
         public void EditFinish()
         {
-            BaseType.ResetStaticBase();
+            BaseType.ClearTopNode();
         }
         #region Serialization
         public static DataElementType DeserializeFromXmlPath(string sdcPath)
@@ -311,10 +318,14 @@ namespace SDC.Schema
         int ITopNode.MaxObjectID { get; set; } //internal
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> Nodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> Nodes { get; private set; } = new Dictionary<Guid, BaseType>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> ParentNodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> ParentNodes { get; private set; } = new Dictionary<Guid, BaseType>();
+        //[System.Xml.Serialization.XmlIgnore]
+        //[JsonIgnore]
+        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
+
         //[System.Xml.Serialization.XmlIgnore]
         //[JsonIgnore]
         //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
@@ -332,7 +343,7 @@ namespace SDC.Schema
         }
         public void EditFinish()
         {
-            BaseType.ResetStaticBase();
+            BaseType.ClearTopNode();
         }
         #region Serialization
         public static RetrieveFormPackageType DeserializeFromXmlPath(string sdcPath)
@@ -378,10 +389,14 @@ namespace SDC.Schema
         int ITopNode.MaxObjectID { get; set; } //internal
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> Nodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> Nodes { get; private set; } = new Dictionary<Guid, BaseType>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> ParentNodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> ParentNodes { get; private set; } = new Dictionary<Guid, BaseType>();
+        //[System.Xml.Serialization.XmlIgnore]
+        //[JsonIgnore]
+        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
+
         //[System.Xml.Serialization.XmlIgnore]
         //[JsonIgnore]
         //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
@@ -399,7 +414,7 @@ namespace SDC.Schema
         }
         public void EditFinish()
         {
-            BaseType.ResetStaticBase();
+            BaseType.ClearTopNode();
         }
         #region Serialization
         public static PackageListType DeserializeFromXmlPath(string sdcPath)
@@ -439,10 +454,14 @@ namespace SDC.Schema
         int ITopNode.MaxObjectID { get; set; } //internal
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> Nodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> Nodes { get; private set; } = new Dictionary<Guid, BaseType>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public Dictionary<int, BaseType> ParentNodes { get; private set; } = new Dictionary<int, BaseType>();
+        public Dictionary<Guid, BaseType> ParentNodes { get; private set; } = new Dictionary<Guid, BaseType>();
+        //[System.Xml.Serialization.XmlIgnore]
+        //[JsonIgnore]
+        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
+
         //[System.Xml.Serialization.XmlIgnore]
         //[JsonIgnore]
         //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
@@ -460,7 +479,7 @@ namespace SDC.Schema
         }
         public void EditFinish()
         {
-            BaseType.ResetStaticBase();
+            BaseType.ClearTopNode();
         }
         #region Serialization
         public static MappingType DeserializeFromXmlPath(string sdcPath)
@@ -648,7 +667,7 @@ namespace SDC.Schema
 
     #region ..Main Types
     public partial class ButtonItemType
-        : IChildItemMember
+        : IChildItemsMember
     {
         protected ButtonItemType() { }
         public ButtonItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -660,7 +679,7 @@ namespace SDC.Schema
 
     }
 
-    public partial class InjectFormType : IChildItemMember
+    public partial class InjectFormType : IChildItemsMember
     {
         protected InjectFormType() { }
         public InjectFormType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -674,7 +693,7 @@ namespace SDC.Schema
 
         public bool Remove()
             => sdcTreeBuilder.Remove(this);
-        bool IChildItemMember.Move<T>(T target, int newListIndex)
+        bool IChildItemsMember.Move<T>(T target, int newListIndex)
             => sdcTreeBuilder.MoveAsChild(this, target, newListIndex);
         #endregion
     }
@@ -695,14 +714,14 @@ namespace SDC.Schema
         //{ sdcTreeBuilder.FillSectionBase(this); }
     }
 
-    public partial class SectionItemType : IParent, IChildItemMember
+    public partial class SectionItemType : IChildItemsParent, IChildItemsMember
     {
         public SectionItemType() { }
         public SectionItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
         { }
 
 
-        #region IParent Implementation
+        #region IChildItemsParent Implementation
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ChildItemsType ChildItemsNode
@@ -712,16 +731,18 @@ namespace SDC.Schema
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
         { //return AddChildItem<SectionItemType, SectionItemType>(this, id, insertPosition); 
-            return sdcTreeBuilder.AddSection<SectionItemType>(this, id, insertPosition);
+            return sdcTreeBuilder.AddChildSection<SectionItemType>(this, id, insertPosition);
         }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddQuestion<SectionItemType>(this, qType, id); }
+        { return sdcTreeBuilder.AddChildQuestion<SectionItemType>(this, qType, id); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddInjectedForm<SectionItemType>(this, id); }
+        { return sdcTreeBuilder.AddChildInjectedForm<SectionItemType>(this, id); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddButtonAction<SectionItemType>(this, id); }
+        { return sdcTreeBuilder.AddChildButtonAction<SectionItemType>(this, id); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddDisplayedItem<SectionItemType>(this, id); }
+        { return sdcTreeBuilder.AddChildDisplayedItem<SectionItemType>(this, id); }
+        public bool HasChildItems() => sdcTreeBuilder.HasChildItems(this);
+
         //public IChildItem AddChildItem(IdentifiedExtensionType childType, string childID = "", int insertPosition = -1)
         //{ return sdcTreeBuilder.AddChildItem<SectionItemType, ButtonItemType>(this, childID, insertPosition); }
         #endregion
@@ -732,7 +753,7 @@ namespace SDC.Schema
 
     #region Question
 
-    public partial class QuestionItemType : IParent, IChildItemMember, IQuestionItem
+    public partial class QuestionItemType : IChildItemsParent, IChildItemsMember, IQuestionItem, IQuestionList
     {
         protected QuestionItemType() { }  //need public parameterless constructor to support generics
         public QuestionItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -741,13 +762,10 @@ namespace SDC.Schema
             ElementName = "Question";
             ElementPrefix = "Q";
             SetNames(elementName, elementPrefix);
+            //this.Conv
         }
 
-
-
-
-
-        #region IParent
+        #region IChildItemsParent
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ChildItemsType ChildItemsNode
@@ -756,44 +774,39 @@ namespace SDC.Schema
             set { this.Item1 = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddSection<QuestionItemType>(this, id, insertPosition); }
+        { return sdcTreeBuilder.AddChildSection<QuestionItemType>(this, id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddQuestion<QuestionItemType>(this, qType, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildQuestion<QuestionItemType>(this, qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddInjectedForm<QuestionItemType>(this, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildInjectedForm<QuestionItemType>(this, id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddButtonAction<QuestionItemType>(this, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildButtonAction<QuestionItemType>(this, id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddDisplayedItem<QuestionItemType>(this, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildDisplayedItem<QuestionItemType>(this, id, insertPosition); }
+        public bool HasChildItems() => sdcTreeBuilder.HasChildItems(this);
         #endregion
 
         #region IQuestionItem
-        [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnore]
-        public QuestionEnum GetQuestionSubtype
-        {  //ToDo: Return correct value
-            get {
-                if (ResponseField_Item != null) return QuestionEnum.QuestionFill;
-                if (ListField_Item is null) return QuestionEnum.QuestionRaw;
-                if (ListField_Item.LookupEndpoint == null && ListField_Item?.maxSelections == 1) return QuestionEnum.QuestionSingle;
-                if (ListField_Item.LookupEndpoint == null && ListField_Item?.maxSelections != 1) return QuestionEnum.QuestionMultiple;
-                if (ListField_Item.LookupEndpoint !=null && ListField_Item.maxSelections == 1) return QuestionEnum.QuestionLookupSingle;
-                if (ListField_Item.LookupEndpoint != null && ListField_Item.maxSelections != 1) return QuestionEnum.QuestionLookupMultiple;
-                if (ListField_Item.LookupEndpoint != null ) return QuestionEnum.QuestionLookup;
-
-                return QuestionEnum.QuestionGroup; 
-            }
-        }
-        public ListItemType AddListItem(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddListItemToQuestion(this, id, insertPosition);
-
+        public QuestionEnum GetQuestionSubtype() => sdcTreeBuilder.GetQuestionSubtype(this);
+        public ListItemType AddListItem(string id = "", int insertPosition = -1) => sdcTreeBuilder.AddListItem(this, id, insertPosition);
         public ListItemType AddListItemResponse(string id = "", int insertPosition = -1) =>
-         sdcTreeBuilder.AddListItemResponseToQuestion((QuestionItemType)ParentNode?.ParentNode, id, insertPosition);
-
+            sdcTreeBuilder.AddListItemResponse(this, id, insertPosition);
         public DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddDisplayedItem((QuestionItemType)ParentNode?.ParentNode, id, insertPosition);
+            sdcTreeBuilder.AddChildDisplayedItem(this, id, insertPosition);
+        public QuestionItemType ConvertToQR(bool testOnly = false) => sdcTreeBuilder.ConvertToQR(this,testOnly);
+        public QuestionItemType ConvertToQS(bool testOnly = false) => sdcTreeBuilder.ConvertToQS(this, testOnly);
+        public QuestionItemType ConvertToQM(int maxSelections = 0, bool testOnly = false) => sdcTreeBuilder.ConvertToQM(this, maxSelections, testOnly);
+        public DisplayedType ConvertToDI(bool testOnly = false) => sdcTreeBuilder.ConvertToDI(this, testOnly);
+        public QuestionItemType ConvertToSection(bool testOnly = false) => sdcTreeBuilder.ConvertToSection(this, testOnly);
+        public QuestionItemType ConvertToLookup(bool testOnly = false) => sdcTreeBuilder.ConvertToLookup(this, testOnly);
+
+        //public ListItemType AddListItem(int insertPosition = -1) => sdcTreeBuilder.AddListItem(this?.ListField_Item?.List);
+        //public ListItemType AddListItemResponse(int insertPosition = -1) => sdcTreeBuilder.AddListItemResponse(this?.ListField_Item?.List);
+        //public DisplayedType AddDisplayedTypeToList(int insertPosition = -1) => sdcTreeBuilder.AddDisplayedTypeToList(this?.ListField_Item?.List);
 
         #endregion
+
+
 
     }
 
@@ -856,13 +869,13 @@ namespace SDC.Schema
 
         #region IQuestionList
         public ListItemType AddListItem(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddListItemToQuestion((QuestionItemType)ParentNode?.ParentNode, id, insertPosition);
+            sdcTreeBuilder.AddListItem(this, id, insertPosition);
 
         public ListItemType AddListItemResponse(string id = "", int insertPosition = -1) =>
-         sdcTreeBuilder.AddListItemResponseToQuestion((QuestionItemType)ParentNode?.ParentNode, id, insertPosition); 
+         sdcTreeBuilder.AddListItemResponse(this, id, insertPosition); 
 
         public DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddDisplayedItem((QuestionItemType)ParentNode?.ParentNode, id, insertPosition);
+            sdcTreeBuilder.AddDisplayedItemToList(this, id, insertPosition = -1);
 
         #endregion
     }
@@ -904,7 +917,7 @@ namespace SDC.Schema
 
     }
 
-    public partial class ListItemType : IParent
+    public partial class ListItemType : IChildItemsParent, IListItem, IQuestionListMember
     {
         protected ListItemType() { }
         public ListItemType(ListType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -913,13 +926,11 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
 
-        public ListItemResponseFieldType AddListItemResponseField(ListItemBaseType li)
-        {
-            return sdcTreeBuilder.AddListItemResponseField(this);
-        }
+        #region IListItem
+        public ListItemResponseFieldType AddListItemResponseField() => sdcTreeBuilder.AddListItemResponseField(this);
+        #endregion
 
-
-        #region IParent
+        #region IChildItemsParent
         /// <summary>
         /// The ChildItems node replaces "Item" (MainNodesType), and may contain:
         ///"ButtonAction", typeof(ButtonItemType),
@@ -936,18 +947,29 @@ namespace SDC.Schema
             set { this.Item = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddSection<ListItemType>(this, id, insertPosition); }
+        { return sdcTreeBuilder.AddChildSection(this, id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddQuestion<ListItemType>(this, qType, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildQuestion(this, qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddInjectedForm<ListItemType>(this, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildInjectedForm(this, id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddButtonAction<ListItemType>(this, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildButtonAction(this, id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddDisplayedItem<ListItemType>(this, id, insertPosition = -1); }
+        { return sdcTreeBuilder.AddChildDisplayedItem(this, id, insertPosition); }
+        public bool HasChildItems() => sdcTreeBuilder.HasChildItems(this);
         #endregion
 
-
+        #region IQuestionListMember
+        //hide inherited with "new" IQuestionListMember from DisplayedType
+        public bool Remove(bool removeDecendants = false) => sdcTreeBuilder.Remove<ListItemType>(this);
+        public bool Move(ListItemType target = null, bool moveAbove = false, bool testOnly = false) //drop on LI
+            => sdcTreeBuilder.Move(this, this.ParentNode as ListItemType, moveAbove, testOnly);
+        public bool Move(QuestionItemType target = null, bool moveAbove = false, bool testOnly = false) //drop on QS/QM
+            => sdcTreeBuilder.Move(this, this.ParentIETypeNode as QuestionItemType, moveAbove, testOnly);
+        ListItemType ConvertToLI(bool testOnly = false) => sdcTreeBuilder.ConvertToLI(testOnly);
+        public DisplayedType ConvertToDI(bool testOnly = false) => sdcTreeBuilder.ConvertToDI(testOnly);
+        public ListItemType ConvertToLIR(bool testOnly = false) => sdcTreeBuilder.ConvertToLIR(testOnly);
+        #endregion
     }
 
     public partial class ListItemBaseType
@@ -1004,6 +1026,7 @@ namespace SDC.Schema
         {
             ElementPrefix = "rf";
             SetNames(elementName, elementPrefix);
+            this.Item = null;
         }
     }
 
@@ -1067,14 +1090,18 @@ namespace SDC.Schema
             {
                 if (topNodeTemp is null)
                 { topNodeTemp = value; }
-                else { throw new Exception("TopObject has already been assigned.  A call to ResetStaticBase() is required before this object can be set;"); }
+                else { throw new Exception("TopNode has already been assigned.  A call to ClearTopNode() is required before this object can be set;"); }
             }
         }
-        protected static void ResetStaticBase() 
+        /// <summary>
+        /// Resets TopNode and IETresetCounter.  This allows the creation of a new SDC tree for unit testing
+        /// </summary>
+        public static void ClearTopNode() 
         { 
             topNodeTemp = null;
             IETresetCounter = 0;
         }
+
         private void RegisterParent<T>(T inParentNode) where T : BaseType
         {
             try
@@ -1082,7 +1109,7 @@ namespace SDC.Schema
                 if (inParentNode != null)
                 {   //Register parent node
                     //ParentNode = inParentNode;
-                    TopNodeTemp.ParentNodes.Add(ObjectID, inParentNode);
+                    TopNodeTemp.ParentNodes.Add(ObjectGUID, inParentNode);
                     inParentNode.IsLeafNode = false; //the parent node has a child node, so it can't be a leaf node
                     //Register IdentifiedExtensionType parent node
                     //BaseType par = ParentNode;
@@ -1219,7 +1246,7 @@ namespace SDC.Schema
                 // if (this.GetType() != typeof(FormDesignType)) //TODO: remove this reflection condition and test for errors
                 //{
                 //Debug.WriteLine(this.GetType().ToString());
-                TopNodeTemp.ParentNodes.TryGetValue(this.ObjectID, out BaseType outParentNode);
+                TopNodeTemp.ParentNodes.TryGetValue(this.ObjectGUID, out BaseType outParentNode);
                 return outParentNode;
                 //_ParentNode = outParentNode;
                 //}
@@ -1247,7 +1274,7 @@ namespace SDC.Schema
                 outParentNode = this;
                 do
                 {
-                    TopNodeTemp.ParentNodes.TryGetValue(outParentNode.ObjectID, out outParentNode);
+                    TopNodeTemp.ParentNodes.TryGetValue(outParentNode.ObjectGUID, out outParentNode);
 
                     if (outParentNode != null && 
                         outParentNode.GetType().IsSubclassOf(typeof(IdentifiedExtensionType)))
@@ -1346,7 +1373,7 @@ namespace SDC.Schema
             else throw new InvalidOperationException("TopObjectTemp was null and the top object did not implement ITopNode.");
             TopNode = TopNodeTemp;
             ObjectID = TopNode.MaxObjectID++;
-            TopNode.Nodes.Add(ObjectID, this);
+            TopNode.Nodes.Add(ObjectGUID, this);
             //TopObject.Nodes.TryGetValue(ObjectID - 1, out BaseType prevNode);
             //if (prevNode != null) TopObject.PreviousNodes.Add(ObjectID, prevNode);
 
@@ -1363,7 +1390,7 @@ namespace SDC.Schema
             x.LoadXml(sdcXml);
             XmlNodeList xmlNodeList = x.SelectNodes("//*");
 
-            var dX_obj = new Dictionary<int, int>(); //the index is iXmlNode, value is FD ObjectID
+            var dX_obj = new Dictionary<int, Guid>(); //the index is iXmlNode, value is FD ObjectGUID
             int iXmlNode = 0;
             XmlNode xmlNode;
 
@@ -1385,12 +1412,12 @@ namespace SDC.Schema
                 e.SetAttributeNode(a);
 
                 //Create  dictionary to track the matched indexes of the XML and FD node collections
-                dX_obj[iXmlNode] = bt.ObjectID;
+                dX_obj[iXmlNode] = bt.ObjectGUID;
                 //Debug.Print("iXmlNode: " + iXmlNode + ", ObjectID: " + bt.ObjectID);
 
                 //Search for parents:
                 int parIndexXml = -1;
-                int parObjectID = -1;
+                Guid parObjectGUID = default;
                 bool parExists = false;
                 BaseType btPar;
                 XmlNode parNode;
@@ -1400,8 +1427,8 @@ namespace SDC.Schema
                 parExists = int.TryParse(parNode?.Attributes?.GetNamedItem("index")?.Value, out parIndexXml);//The index of the parent XML node
                 if (parExists)
                 {
-                    parExists = dX_obj.TryGetValue(parIndexXml, out parObjectID);// find the matching parent FD node Object ID
-                    if (parExists) { parExists = obj.Nodes.TryGetValue(parObjectID, out btPar); } //Find the parent node in FD
+                    parExists = dX_obj.TryGetValue(parIndexXml, out parObjectGUID);// find the matching parent FD node Object ID
+                    if (parExists) { parExists = obj.Nodes.TryGetValue(parObjectGUID, out btPar); } //Find the parent node in FD
                     if (parExists)
                     {
                         bt.IsLeafNode = true;
@@ -1484,6 +1511,7 @@ namespace SDC.Schema
         {
         }
         #region IExtensionBase
+        public bool HasExtensionBaseMembers() => sdcTreeBuilder.HasExtensionBaseMembers(this);
         public PropertyType AddProperty(int insertPosition = -1) { return sdcTreeBuilder.AddProperty(this, insertPosition); }
         public CommentType AddComment(int insertPosition = -1) { return sdcTreeBuilder.AddComment(this, insertPosition); }
         public ExtensionType AddExtension(int insertPosition = -1) { return sdcTreeBuilder.AddExtension(this, insertPosition); }
@@ -1493,19 +1521,18 @@ namespace SDC.Schema
         //public ExtensionBaseType AddExtensionBaseType() { return sdcTreeBuilder.AddExtensionBaseTypeItems(this); }
     }
 
-    public partial class ExtensionType: IExtension
+    #region IExtensionBaseTypeMember
+    public partial class ExtensionType : IExtensionBaseTypeMember
     {
         protected ExtensionType() { }
         public ExtensionType(BaseType parentNode) : base(parentNode) { }
-        #region IExtension
-        public bool Remove() =>
-            sdcTreeBuilder.RemoveExtension(this);
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) =>
-            sdcTreeBuilder.MoveExtension(this, ebtTarget, newListIndex);
+        #region IExtensionBaseTypeMember
+        public bool Remove() => sdcTreeBuilder.Remove(this);
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => sdcTreeBuilder.Move(this, ebtTarget, newListIndex);
         #endregion
 
     }
-    public partial class PropertyType : IProperty
+    public partial class PropertyType : IExtensionBaseTypeMember
     {
         protected PropertyType() { }
         public PropertyType(ExtensionBaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -1522,73 +1549,73 @@ namespace SDC.Schema
             return h;
         }
 
-        #region IProperty
+        #region IExtensionBaseTypeMember
         public bool Remove() =>
-            sdcTreeBuilder.RemoveProperty(this);
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) =>
-            sdcTreeBuilder.MoveProperty(this, ebtTarget, newListIndex);
+            sdcTreeBuilder.Remove(this);
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => sdcTreeBuilder.Move(this, ebtTarget, newListIndex);
         #endregion
     }
-    public partial class CommentType: IComment
+    public partial class CommentType : IExtensionBaseTypeMember
     {
         protected CommentType() { }
         public CommentType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-
             this.ElementPrefix = "cmt";
             SetNames(elementName, elementPrefix);
         }
 
-        #region IComment
-        public bool Remove() =>
-            sdcTreeBuilder.RemoveComment(this);
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) =>
-            sdcTreeBuilder.MoveComment(this, ebtTarget, newListIndex);
+        #region IExtensionBaseTypeMember
+        public bool Remove() => sdcTreeBuilder.Remove(this);
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => sdcTreeBuilder.Move(this, ebtTarget, newListIndex);
         #endregion
     }
-
+    #endregion
 
     public partial class IdentifiedExtensionType
     {
 
-        /// <summary>
-        /// Given an Item Node's URI, returns the Item's object reference as IdentifiedExtensionType.
-        /// </summary>
-        [NonSerialized]
-        public static Dictionary<String, IdentifiedExtensionType> IdentExtNodes = new Dictionary<String, IdentifiedExtensionType>();
+        ///// <summary>
+        ///// Given an Item Node's URI, returns the Item's object reference as IdentifiedExtensionType.
+        ///// </summary>
+        //[NonSerialized]
+        //public static Dictionary<String, IdentifiedExtensionType> IdentExtNodes = new Dictionary<String, IdentifiedExtensionType>();
 
         protected IdentifiedExtensionType() { }
         protected IdentifiedExtensionType(BaseType parentNode, string id = "") : base(parentNode)
         {
-            AddToIdentExtNodes(id);
-        }
-
-        private void AddToIdentExtNodes(string id = "")
-        {
-
-            if (string.IsNullOrWhiteSpace(this.ID))
-            {
                 if (!string.IsNullOrWhiteSpace(id))
                     this.ID = id;
                 else if (this.ObjectGUID != null)
-                    this.ID = this.ObjectGUID.ToString();
-            }
-
-            if (!string.IsNullOrWhiteSpace(this.ID))
-            {
-                try
-                {
-                    IdentExtNodes.Add(this.ID, this);
-                    Debug.WriteLine($"The node with ObjectID: {this.ObjectID} and ID: {this.ID} WAS added to the IdentExtNodes dictionary. Item type is {this.GetType()}");
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error: {ex.Message}. The node with ObjectID: {this.ObjectID} and ID: {this.ID} was NOT added to the IdentExtNodes dictionary.  Item type is {this.GetType()}");
-                }
-            }
-            else
-            { Debug.WriteLine($"The node with ObjectID: {this.ObjectID} and ID: {this.ID} was NOT added to the IdentExtNodes dictionary.  Item type is {this.GetType()}"); }
+                    this.ID = this.ObjectGUID.ToString();            
+            //AddToIdentExtNodes(id);
         }
+
+        //private void AddToIdentExtNodes(string id = "")
+        //{
+
+        //    if (string.IsNullOrWhiteSpace(this.ID))
+        //    {
+        //        if (!string.IsNullOrWhiteSpace(id))
+        //            this.ID = id;
+        //        else if (this.ObjectGUID != null)
+        //            this.ID = this.ObjectGUID.ToString();
+        //    }
+
+        //    if (!string.IsNullOrWhiteSpace(this.ID))
+        //    {
+        //        try
+        //        {
+        //            TopNode.IdentExtNodes.Add(this.ID, this);
+        //            Debug.WriteLine($"The node with ObjectID: {this.ObjectID} and ID: {this.ID} WAS added to the IdentExtNodes dictionary. Item type is {this.GetType()}");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Debug.WriteLine($"Error: {ex.Message}. The node with ObjectID: {this.ObjectID} and ID: {this.ID} was NOT added to the IdentExtNodes dictionary.  Item type is {this.GetType()}");
+        //        }
+        //    }
+        //    else
+        //    { Debug.WriteLine($"The node with ObjectID: {this.ObjectID} and ID: {this.ID} was NOT added to the IdentExtNodes dictionary.  Item type is {this.GetType()}"); }
+        //}
 
         public static explicit operator IdentifiedExtensionType(KeyValuePair<int, BaseType> v)
         {
@@ -1629,7 +1656,7 @@ namespace SDC.Schema
             int i = 0; //list index
             foreach (var li in ChildItemsList)
             { 
-                if (li.ObjectID == Node.ObjectID)
+                if (li.ObjectGUID == Node.ObjectGUID)
                 {
                     ChildItemsList.RemoveAt(i);
                     return i;
@@ -1648,9 +1675,9 @@ namespace SDC.Schema
 
     #endregion
 
-    #region DisplayedType and Helpers
+    #region DisplayedType and Members
 
-    public partial class DisplayedType : IDisplayedType, IChildItemMember
+    public partial class DisplayedType : IDisplayedType, IChildItemsMember, IQuestionListMember
     {
         protected DisplayedType() { }
         public DisplayedType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -1665,7 +1692,6 @@ namespace SDC.Schema
         }
 
         #region IDisplayedType
-
         public LinkType AddLink()
         { return sdcTreeBuilder.AddLink(this); }
         public BlobType AddBlob()
@@ -1675,6 +1701,7 @@ namespace SDC.Schema
         public CodingType AddCoding()
         { return sdcTreeBuilder.AddCodedValue(this); }
         #endregion
+
         #region DisplayedType Events
         public OnEventType AddOnEvent()
         { return sdcTreeBuilder.AddOnEventEvent(this); }
@@ -1689,18 +1716,28 @@ namespace SDC.Schema
         #endregion
 
         #region IChildItemMember
-        public bool Remove()
-            => sdcTreeBuilder.Remove(this);
-        public bool Move<T>(T target, int newListIndex) where T : DisplayedType, IParent
-            => sdcTreeBuilder.MoveAsChild(this, target, newListIndex); 
-
+        public bool Remove() => sdcTreeBuilder.Remove(this);
+        public bool Move<T>(T target, int newListIndex) where T : DisplayedType, IChildItemsParent
+            => sdcTreeBuilder.MoveAsChild(this, target, newListIndex);
         #endregion
-        
+
+        #region IQuestionListMember
+        //Explicit implementaion prevents this interface from being inherited directly by subclasses.
+        bool IQuestionListMember.Remove(bool removeDecendants) => sdcTreeBuilder.Remove<DisplayedType>(this);
+        bool IQuestionListMember.Move(ListItemType target, bool moveAbove, bool testOnly) //drop on LI
+            => sdcTreeBuilder.Move(this, this.ParentNode as ListItemType, moveAbove, testOnly);
+        bool IQuestionListMember.Move(QuestionItemType target, bool moveAbove, bool testOnly) //drop on QS/QM
+            => sdcTreeBuilder.Move(this, this.ParentIETypeNode as QuestionItemType, moveAbove, testOnly);
+        ListItemType IQuestionListMember.ConvertToLI(bool testOnly) => sdcTreeBuilder.ConvertToLI(testOnly);
+        DisplayedType IQuestionListMember.ConvertToDI(bool testOnly) => sdcTreeBuilder.ConvertToDI(testOnly);
+        ListItemType IQuestionListMember.ConvertToLIR(bool testOnly) => sdcTreeBuilder.ConvertToLIR(testOnly);
+        #endregion
+
     }
 
-    #region DisplayedType Helper Classes
+    #region DisplayedType Members
 
-    public partial class BlobType : IDisplayedTypeChildMember
+    public partial class BlobType : IDisplayedTypeMember
     {
         protected BlobType() { }
         public BlobType(DisplayedType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -1710,10 +1747,7 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
     }
-
-
-
-    public partial class LinkType : IDisplayedTypeChildMember
+    public partial class LinkType : IDisplayedTypeMember
     {
         protected LinkType() { }
         public LinkType(DisplayedType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -1727,7 +1761,7 @@ namespace SDC.Schema
     #region Coding
 
 
-    public partial class CodingType : IDisplayedTypeChildMember
+    public partial class CodingType : IDisplayedTypeMember
     {
         protected CodingType() { }
         public CodingType(ExtensionBaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -1769,7 +1803,6 @@ namespace SDC.Schema
 
 
     #endregion
-
 
     #region DataTypes
     public partial class DataTypes_DEType
@@ -2769,8 +2802,6 @@ namespace SDC.Schema
 
     #region Rules
 
-
-
     public partial class ItemNameType
     {
         protected ItemNameType() { }
@@ -2798,8 +2829,6 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
     }
-
-
     public partial class TargetItemIDType
     {
         protected TargetItemIDType() { }
@@ -2809,7 +2838,6 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
     }
-
     public partial class TargetItemNameType
     {
         protected TargetItemNameType() { }
@@ -2819,7 +2847,6 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
     }
-
     public partial class TargetItemXPathType
     {
         protected TargetItemXPathType() { }
@@ -2850,7 +2877,6 @@ namespace SDC.Schema
         }
 
     }
-
     public partial class PredAlternativesType
     {        
         public PredAlternativesType() { }
@@ -2878,7 +2904,6 @@ namespace SDC.Schema
             this._not = false;
         }
     }
-
     public partial class PredSingleSelectionSetsType
     {
         protected PredSingleSelectionSetsType() { }
@@ -2887,7 +2912,6 @@ namespace SDC.Schema
             this._maxSelections = ((short)(1));
         }
     }
-
     public partial class RuleAutoActivateType
     {
         protected RuleAutoActivateType() { }
@@ -2908,7 +2932,6 @@ namespace SDC.Schema
             this._onlyIf = false;
         }
     }
-
     public partial class RuleListItemMatchTargetsType
     {
         protected RuleListItemMatchTargetsType() { }
@@ -2917,7 +2940,6 @@ namespace SDC.Schema
             this._attributeToMatch = RuleListItemMatchTargetsTypeAttributeToMatch.associatedValue;
         }
     }
-
     public partial class SelectionSetsActionType
     {
         protected SelectionSetsActionType() { }
@@ -2926,7 +2948,6 @@ namespace SDC.Schema
             this._not = false;
         }
     }
-
     public partial class ValidationTypeSelectionSets
     {
         protected ValidationTypeSelectionSets() { }
@@ -2935,7 +2956,6 @@ namespace SDC.Schema
             this._not = false;
         }
     }
-
     public partial class ValidationTypeSelectionTest
     {
         protected ValidationTypeSelectionTest() { }
@@ -2950,7 +2970,6 @@ namespace SDC.Schema
         public PredSelectionTestType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         { }
     }
-
     public partial class CallFuncType 
     {
         protected CallFuncType() { }
@@ -2970,7 +2989,6 @@ namespace SDC.Schema
             this._allowNull = true;
         }
     }
-
     partial class CallFuncBoolType
     {
         protected CallFuncBoolType() { }
@@ -2984,7 +3002,7 @@ namespace SDC.Schema
     #endregion
 
     #region Events
-    public partial class OnEventType : IDisplayedTypeChildMember
+    public partial class OnEventType : IDisplayedTypeMember
     {
         protected OnEventType() { }
         public OnEventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -3004,7 +3022,7 @@ namespace SDC.Schema
         }
     }
 
-    public partial class EventType : IDisplayedTypeChildMember
+    public partial class EventType : IDisplayedTypeMember
     {
         protected EventType() { }
         public EventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -3014,7 +3032,7 @@ namespace SDC.Schema
         }
     }
 
-    public partial class PredGuardType : IDisplayedTypeChildMember
+    public partial class PredGuardType : IDisplayedTypeMember
     {
         
         protected PredGuardType() { }
@@ -3059,7 +3077,7 @@ namespace SDC.Schema
 
     #region Contacts
 
-    public partial class ContactType : IDisplayedTypeChildMember
+    public partial class ContactType : IDisplayedTypeMember
     {
         protected ContactType() { }
         public ContactType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -3141,7 +3159,6 @@ namespace SDC.Schema
     #endregion
 
     #region Classes that need ctor parameters
-
 
     #region RequestForm (Package)
     public partial class ComplianceRuleType

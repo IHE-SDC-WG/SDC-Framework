@@ -8,6 +8,68 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Test files\..Sample SDCPackage.xml" />
+    <None Remove="Test files\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF.xml" />
+    <None Remove="Test files\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml" />
+    <None Remove="Test files\Breast.Invasive.Res.189_4.001.001.CTP4_sdcFDF.xml" />
+    <None Remove="Test files\Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml" />
+    <None Remove="Test files\CCO Lung Surgery.xml" />
+    <None Remove="Test files\ColoRectal.Res.126_3.004.001.REL_sdcFDF.xml" />
+    <None Remove="Test files\DE sample.xml" />
+    <None Remove="Test files\Demog CCO Lung Surgery.xml" />
+    <None Remove="Test files\sdcscript.js" />
+    <None Remove="Test files\sdctemplate.css" />
+    <None Remove="Test files\sdctemplate.xslt" />
+    <None Remove="Test files\sdctemplate_local.xslt" />
+    <None Remove="Test files\Test.Flow.237_4.001.001.UNK_sdcFDF.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Test files\..Sample SDCPackage.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\Breast.Invasive.Res.189_4.001.001.CTP4_sdcFDF.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\CCO Lung Surgery.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\ColoRectal.Res.126_3.004.001.REL_sdcFDF.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\DE sample.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\Demog CCO Lung Surgery.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\sdcscript.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\sdctemplate.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\sdctemplate.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\sdctemplate_local.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test files\Test.Flow.237_4.001.001.UNK_sdcFDF.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
@@ -16,10 +78,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SDC.Schema\SDC.Schema.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Test files\" />
   </ItemGroup>
 
 </Project>

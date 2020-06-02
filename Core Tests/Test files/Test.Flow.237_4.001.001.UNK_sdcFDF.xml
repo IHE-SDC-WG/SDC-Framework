@@ -1,0 +1,1064 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="sdctemplate.xslt"?>
+<FormDesign xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="Test.Flow.237_4.001.001.UNK_sdcFDF" baseURI="www.cap.org/eCC" fullURI="_baseURI=www.cap.org/eCC&amp;_lineage=Test.Flow.237&amp;_version=4.001.001.UNK&amp;_docType=sdcFDF" formTitle="XML Comparator Verification Template (March 2019)" lineage="Test.Flow.237" filename="Test.Flow.237_4.001.001.UNK_sdcFDF.xml" version="4.001.001.UNK" xmlns="urn:ihe:qrph:sdc:2016">
+ <Property name="Copyright" type="CAPeCC_static_text" styleClass="copyright" order="1" propName="Copyright" val="(c) 2020 College of American Pathologists.  All rights reserved.  License required for use." />
+ <Property name="GenericHeaderText" type="CAPeCC_static_text" order="2" propName="GenericHeaderText" val="Stub1 Header" />
+ <Property name="Category" type="CAPeCC_meta" order="3" propName="Category" val="Genitourinary" />
+ <Property name="OfficialName" type="CAPeCC_meta" order="4" propName="OfficialName" val="XML Comparator Verification Template (March 2019)" />
+ <Property name="CAP_ProtocolName" type="CAPeCC_meta" order="5" propName="CAP_ProtocolName" />
+ <Property name="CAP_ProtocolShortName" type="CAPeCC_meta" order="6" propName="CAP_ProtocolShortName" val="UreterRenalPelvis" />
+ <Property name="CAP_ProtocolVersion" type="CAPeCC_meta" order="7" propName="CAP_ProtocolVersion" />
+ <Property name="TemplateID" type="CAPeCC_meta" order="8" propName="TemplateID" val="237.100004300" />
+ <Property name="Restrictions" type="CAPeCC_meta" order="9" propName="Restrictions" val="XML Comparator Testing" />
+ <Property name="CAP_Required" type="CAPeCC_meta" order="10" propName="CAP_Required" val="true" />
+ <Property name="AccreditationDate" type="CAPeCC_meta dt.dateTime" order="11" propName="AccreditationDate" val="11/1/2019" />
+ <Property name="WebPostingDate" type="CAPeCC_meta dt.dateTime" order="12" propName="WebPostingDate" val="2/27/2019" />
+ <Property name="ApprovalStatus" type="CAPeCC_meta" order="13" propName="ReleaseStatus" val="UNK" />
+ <Property name="AJCC_Version" type="CAPeCC_meta" order="14" propName="AJCC_Version" val="8th Edition" />
+ <Property name="FIGO_Version" type="CAPeCC_meta" order="15" propName="FIGO_Version" val="FIGO Cancer Report 2015 " />
+ <Body name="Body" order="16" ID="Test.Flow.237_4.001.001.UNK_sdcFDF_Body">
+  <ChildItems name="ch_Body" order="17">
+   <Section name="S_31594" order="18" ID="31594.100004300" title="XML Comparator">
+    <ChildItems name="ch_31594_1" order="19">
+     <Section name="S_31577" order="20" ID="31577.100004300" title="Data Type (DT)">
+      <ChildItems name="ch_31577_1" order="21">
+       <Question name="Q_31573" order="22" ID="31573.100004300" title="DT (String)">
+        <ResponseField name="rf_31573_1" order="23">
+         <Response name="rsp_31573_2" order="24">
+          <integer name="intr_31573_3" order="25" maxInclusive="100" minInclusive="0" />
+         </Response>
+         <TextAfterResponse name="rtt_31573_4" order="26" val="%" />
+         <ResponseUnits name="un_31573_5" order="27" val="%" />
+        </ResponseField>
+       </Question>
+       <Question name="Q_39231" order="28" ID="39231.100004300" title="DT (Integer)">
+        <ResponseField name="rf_39231_1" order="29">
+         <Response name="rsp_39231_2" order="30">
+          <decimal name="dec_39231_3" order="31" totalDigits="3" />
+         </Response>
+         <TextAfterResponse name="rtt_39231_4" order="32" val="%" />
+         <ResponseUnits name="un_39231_5" order="33" val="%" />
+        </ResponseField>
+       </Question>
+       <Question name="Q_46310" order="34" ID="46310.100004300" title="DT (Decimal)">
+        <ResponseField name="rf_46310_1" order="35">
+         <Response name="rsp_46310_2" order="36">
+          <string name="str_46310_3" order="37" />
+         </Response>
+        </ResponseField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_31570" order="38" ID="31570.100004300" title="Deprecated, Parent, Previous Sibling, New (Added another QF)">
+      <ChildItems name="ch_31570_1" order="39">
+       <Question name="Q_31367" order="40" ID="31367.100004300" title="zzz XML Comparator Test Results">
+        <ListField name="lf_31367_1" order="41">
+         <List name="lst_31367_2" order="42">
+          <ListItem name="LI_39004" order="43" ID="39004.100004300" title="zzz Passed" />
+          <ListItem name="LI_31619" order="44" ID="31619.100004300" title="zzz Failed" />
+          <ListItem name="LI_31593" order="45" ID="31593.100004300" title="zzz Other">
+           <ListItemResponseField name="lirf_31593_1" order="46">
+            <Response name="rsp_31593_2" order="47">
+             <string name="str_31593_3" order="48" />
+            </Response>
+           </ListItemResponseField>
+           <ChildItems name="ch_31593_4" order="49">
+            <Question name="Q_45288" order="50" ID="45288.100004300" title="zzz XML Comparator Test Results (parent to dep parent change for 31659)">
+             <Property name="p_rptTxt_45288_1" order="51" propName="reportText" val="I am deprecated 31653" />
+             <ListField name="lf_45288_2" order="52">
+              <List name="lst_45288_3" order="53">
+               <ListItem name="LI_31576" order="54" ID="31576.100004300" title="zzz XML Comparator Test Results" />
+               <ListItem name="LI_31659" order="55" ID="31659.100004300" title="zzz XML Comparator Test Results (sub answer)">
+                <ChildItems name="ch_31659_1" order="56">
+                 <Question name="Q_31596" order="57" ID="31596.100004300" title="?zzz XML Comparator Test Results (shows parent change)">
+                  <Property name="p_rptTxt_31596_1" order="58" propName="reportText" val="Upon Deprecation I will show Parent change" />
+                  <ListField name="lf_31596_2" order="59" maxSelections="0">
+                   <List name="lst_31596_3" order="60">
+                    <ListItem name="LI_37911" order="61" ID="37911.100004300" title="?Yes" selectionDeselectsSiblings="true" omitWhenSelected="true" />
+                    <ListItem name="LI_31656" order="62" ID="31656.100004300" title="No" />
+                   </List>
+                  </ListField>
+                 </Question>
+                </ChildItems>
+               </ListItem>
+              </List>
+             </ListField>
+             <ChildItems name="ch_45288_1" order="63">
+              <Question name="Q_31602" order="64" ID="31602.100004300" title="zzz XML Comparator Test Results (sibling change with dep to 31653 and replacement with new QS)">
+               <Property name="p_rptTxt_31602_1" order="65" propName="reportText" val="Upon Deprecation I will Show Previous Sibling Change" />
+               <ResponseField name="rf_31602_2" order="66">
+                <Response name="rsp_31602_3" order="67">
+                 <integer name="intr_31602_4" order="68" maxInclusive="100" minInclusive="1" />
+                </Response>
+                <TextAfterResponse name="rtt_31602_5" order="69" val="%" />
+                <ResponseUnits name="un_31602_6" order="70" val="%" />
+               </ResponseField>
+              </Question>
+              <Question name="Q_31654" order="71" ID="31654.100004300" title="Added QF">
+               <ResponseField name="rf_31654_1" order="72">
+                <Response name="rsp_31654_2" order="73">
+                 <integer name="intr_31654_3" order="74" maxInclusive="100" minInclusive="1" />
+                </Response>
+                <TextAfterResponse name="rtt_31654_4" order="75" val="%" />
+                <ResponseUnits name="un_31654_5" order="76" val="%" />
+               </ResponseField>
+              </Question>
+             </ChildItems>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_31651" order="77" ID="31651.100004300" title="Required Change and Response Required">
+      <ChildItems name="ch_31651_1" order="78">
+       <Question name="Q_39113" order="79" ID="39113.100004300" title="zzz XML Comparatir Test Results, will add specify to the AF">
+        <Property name="p_rptTxt_39113_1" order="80" propName="reportText" val="{no text}" />
+        <ListField name="lf_39113_2" order="81" maxSelections="0">
+         <List name="lst_39113_3" order="82">
+          <ListItem name="LI_31645" order="83" ID="31645.100004300" title="zzz XML Comparator Test Results">
+           <Property name="p_rptTxt_31645_1" order="84" propName="reportText" val="{no text}" />
+          </ListItem>
+          <ListItem name="LI_31634" order="85" ID="31634.100004300" title="zzz XML Comparator Test Results">
+           <Property name="p_rptTxt_31634_1" order="86" propName="reportText" val="{no text}" />
+          </ListItem>
+          <ListItem name="LI_31562" order="87" ID="31562.100004300" title="Response Required (not required will become required) (specify)">
+           <Property name="p_rptTxt_31562_1" order="88" propName="reportText" val="{no text}" />
+           <ListItemResponseField name="lirf_31562_2" order="89" responseRequired="true">
+            <Response name="rsp_31562_3" order="90">
+             <string name="str_31562_4" order="91" />
+            </Response>
+           </ListItemResponseField>
+          </ListItem>
+          <ListItem name="LI_39624" order="92" ID="39624.100004300" title="Response Required is required will become not required">
+           <Property name="p_rptTxt_39624_1" order="93" propName="reportText" val="{no text}" />
+           <ListItemResponseField name="lirf_39624_2" order="94">
+            <Response name="rsp_39624_3" order="95">
+             <string name="str_39624_4" order="96" />
+            </Response>
+           </ListItemResponseField>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_50638" order="97" ID="50638.100004300" title="Invisible Question (Change Question to Having Alt Text)" mustImplement="false" minCard="0">
+      <ChildItems name="ch_50638_1" order="98">
+       <Question name="Q_51657" order="99" ID="51657.100004300" title="zzz XML Comparator Test Results">
+        <ListField name="lf_51657_1" order="100">
+         <List name="lst_51657_2" order="101">
+          <ListItem name="LI_44687" order="102" ID="44687.100004300" title="zzz XML Comparator Test Results" />
+          <ListItem name="LI_31147" order="103" ID="31147.100004300" title="zzz XML Comparator Test Results (sub answer)">
+           <ChildItems name="ch_31147_1" order="104">
+            <Question name="Q_31617" order="105" ID="31617.100004300">
+             <Property name="p_altTxt_31617_1" order="106" propName="altText" val="Alt Text Change" />
+             <ListField name="lf_31617_2" order="107" maxSelections="0">
+              <List name="lst_31617_3" order="108">
+               <ListItem name="LI_31622" order="109" ID="31622.100004300" title="Yes" selectionDeselectsSiblings="true" />
+               <ListItem name="LI_31600" order="110" ID="31600.100004300" title="No" />
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_31605" order="111" ID="31605.100004300" title="Item Type" mustImplement="false" minCard="0">
+      <ChildItems name="ch_31605_1" order="112">
+       <Question name="Q_39528" order="113" ID="39528.100004300" title="IT (QS)">
+        <ListField name="lf_39528_1" order="114" maxSelections="0">
+         <List name="lst_39528_2" order="115">
+          <ListItem name="LI_31662" order="116" ID="31662.100004300" title="IT (A)">
+           <ListItemResponseField name="lirf_31662_1" order="117">
+            <Response name="rsp_31662_2" order="118">
+             <string name="str_31662_3" order="119" />
+            </Response>
+           </ListItemResponseField>
+          </ListItem>
+          <ListItem name="LI_37908" order="120" ID="37908.100004300" title="IT (AF)" />
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_31660" order="121" ID="31660.100004300" title="IT (QM)">
+        <ResponseField name="rf_31660_1" order="122">
+         <Response name="rsp_31660_2" order="123">
+          <string name="str_31660_3" order="124" />
+         </Response>
+        </ResponseField>
+       </Question>
+       <Question name="Q_31643" order="125" ID="31643.100004300" title="IT (QF)">
+        <ListField name="lf_31643_1" order="126">
+         <List name="lst_31643_2" order="127">
+          <ListItem name="LI_31368" order="128" ID="31368.100004300" title="IT (A)">
+           <ListItemResponseField name="lirf_31368_1" order="129">
+            <Response name="rsp_31368_2" order="130">
+             <string name="str_31368_3" order="131" />
+            </Response>
+           </ListItemResponseField>
+          </ListItem>
+          <ListItem name="LI_31626" order="132" ID="31626.100004300" title="IT (AF)" />
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_31560" order="133" ID="31560.100004300" title="Length (max chars 4000 to 100)" mustImplement="false" minCard="0">
+      <ChildItems name="ch_31560_1" order="134">
+       <Question name="Q_31370" order="135" ID="31370.100004300" title="Length (max chars 4000 to 100)">
+        <ResponseField name="rf_31370_1" order="136">
+         <Response name="rsp_31370_2" order="137">
+          <string name="str_31370_3" order="138" />
+         </Response>
+        </ResponseField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_32771" order="139" ID="32771.100004300" title="Locked (make it locked)" minCard="0">
+      <ChildItems name="ch_32771_1" order="140">
+       <Question name="Q_31374" order="141" ID="31374.100004300" title="Locked" minCard="0" readOnly="true">
+        <ListField name="lf_31374_1" order="142">
+         <List name="lst_31374_2" order="143">
+          <ListItem name="LI_31373" order="144" ID="31373.100004300" title="Locked" selected="true" />
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_57643" order="145" ID="57643.100004300" minCard="0">
+      <ChildItems name="ch_57643_1" order="146">
+       <Question name="Q_57002" order="147" ID="57002.100004300" minCard="0">
+        <ListField name="lf_57002_1" order="148">
+         <List name="lst_57002_2" order="149">
+          <ListItem name="LI_43328" order="150" ID="43328.100004300" title="Locked (will become unlocked)" />
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_39153" order="151" ID="39153.100004300" title="Min Card (0 to 1) and Optional to Implement">
+      <ChildItems name="ch_39153_1" order="152">
+       <Question name="Q_31599" order="153" ID="31599.100004300" title="Min Card (0 to 1)">
+        <ListField name="lf_31599_1" order="154">
+         <List name="lst_31599_2" order="155">
+          <ListItem name="LI_31603" order="156" ID="31603.100004300" title="Min Card" />
+          <ListItem name="LI_31658" order="157" ID="31658.100004300" title="Min Card" />
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_31588" order="158" ID="31588.100004300" title="Min Card (1 to 0)" minCard="0">
+        <ListField name="lf_31588_1" order="159">
+         <List name="lst_31588_2" order="160">
+          <ListItem name="LI_31648" order="161" ID="31648.100004300" title="Min Card" />
+          <ListItem name="LI_40039" order="162" ID="40039.100004300" title="Min Card" />
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_31665" order="163" ID="31665.100004300" title="Max Card (Repeat Sections)">
+      <ChildItems name="ch_31665_1" order="164">
+       <Question name="Q_31566" order="165" ID="31566.100004300" title="Repeat Question (Added the Max of 5)" maxCard="5">
+        <ResponseField name="rf_31566_1" order="166">
+         <Response name="rsp_31566_2" order="167">
+          <string name="str_31566_3" order="168" />
+         </Response>
+        </ResponseField>
+       </Question>
+       <Question name="Q_39159" order="169" ID="39159.100004300" title="Repeat Question (was Max of 5 now 10)" maxCard="10">
+        <ResponseField name="rf_39159_1" order="170">
+         <Response name="rsp_39159_2" order="171">
+          <string name="str_39159_3" order="172" />
+         </Response>
+        </ResponseField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_39520" order="173" ID="39520.100004300" title="Must Implement (MI = T to F)" mustImplement="false" minCard="0">
+      <ChildItems name="ch_39520_1" order="174">
+       <Question name="Q_31609" order="175" ID="31609.100004300" title="MI (T to F)" mustImplement="false" minCard="0">
+        <ListField name="lf_31609_1" order="176">
+         <List name="lst_31609_2" order="177">
+          <ListItem name="LI_31592" order="178" ID="31592.100004300" title="MI" />
+          <ListItem name="LI_31652" order="179" ID="31652.100004300" title="MI" />
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_45137" order="180" ID="45137.100004300" title="OWS">
+      <ChildItems name="ch_45137_1" order="181">
+       <Question name="Q_35940" order="182" ID="35940.100004300" title="OWS">
+        <ListField name="lf_35940_1" order="183" maxSelections="0">
+         <List name="lst_35940_2" order="184">
+          <ListItem name="LI_47178" order="185" ID="47178.100004300" title="OWS" />
+          <ListItem name="LI_37583" order="186" ID="37583.100004300" title="No" />
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_54148" order="187" ID="54148.100004300" title="?OWS (add OWS with ?)">
+        <ListField name="lf_54148_1" order="188" maxSelections="0">
+         <List name="lst_54148_2" order="189">
+          <ListItem name="LI_42681" order="190" ID="42681.100004300" title="?OWS" selectionDeselectsSiblings="true" omitWhenSelected="true" />
+          <ListItem name="LI_47009" order="191" ID="47009.100004300" title="No" />
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_52276" order="192" ID="52276.100004300" title="Opt (add Opt and Remove Opt)">
+      <ChildItems name="ch_52276_1" order="193">
+       <Question name="Q_57941" order="194" ID="57941.100004300" title="Opt (one answer will have + added)">
+        <ListField name="lf_57941_1" order="195">
+         <List name="lst_57941_2" order="196">
+          <ListItem name="LI_31571" order="197" ID="31571.100004300" title="Opt" />
+          <ListItem name="LI_31631" order="198" ID="31631.100004300" title="+Opt (add + sign)" mustImplement="false" />
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_31296" order="199" ID="31296.100004300" title="Opt">
+        <ListField name="lf_31296_1" order="200">
+         <List name="lst_31296_2" order="201">
+          <ListItem name="LI_44553" order="202" ID="44553.100004300" title="Opt (remove + sign)" />
+          <ListItem name="LI_48852" order="203" ID="48852.100004300" title="Opt" />
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_31579" order="204" ID="31579.100004300" title="RptText, SDS, Title" mustImplement="false" minCard="0">
+      <ChildItems name="ch_31579_1" order="205">
+       <Question name="Q_31568" order="206" ID="31568.100004300" title="zzz XML Comparator Test Results">
+        <Property name="p_rptTxt_31568_1" order="207" propName="reportText" val="Comparator" />
+        <ListField name="lf_31568_2" order="208">
+         <List name="lst_31568_3" order="209">
+          <ListItem name="LI_31628" order="210" ID="31628.100004300" title="zzz XML Comparator Test Results (specify)">
+           <Property name="p_rptTxt_31628_1" order="211" propName="reportText" val="zzz XML Comparator Test Results" />
+           <ListItemResponseField name="lirf_31628_2" order="212" responseRequired="true">
+            <Response name="rsp_31628_3" order="213">
+             <decimal name="dec_31628_4" order="214" totalDigits="5" />
+            </Response>
+            <TextAfterResponse name="rtt_31628_5" order="215" val="cm" />
+            <ResponseUnits name="un_31628_6" order="216" val="cm" />
+           </ListItemResponseField>
+           <ChildItems name="ch_31628_7" order="217">
+            <Question name="Q_31613" order="218" ID="31613.100004300" title="zzz XML Comparator Test Results" mustImplement="false" minCard="0">
+             <Property name="p_rptTxt_31613_1" order="219" propName="reportText" val="{no text}" />
+             <ResponseField name="rf_31613_2" order="220">
+              <Response name="rsp_31613_3" order="221">
+               <decimal name="dec_31613_4" order="222" totalDigits="5" />
+              </Response>
+              <TextAfterResponse name="rtt_31613_5" order="223" val="cm" />
+              <ResponseUnits name="un_31613_6" order="224" val="cm" />
+             </ResponseField>
+            </Question>
+            <Question name="Q_47122" order="225" ID="47122.100004300" title="zzz XML Comparator Test Results" mustImplement="false" minCard="0">
+             <Property name="p_rptTxt_47122_1" order="226" propName="reportText" val="{no text}" />
+             <ResponseField name="rf_47122_2" order="227">
+              <Response name="rsp_47122_3" order="228">
+               <decimal name="dec_47122_4" order="229" totalDigits="5" />
+              </Response>
+              <TextAfterResponse name="rtt_47122_5" order="230" val="cm" />
+              <ResponseUnits name="un_47122_6" order="231" val="cm" />
+             </ResponseField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+          <ListItem name="LI_32773" order="232" ID="32773.100004300" title="zzz Cannot be determined">
+           <ListItemResponseField name="lirf_32773_1" order="233">
+            <Response name="rsp_32773_2" order="234">
+             <string name="str_32773_3" order="235" />
+            </Response>
+           </ListItemResponseField>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_31642" order="236" ID="31642.100004300" title="zzz XML Comparator Test Results (Title missspelled covers Report Text and Title)">
+        <Property name="p_rptTxt_31642_1" order="237" propName="reportText" val="Comparator" />
+        <ListField name="lf_31642_2" order="238">
+         <List name="lst_31642_3" order="239">
+          <ListItem name="LI_31639" order="240" ID="31639.100004300" title="zzz XML Comparator Test Results (specify)">
+           <Property name="p_rptTxt_31639_1" order="241" propName="reportText" val="zzz XML Comparator Test Results" />
+           <ListItemResponseField name="lirf_31639_2" order="242" responseRequired="true">
+            <Response name="rsp_31639_3" order="243">
+             <decimal name="dec_31639_4" order="244" totalDigits="5" />
+            </Response>
+            <TextAfterResponse name="rtt_31639_5" order="245" val="cm" />
+            <ResponseUnits name="un_31639_6" order="246" val="cm" />
+           </ListItemResponseField>
+           <ChildItems name="ch_31639_7" order="247">
+            <Question name="Q_31625" order="248" ID="31625.100004300" title="zzz XML Comparator Test Results" mustImplement="false" minCard="0">
+             <Property name="p_rptTxt_31625_1" order="249" propName="reportText" val="{no text}" />
+             <ResponseField name="rf_31625_2" order="250">
+              <Response name="rsp_31625_3" order="251">
+               <decimal name="dec_31625_4" order="252" totalDigits="5" />
+              </Response>
+              <TextAfterResponse name="rtt_31625_5" order="253" val="cm" />
+              <ResponseUnits name="un_31625_6" order="254" val="cm" />
+             </ResponseField>
+            </Question>
+            <Question name="Q_32770" order="255" ID="32770.100004300" title="zzz XML Comparator Test Results" mustImplement="false" minCard="0">
+             <Property name="p_rptTxt_32770_1" order="256" propName="reportText" val="{no text}" />
+             <ResponseField name="rf_32770_2" order="257">
+              <Response name="rsp_32770_3" order="258">
+               <decimal name="dec_32770_4" order="259" totalDigits="5" />
+              </Response>
+              <TextAfterResponse name="rtt_32770_5" order="260" val="cm" />
+              <ResponseUnits name="un_32770_6" order="261" val="cm" />
+             </ResponseField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+          <ListItem name="LI_31611" order="262" ID="31611.100004300" title="zzz Cannot be determined">
+           <ListItemResponseField name="lirf_31611_1" order="263">
+            <Response name="rsp_31611_2" order="264">
+             <string name="str_31611_3" order="265" />
+            </Response>
+           </ListItemResponseField>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_31591" order="266" ID="31591.100004300" title="SDAC and SDS">
+        <ListField name="lf_31591_1" order="267" maxSelections="0">
+         <List name="lst_31591_2" order="268">
+          <ListItem name="LI_31565" order="269" ID="31565.100004300" title="Add Me Please" />
+          <ListItem name="LI_59813" order="270" ID="59813.100004300" title="SDAC (is SDAC will become not SDAC)">
+           <ChildItems name="ch_59813_1" order="271">
+            <Question name="Q_51632" order="272" ID="51632.100004300" title="SDS">
+             <ListField name="lf_51632_1" order="273">
+              <List name="lst_51632_2" order="274">
+               <ListItem name="LI_30138" order="275" ID="30138.100004300" title="SDS (will become not SDS)" />
+               <ListItem name="LI_52860" order="276" ID="52860.100004300" title="SDS (will become SDS)" selectionDeselectsSiblings="true" />
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_31608" order="277" ID="31608.100004300" title="SDAC and SDS">
+        <ListField name="lf_31608_1" order="278" maxSelections="0">
+         <List name="lst_31608_2" order="279">
+          <ListItem name="LI_33219" order="280" ID="33219.100004300" title="SDAC (not SDAC will become SDAC)" selectionDisablesChildren="true">
+           <ChildItems name="ch_33219_1" order="281">
+            <Question name="Q_42850" order="282" ID="42850.100004300" title="SDS">
+             <ListField name="lf_42850_1" order="283">
+              <List name="lst_42850_2" order="284">
+               <ListItem name="LI_49465" order="285" ID="49465.100004300" title="SDS (will become not SDS)" />
+               <ListItem name="LI_31447" order="286" ID="31447.100004300" title="SDS (will become SDS)" selectionDeselectsSiblings="true" />
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_39525" order="287" ID="39525.100004300" title="Ans Units and TextAfter" mustImplement="false" minCard="0">
+      <ChildItems name="ch_39525_1" order="288">
+       <Question name="Q_31365" order="289" ID="31365.100004300" title="Ans Units">
+        <ListField name="lf_31365_1" order="290">
+         <List name="lst_31365_2" order="291">
+          <ListItem name="LI_41605" order="292" ID="41605.100004300" title="Ans Units now CM change to MM">
+           <ListItemResponseField name="lirf_41605_1" order="293" responseRequired="true">
+            <Response name="rsp_41605_2" order="294">
+             <decimal name="dec_41605_3" order="295" totalDigits="5" />
+            </Response>
+            <TextAfterResponse name="rtt_41605_4" order="296" val="mm" />
+            <ResponseUnits name="un_41605_5" order="297" val="mm" />
+           </ListItemResponseField>
+           <ChildItems name="ch_41605_6" order="298">
+            <Question name="Q_48346" order="299" ID="48346.100004300" title="Ans Units now CM change to MM" mustImplement="false" minCard="0">
+             <Property name="p_rptTxt_48346_1" order="300" propName="reportText" val="{no text}" />
+             <ResponseField name="rf_48346_2" order="301">
+              <Response name="rsp_48346_3" order="302">
+               <decimal name="dec_48346_4" order="303" totalDigits="5" />
+              </Response>
+              <TextAfterResponse name="rtt_48346_5" order="304" val="mm" />
+              <ResponseUnits name="un_48346_6" order="305" val="mm" />
+             </ResponseField>
+            </Question>
+            <Question name="Q_52674" order="306" ID="52674.100004300" title="Ans Units now MM change to CM" mustImplement="false" minCard="0">
+             <Property name="p_rptTxt_52674_1" order="307" propName="reportText" val="{no text}" />
+             <ResponseField name="rf_52674_2" order="308">
+              <Response name="rsp_52674_3" order="309">
+               <decimal name="dec_52674_4" order="310" totalDigits="5" />
+              </Response>
+              <TextAfterResponse name="rtt_52674_5" order="311" val="cm" />
+              <ResponseUnits name="un_52674_6" order="312" val="cm" />
+             </ResponseField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+          <ListItem name="LI_54071" order="313" ID="54071.100004300" title="zzz Cannot be determined (change to decimal and add percent sign to units and txtAft)">
+           <ListItemResponseField name="lirf_54071_1" order="314">
+            <Response name="rsp_54071_2" order="315">
+             <decimal name="dec_54071_3" order="316" totalDigits="100" />
+            </Response>
+            <TextAfterResponse name="rtt_54071_4" order="317" val="%" />
+            <ResponseUnits name="un_54071_5" order="318" val="%" />
+           </ListItemResponseField>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+      </ChildItems>
+     </Section>
+     <Section name="S_43575" order="319" ID="43575.100004300" title="ddd Section and Display Item Testing">
+      <ChildItems name="ch_43575_1" order="320">
+       <Section name="S_43234" order="321" ID="43234.100004300" title="ddd Section(s) Visible Text Change (visible text modified section (s) pleural)">
+        <ChildItems name="ch_43234_1" order="322">
+         <Question name="Q_43577" order="323" ID="43577.100004300" title="ddd Question (no change)">
+          <ListField name="lf_43577_1" order="324">
+           <List name="lst_43577_2" order="325">
+            <DisplayedItem name="DI_43583" order="326" ID="43583.100004300" title="ddd Display Item(s) Visible Text Change (visible text modified Item (s) pleural)" />
+            <ListItem name="LI_43240" order="327" ID="43240.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_44224" order="328" ID="44224.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_44531" order="329" ID="44531.100004300" title="ddd Section Report Text Change (report text modified with (s))">
+        <Property name="p_rptTxt_44531_1" order="330" propName="reportText" val="ddd Section(s) Report Text Change" />
+        <ChildItems name="ch_44531_2" order="331">
+         <Question name="Q_44230" order="332" ID="44230.100004300" title="ddd Question (DI will have no visible text then have visible text)">
+          <ListField name="lf_44230_1" order="333">
+           <List name="lst_44230_2" order="334">
+            <DisplayedItem name="DI_43242" order="335" ID="43242.100004300" title="DI will have no visible text then have visible text" />
+            <ListItem name="LI_43243" order="336" ID="43243.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_43586" order="337" ID="43586.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_44233" order="338" ID="44233.100004300" title="ddd Section Report Text Change (null to report text)">
+        <Property name="p_rptTxt_44233_1" order="339" propName="reportText" val="ddd Section Report Text Change (null to report text)" />
+        <ChildItems name="ch_44233_2" order="340">
+         <Question name="Q_44239" order="341" ID="44239.100004300" title="ddd Question (DI visible to no visible text)">
+          <ListField name="lf_44239_1" order="342">
+           <List name="lst_44239_2" order="343">
+            <DisplayedItem name="DI_43251" order="344" ID="43251.100004300" />
+            <ListItem name="LI_44241" order="345" ID="44241.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_43592" order="346" ID="43592.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_43257" order="347" ID="43257.100004300">
+        <Property name="p_altTxt_43257_1" order="348" propName="altText" val="ddd Section(s) Alt Text Change (alt text modified section (s) pleural)" />
+        <ChildItems name="ch_43257_2" order="349">
+         <Question name="Q_43260" order="350" ID="43260.100004300" title="ddd Question (DI no report text then null text)">
+          <ListField name="lf_43260_1" order="351">
+           <List name="lst_43260_2" order="352">
+            <DisplayedItem name="DI_44242" order="353" ID="44242.100004300" title="ddd Display Item Visible Text Change (DI no report text then null text)">
+             <Property name="p_rptTxt_44242_1" order="354" propName="reportText" val="{no text}" />
+            </DisplayedItem>
+            <ListItem name="LI_43265" order="355" ID="43265.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_44247" order="356" ID="44247.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_44250" order="357" ID="44250.100004300">
+        <Property name="p_altTxt_44250_1" order="358" propName="altText" val="ddd Section Alt Text Added (Visible text removed and added alt textl)" />
+        <ChildItems name="ch_44250_2" order="359">
+         <Question name="Q_43609" order="360" ID="43609.100004300" title="ddd Question (DI no report text to report text)">
+          <ListField name="lf_43609_1" order="361">
+           <List name="lst_43609_2" order="362">
+            <DisplayedItem name="DI_44256" order="363" ID="44256.100004300" title="ddd Display Item Report Text Change (no report text to report text)">
+             <Property name="p_rptTxt_44256_1" order="364" propName="reportText" val="ddd Display Item Report Text Change (no report text to report text)" />
+            </DisplayedItem>
+            <ListItem name="LI_44264" order="365" ID="44264.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_43274" order="366" ID="43274.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_43618" order="367" ID="43618.100004300" title="ddd Section Report Text Change (report text now is null)">
+        <Property name="p_rptTxt_43618_1" order="368" propName="reportText" val="{no text}" />
+        <ChildItems name="ch_43618_2" order="369">
+         <Question name="Q_43283" order="370" ID="43283.100004300" title="ddd Question (DI report text change Section also has had report text now is null)">
+          <ListField name="lf_43283_1" order="371">
+           <List name="lst_43283_2" order="372">
+            <DisplayedItem name="DI_44267" order="373" ID="44267.100004300" title="ddd Display Item(s) Visible Text Change (Visible text modified Item (s) pleural)" />
+            <DisplayedItem name="DI_43300" order="374" ID="43300.100004300" title="ddd Display Item Report Text Change (report text modified Item (s) pleural)">
+             <Property name="p_rptTxt_43300_1" order="375" propName="reportText" val="ddd Display Item(s) Report Text Change" />
+            </DisplayedItem>
+            <ListItem name="LI_43317" order="376" ID="43317.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_44273" order="377" ID="44273.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+      </ChildItems>
+     </Section>
+     <Section name="S_43323" order="378" ID="43323.100004300" title="eee VERSION 3 (FURTHER XML TESTING) (BEFORE I CHANGED) (W out STRESS TESTING SUB SECTION)">
+      <ChildItems name="ch_43323_1" order="379">
+       <Question name="Q_43326" order="380" ID="43326.100004300" title="Report text '' to no report text">
+        <ListField name="lf_43326_1" order="381">
+         <List name="lst_43326_2" order="382">
+          <ListItem name="LI_43334" order="383" ID="43334.100004300" title="Report text '' to no report text" />
+          <ListItem name="LI_43340" order="384" ID="43340.100004300" title="Report text no report text to having report text">
+           <Property name="p_rptTxt_43340_1" order="385" propName="reportText" val="Report text no report text to having report text" />
+          </ListItem>
+          <ListItem name="LI_44282" order="386" ID="44282.100004300" title="Report text change (added pleural (s) to change)">
+           <Property name="p_rptTxt_44282_1" order="387" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+          </ListItem>
+          <ListItem name="LI_45552" order="388" ID="45552.100004300" title="Report text '' to no report text">
+           <ListItemResponseField name="lirf_45552_1" order="389">
+            <Response name="rsp_45552_2" order="390">
+             <string name="str_45552_3" order="391" />
+            </Response>
+           </ListItemResponseField>
+           <ChildItems name="ch_45552_4" order="392">
+            <Question name="Q_44290" order="393" ID="44290.100004300" title="Report text no report text to having report text">
+             <Property name="p_rptTxt_44290_1" order="394" propName="reportText" val="Report text no report text to having report text" />
+             <ListField name="lf_44290_2" order="395">
+              <List name="lst_44290_3" order="396">
+               <ListItem name="LI_43626" order="397" ID="43626.100004300" title="Alt text not present to alt text present">
+                <Property name="p_altTxt_43626_1" order="398" propName="altText" val="Alt text not present to alt text present" />
+               </ListItem>
+               <ListItem name="LI_43635" order="399" ID="43635.100004300">
+                <Property name="p_altTxt_43635_1" order="400" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+               </ListItem>
+               <ListItem name="LI_44299" order="401" ID="44299.100004300" title="Alt text not present to alt text present">
+                <Property name="p_altTxt_44299_1" order="402" propName="altText" val="Alt text not present to alt text present" />
+                <ListItemResponseField name="lirf_44299_2" order="403">
+                 <Response name="rsp_44299_3" order="404">
+                  <string name="str_44299_4" order="405" />
+                 </Response>
+                </ListItemResponseField>
+                <ChildItems name="ch_44299_5" order="406">
+                 <Question name="Q_43343" order="407" ID="43343.100004300" title="Report text change (added pleural (s) to change)">
+                  <Property name="p_rptTxt_43343_1" order="408" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+                  <ListField name="lf_43343_2" order="409">
+                   <List name="lst_43343_3" order="410">
+                    <ListItem name="LI_43348" order="411" ID="43348.100004300" title="Visible text change(s) (added pleural (s) to change)" />
+                    <ListItem name="LI_44305" order="412" ID="44305.100004300" />
+                    <ListItem name="LI_43351" order="413" ID="43351.100004300" title="Visible text change(s) (added pleural (s) to change)">
+                     <ListItemResponseField name="lirf_43351_1" order="414">
+                      <Response name="rsp_43351_2" order="415">
+                       <string name="str_43351_3" order="416" />
+                      </Response>
+                     </ListItemResponseField>
+                    </ListItem>
+                   </List>
+                  </ListField>
+                 </Question>
+                </ChildItems>
+               </ListItem>
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_44307" order="417" ID="44307.100004300" title="Visible text change(s) (added pleural (s) to change)">
+        <ListField name="lf_44307_1" order="418">
+         <List name="lst_44307_2" order="419">
+          <ListItem name="LI_44316" order="420" ID="44316.100004300" title="Visible text change(s) (added pleural (s) to change)" />
+          <ListItem name="LI_43357" order="421" ID="43357.100004300" />
+          <ListItem name="LI_44322" order="422" ID="44322.100004300" title="Report text no report text to having report text">
+           <Property name="p_rptTxt_44322_1" order="423" propName="reportText" val="Report text no report text to having report text" />
+           <ListItemResponseField name="lirf_44322_2" order="424">
+            <Response name="rsp_44322_3" order="425">
+             <string name="str_44322_4" order="426" />
+            </Response>
+           </ListItemResponseField>
+           <ChildItems name="ch_44322_5" order="427">
+            <Question name="Q_44325" order="428" ID="44325.100004300">
+             <ListField name="lf_44325_1" order="429">
+              <List name="lst_44325_2" order="430">
+               <ListItem name="LI_44333" order="431" ID="44333.100004300" title="Report text '' to no report text" />
+               <ListItem name="LI_44534" order="432" ID="44534.100004300" title="Report text no report text to having report text">
+                <Property name="p_rptTxt_44534_1" order="433" propName="reportText" val="Report text no report text to having report text" />
+               </ListItem>
+               <ListItem name="LI_44339" order="434" ID="44339.100004300" title="Report text change (added pleural (s) to change)">
+                <Property name="p_rptTxt_44339_1" order="435" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+               </ListItem>
+               <ListItem name="LI_43643" order="436" ID="43643.100004300">
+                <Property name="p_altTxt_43643_1" order="437" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+                <ListItemResponseField name="lirf_43643_2" order="438">
+                 <Response name="rsp_43643_3" order="439">
+                  <string name="str_43643_4" order="440" />
+                 </Response>
+                </ListItemResponseField>
+               </ListItem>
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_43360" order="441" ID="43360.100004300" title="Alt text not present to alt text present">
+        <Property name="p_altTxt_43360_1" order="442" propName="altText" val="Alt text not present to alt text present" />
+        <ListField name="lf_43360_2" order="443">
+         <List name="lst_43360_3" order="444">
+          <ListItem name="LI_43649" order="445" ID="43649.100004300" title="Alt text not present to alt text present">
+           <Property name="p_altTxt_43649_1" order="446" propName="altText" val="Alt text not present to alt text present" />
+          </ListItem>
+          <ListItem name="LI_43366" order="447" ID="43366.100004300">
+           <Property name="p_altTxt_43366_1" order="448" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+          </ListItem>
+          <ListItem name="LI_43368" order="449" ID="43368.100004300">
+           <ListItemResponseField name="lirf_43368_1" order="450">
+            <Response name="rsp_43368_2" order="451">
+             <string name="str_43368_3" order="452" />
+            </Response>
+           </ListItemResponseField>
+           <ChildItems name="ch_43368_4" order="453">
+            <Question name="Q_44542" order="454" ID="44542.100004300">
+             <Property name="p_altTxt_44542_1" order="455" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+             <ListField name="lf_44542_2" order="456">
+              <List name="lst_44542_3" order="457">
+               <ListItem name="LI_44342" order="458" ID="44342.100004300" title="Visible text change(s) (added pleural (s) to change)" />
+               <ListItem name="LI_44350" order="459" ID="44350.100004300" />
+               <ListItem name="LI_44356" order="460" ID="44356.100004300" title="Report text change (added pleural (s) to change)">
+                <Property name="p_rptTxt_44356_1" order="461" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+                <ListItemResponseField name="lirf_44356_2" order="462">
+                 <Response name="rsp_44356_3" order="463">
+                  <string name="str_44356_4" order="464" />
+                 </Response>
+                </ListItemResponseField>
+               </ListItem>
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_44359" order="465" ID="44359.100004300" title="Report text '' to no report text">
+        <ListField name="lf_44359_1" order="466" maxSelections="0">
+         <List name="lst_44359_2" order="467">
+          <ListItem name="LI_43374" order="468" ID="43374.100004300" title="Report text '' to no report text" />
+          <ListItem name="LI_44365" order="469" ID="44365.100004300" title="Report text no report text to having report text">
+           <Property name="p_rptTxt_44365_1" order="470" propName="reportText" val="Report text no report text to having report text" />
+          </ListItem>
+          <ListItem name="LI_43377" order="471" ID="43377.100004300" title="Report text change (added pleural (s) to change)">
+           <Property name="p_rptTxt_43377_1" order="472" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+          </ListItem>
+          <ListItem name="LI_44367" order="473" ID="44367.100004300" title="Report text '' to no report text">
+           <ListItemResponseField name="lirf_44367_1" order="474">
+            <Response name="rsp_44367_2" order="475">
+             <string name="str_44367_3" order="476" />
+            </Response>
+           </ListItemResponseField>
+           <ChildItems name="ch_44367_4" order="477">
+            <Question name="Q_44373" order="478" ID="44373.100004300" title="Report text no report text to having report text">
+             <Property name="p_rptTxt_44373_1" order="479" propName="reportText" val="Report text no report text to having report text" />
+             <ListField name="lf_44373_2" order="480" maxSelections="0">
+              <List name="lst_44373_3" order="481">
+               <ListItem name="LI_44382" order="482" ID="44382.100004300" title="Alt text not present to alt text present">
+                <Property name="p_altTxt_44382_1" order="483" propName="altText" val="Alt text not present to alt text present" />
+               </ListItem>
+               <ListItem name="LI_43383" order="484" ID="43383.100004300">
+                <Property name="p_altTxt_43383_1" order="485" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+               </ListItem>
+               <ListItem name="LI_44399" order="486" ID="44399.100004300" title="Alt text not present to alt text present">
+                <Property name="p_altTxt_44399_1" order="487" propName="altText" val="Alt text not present to alt text present" />
+                <ListItemResponseField name="lirf_44399_2" order="488">
+                 <Response name="rsp_44399_3" order="489">
+                  <string name="str_44399_4" order="490" />
+                 </Response>
+                </ListItemResponseField>
+                <ChildItems name="ch_44399_5" order="491">
+                 <Question name="Q_43652" order="492" ID="43652.100004300" title="Report text change (added pleural (s) to change)">
+                  <Property name="p_rptTxt_43652_1" order="493" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+                  <ListField name="lf_43652_2" order="494" maxSelections="0">
+                   <List name="lst_43652_3" order="495">
+                    <ListItem name="LI_44408" order="496" ID="44408.100004300" title="Visible text change(s) (added pleural (s) to change)" />
+                    <ListItem name="LI_43391" order="497" ID="43391.100004300" />
+                    <ListItem name="LI_43658" order="498" ID="43658.100004300" title="Visible text change(s) (added pleural (s) to change)">
+                     <ListItemResponseField name="lirf_43658_1" order="499">
+                      <Response name="rsp_43658_2" order="500">
+                       <string name="str_43658_3" order="501" />
+                      </Response>
+                     </ListItemResponseField>
+                    </ListItem>
+                   </List>
+                  </ListField>
+                 </Question>
+                </ChildItems>
+               </ListItem>
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_43400" order="502" ID="43400.100004300" title="Visible text change (added pleural (s) to change)">
+        <ListField name="lf_43400_1" order="503" maxSelections="0">
+         <List name="lst_43400_2" order="504">
+          <ListItem name="LI_43409" order="505" ID="43409.100004300" title="Visible text change(s) (added pleural (s) to change)" />
+          <ListItem name="LI_44416" order="506" ID="44416.100004300" />
+          <ListItem name="LI_43417" order="507" ID="43417.100004300" title="Report text no report text to having report text">
+           <Property name="p_rptTxt_43417_1" order="508" propName="reportText" val="Report text no report text to having report text" />
+           <ListItemResponseField name="lirf_43417_2" order="509">
+            <Response name="rsp_43417_3" order="510">
+             <string name="str_43417_4" order="511" />
+            </Response>
+           </ListItemResponseField>
+           <ChildItems name="ch_43417_5" order="512">
+            <Question name="Q_44422" order="513" ID="44422.100004300">
+             <ListField name="lf_44422_1" order="514" maxSelections="0">
+              <List name="lst_44422_2" order="515">
+               <ListItem name="LI_43426" order="516" ID="43426.100004300" title="Report text '' to no report text" />
+               <ListItem name="LI_43440" order="517" ID="43440.100004300" title="Report text no report text to having report text">
+                <Property name="p_rptTxt_43440_1" order="518" propName="reportText" val="Report text no report text to having report text" />
+               </ListItem>
+               <ListItem name="LI_43443" order="519" ID="43443.100004300" title="Report text change (added pleural (s) to change)">
+                <Property name="p_rptTxt_43443_1" order="520" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+               </ListItem>
+               <ListItem name="LI_43449" order="521" ID="43449.100004300">
+                <Property name="p_altTxt_43449_1" order="522" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+                <ListItemResponseField name="lirf_43449_2" order="523">
+                 <Response name="rsp_43449_3" order="524">
+                  <string name="str_43449_4" order="525" />
+                 </Response>
+                </ListItemResponseField>
+               </ListItem>
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_44425" order="526" ID="44425.100004300" title="Alt text not present to alt text present">
+        <Property name="p_altTxt_44425_1" order="527" propName="altText" val="Alt text not present to alt text present" />
+        <ListField name="lf_44425_2" order="528" maxSelections="0">
+         <List name="lst_44425_3" order="529">
+          <ListItem name="LI_43451" order="530" ID="43451.100004300" title="Alt text not present to alt text present">
+           <Property name="p_altTxt_43451_1" order="531" propName="altText" val="Alt text not present to alt text present" />
+          </ListItem>
+          <ListItem name="LI_45902" order="532" ID="45902.100004300">
+           <Property name="p_altTxt_45902_1" order="533" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+          </ListItem>
+          <ListItem name="LI_43666" order="534" ID="43666.100004300">
+           <ListItemResponseField name="lirf_43666_1" order="535">
+            <Response name="rsp_43666_2" order="536">
+             <string name="str_43666_3" order="537" />
+            </Response>
+           </ListItemResponseField>
+           <ChildItems name="ch_43666_4" order="538">
+            <Question name="Q_43452" order="539" ID="43452.100004300">
+             <Property name="p_altTxt_43452_1" order="540" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+             <ListField name="lf_43452_2" order="541" maxSelections="0">
+              <List name="lst_43452_3" order="542">
+               <ListItem name="LI_43457" order="543" ID="43457.100004300" title="Visible text change(s) (added pleural (s) to change)" />
+               <ListItem name="LI_43460" order="544" ID="43460.100004300" />
+               <ListItem name="LI_44433" order="545" ID="44433.100004300" title="Report text change (added pleural (s) to change)">
+                <Property name="p_rptTxt_44433_1" order="546" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+                <ListItemResponseField name="lirf_44433_2" order="547">
+                 <Response name="rsp_44433_3" order="548">
+                  <string name="str_44433_4" order="549" />
+                 </Response>
+                </ListItemResponseField>
+               </ListItem>
+              </List>
+             </ListField>
+            </Question>
+           </ChildItems>
+          </ListItem>
+         </List>
+        </ListField>
+       </Question>
+       <Question name="Q_44439" order="550" ID="44439.100004300" title="Report text '' to no report text">
+        <ResponseField name="rf_44439_1" order="551">
+         <Response name="rsp_44439_2" order="552">
+          <string name="str_44439_3" order="553" />
+         </Response>
+        </ResponseField>
+        <ChildItems name="ch_44439_4" order="554">
+         <Question name="Q_43466" order="555" ID="43466.100004300" title="Alt text not present to alt text present">
+          <Property name="p_altTxt_43466_1" order="556" propName="altText" val="Alt text not present to alt text present" />
+          <ResponseField name="rf_43466_2" order="557">
+           <Response name="rsp_43466_3" order="558">
+            <string name="str_43466_4" order="559" />
+           </Response>
+          </ResponseField>
+         </Question>
+         <Question name="Q_44442" order="560" ID="44442.100004300" title="Report text no report text to having report text">
+          <Property name="p_rptTxt_44442_1" order="561" propName="reportText" val="Report text no report text to having report text" />
+          <ResponseField name="rf_44442_2" order="562">
+           <Response name="rsp_44442_3" order="563">
+            <string name="str_44442_4" order="564" />
+           </Response>
+          </ResponseField>
+          <ChildItems name="ch_44442_5" order="565">
+           <Question name="Q_43469" order="566" ID="43469.100004300" title="Visible text change(s) (added pleural (s) to change)">
+            <ResponseField name="rf_43469_1" order="567">
+             <Response name="rsp_43469_2" order="568">
+              <string name="str_43469_3" order="569" />
+             </Response>
+            </ResponseField>
+           </Question>
+           <Question name="Q_43477" order="570" ID="43477.100004300">
+            <Property name="p_altTxt_43477_1" order="571" propName="altText" val="Alt text change(s) (added pleural (s) to change)" />
+            <ResponseField name="rf_43477_2" order="572">
+             <Response name="rsp_43477_3" order="573">
+              <string name="str_43477_4" order="574" />
+             </Response>
+            </ResponseField>
+            <ChildItems name="ch_43477_5" order="575">
+             <Question name="Q_43483" order="576" ID="43483.100004300">
+              <ResponseField name="rf_43483_1" order="577">
+               <Response name="rsp_43483_2" order="578">
+                <string name="str_43483_3" order="579" />
+               </Response>
+              </ResponseField>
+             </Question>
+             <Question name="Q_43492" order="580" ID="43492.100004300" title="Report text change (added pleural (s) to change)">
+              <Property name="p_rptTxt_43492_1" order="581" propName="reportText" val="Report text change(s) (added pleural (s) to change)" />
+              <ResponseField name="rf_43492_2" order="582">
+               <Response name="rsp_43492_3" order="583">
+                <string name="str_43492_4" order="584" />
+               </Response>
+              </ResponseField>
+             </Question>
+            </ChildItems>
+           </Question>
+          </ChildItems>
+         </Question>
+        </ChildItems>
+       </Question>
+      </ChildItems>
+     </Section>
+    </ChildItems>
+   </Section>
+   <Section name="S_31636" order="585" ID="31636.100004300" title="(Deprecated Items)" mustImplement="false" minCard="0">
+    <ChildItems name="ch_31636_1" order="586">
+     <Question name="Q_31445" order="587" ID="31445.100004300" title="Deprecated Answers">
+      <ListField name="lf_31445_1" order="588">
+       <List name="lst_31445_2" order="589">
+        <ListItem name="LI_52843" order="590" ID="52843.100004300" title="Remove Me Please" />
+       </List>
+      </ListField>
+     </Question>
+     <Section name="S_42816" order="591" ID="42816.100004300" title="ddd Section and Display Item Testing">
+      <ChildItems name="ch_42816_1" order="592">
+       <Section name="S_42822" order="593" ID="42822.100004300" title="ddd Section(s) Visible Text Change (visible text modified section (s) pleural)">
+        <ChildItems name="ch_42822_1" order="594">
+         <Question name="Q_43812" order="595" ID="43812.100004300" title="ddd Question (no change)">
+          <ListField name="lf_43812_1" order="596">
+           <List name="lst_43812_2" order="597">
+            <DisplayedItem name="DI_44055" order="598" ID="44055.100004300" title="ddd Display Item(s) Visible Text Change (visible text modified Item (s) pleural)" />
+            <ListItem name="LI_44056" order="599" ID="44056.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_42825" order="600" ID="42825.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_42833" order="601" ID="42833.100004300" title="ddd Section Report Text Change (report text modified with (s))">
+        <Property name="p_rptTxt_42833_1" order="602" propName="reportText" val="ddd Section(s) Report Text Change" />
+        <ChildItems name="ch_42833_2" order="603">
+         <Question name="Q_44064" order="604" ID="44064.100004300" title="ddd Question (DI will have no visible text then have visible text)">
+          <ListField name="lf_44064_1" order="605">
+           <List name="lst_44064_2" order="606">
+            <DisplayedItem name="DI_42839" order="607" ID="42839.100004300" title="ddd DI will have no visible text then have visible text" />
+            <ListItem name="LI_42842" order="608" ID="42842.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_42848" order="609" ID="42848.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_44073" order="610" ID="44073.100004300" title="ddd Section Report Text Change (null to report text)">
+        <Property name="p_rptTxt_44073_1" order="611" propName="reportText" val="ddd Section Report Text Change" />
+        <ChildItems name="ch_44073_2" order="612">
+         <Question name="Q_44081" order="613" ID="44081.100004300" title="ddd Question (DI visible to no visible text)">
+          <ListField name="lf_44081_1" order="614">
+           <List name="lst_44081_2" order="615">
+            <DisplayedItem name="DI_44124" order="616" ID="44124.100004300" />
+            <ListItem name="LI_43131" order="617" ID="43131.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_44130" order="618" ID="44130.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_42856" order="619" ID="42856.100004300">
+        <Property name="p_altTxt_42856_1" order="620" propName="altText" val="ddd Section(s) Alt Text Change (alt text modified section (s) pleural)" />
+        <ChildItems name="ch_42856_2" order="621">
+         <Question name="Q_42859" order="622" ID="42859.100004300" title="ddd Question (DI no report text then null text)">
+          <ListField name="lf_42859_1" order="623">
+           <List name="lst_42859_2" order="624">
+            <DisplayedItem name="DI_42865" order="625" ID="42865.100004300" title="ddd Display Item Visible Text Change (DI no report text then null text)">
+             <Property name="p_rptTxt_42865_1" order="626" propName="reportText" val="{no text}" />
+            </DisplayedItem>
+            <ListItem name="LI_42882" order="627" ID="42882.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_44133" order="628" ID="44133.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_44138" order="629" ID="44138.100004300">
+        <Property name="p_altTxt_44138_1" order="630" propName="altText" val="ddd Section Alt Text Added (Visible text removed and added alt textl)" />
+        <ChildItems name="ch_44138_2" order="631">
+         <Question name="Q_42899" order="632" ID="42899.100004300" title="ddd Question (DI no report text to report text)">
+          <ListField name="lf_42899_1" order="633">
+           <List name="lst_42899_2" order="634">
+            <DisplayedItem name="DI_42908" order="635" ID="42908.100004300" title="ddd Display Item Report Text Change (no report text to report text)">
+             <Property name="p_rptTxt_42908_1" order="636" propName="reportText" val="ddd Display Item Report Text Change" />
+            </DisplayedItem>
+            <ListItem name="LI_42922" order="637" ID="42922.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_42925" order="638" ID="42925.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+       <Section name="S_42931" order="639" ID="42931.100004300" title="ddd Section Report Text Change (report text now is null)">
+        <Property name="p_rptTxt_42931_1" order="640" propName="reportText" val="{no text}" />
+        <ChildItems name="ch_42931_2" order="641">
+         <Question name="Q_44139" order="642" ID="44139.100004300" title="ddd Question (DI report text change Section also has had report text now is null)">
+          <ListField name="lf_44139_1" order="643">
+           <List name="lst_44139_2" order="644">
+            <DisplayedItem name="DI_42939" order="645" ID="42939.100004300" title="ddd Display Item(s) Visible Text Change (Visible text modified Item (s) pleural)" />
+            <DisplayedItem name="DI_43057" order="646" ID="43057.100004300" title="ddd Display Item Report Text Change (report text modified Item (s) pleural)">
+             <Property name="p_rptTxt_43057_1" order="647" propName="reportText" val="ddd Display Item(s) Report Text Change" />
+            </DisplayedItem>
+            <ListItem name="LI_44141" order="648" ID="44141.100004300" title="ddd Section and DI Testing (no change) 1" />
+            <ListItem name="LI_42942" order="649" ID="42942.100004300" title="ddd Section and DI Testing (no change) 2" />
+           </List>
+          </ListField>
+         </Question>
+        </ChildItems>
+       </Section>
+      </ChildItems>
+     </Section>
+    </ChildItems>
+   </Section>
+  </ChildItems>
+ </Body>
+ <Footer name="footer" order="650" ID="Footer.Test.Flow.237_4.001.001.UNK_sdcFDF">
+  <Property type="meta" styleClass="copyright" order="651" propName="CopyrightFooter" val="(c) 2020 College of American Pathologists.  All rights reserved.  License required for use." />
+ </Footer>
+</FormDesign>

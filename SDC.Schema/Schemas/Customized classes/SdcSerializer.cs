@@ -36,8 +36,6 @@ using System.Xml;
             return serializer;
         }
     }
-    
-    
     #region Serialize/Deserialize
     /// <summary>
     /// Serializes current T object into an XML string
