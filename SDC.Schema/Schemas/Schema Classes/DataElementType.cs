@@ -40,8 +40,15 @@ public partial class DataElementType : IdentifiedExtensionType
     private string _basedOnURI;
     
     private string _filename;
-    #endregion
-    
+        #endregion
+    /// <summary>
+    /// May hold one  or more of the following:
+    /// ButtonAction (ButtonItemType),
+    /// DisplayedItem (DisplayedType),
+    /// InjectForm (InjectFormType),
+    /// Question (QuestionItemType),
+    /// Section(SectionItemType)
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("ButtonAction", typeof(ButtonItemType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("DisplayedItem", typeof(DisplayedType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("InjectForm", typeof(InjectFormType), Order=0)]

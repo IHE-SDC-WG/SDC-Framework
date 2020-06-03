@@ -59,19 +59,23 @@ public abstract partial class CallFuncBaseType : ExtensionBaseType
     private bool _allowNull;
     
     private string _returnVal;
-    #endregion
-    
-    ///// <summary>
-    ///// CallFuncBaseType class constructor
-    ///// </summary>
-    //public CallFuncBaseType()
-    //{
-    //    this._returnList = false;
-    //    this._listDelimiter = "|";
-    //    this._allowNull = true;
-    //}
-    
-    [System.Xml.Serialization.XmlElementAttribute("FunctionURI", typeof(anyURI_Stype), Order=0)]
+        #endregion
+
+        ///// <summary>
+        ///// CallFuncBaseType class constructor
+        ///// </summary>
+        //public CallFuncBaseType()
+        //{
+        //    this._returnList = false;
+        //    this._listDelimiter = "|";
+        //    this._allowNull = true;
+        //}
+        /// <summary>
+        /// May hold 1 element:
+        ///    FunctionURI (anyURI_Stype)
+        ///    LocalFunctionName (anyURI_Stype)
+        /// </summary>
+        [System.Xml.Serialization.XmlElementAttribute("FunctionURI", typeof(anyURI_Stype), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("LocalFunctionName", typeof(anyURI_Stype), Order=0)]
     [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemElementName")]
     public virtual anyURI_Stype Item
@@ -138,8 +142,10 @@ public abstract partial class CallFuncBaseType : ExtensionBaseType
             }
         }
     }
-    
-    [System.Xml.Serialization.XmlElementAttribute("ListItemParameterRef", typeof(ListItemParameterType), Order=3)]
+        /// <summary>
+        /// May hold elements ParameterRef (ParameterItemType), ListItemParameterRef (ListItemParameterType), or ParameterValue (ParameterValueType)
+        /// </summary>
+        [System.Xml.Serialization.XmlElementAttribute("ListItemParameterRef", typeof(ListItemParameterType), Order=3)]
     [System.Xml.Serialization.XmlElementAttribute("ParameterRef", typeof(ParameterItemType), Order=3)]
     [System.Xml.Serialization.XmlElementAttribute("ParameterValue", typeof(ParameterValueType), Order=3)]
     public virtual List<ExtensionBaseType> Items

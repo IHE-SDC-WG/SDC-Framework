@@ -38,8 +38,13 @@ public partial class ActSendReportType : ExtensionBaseType
     private string _reportInstanceGuid;
     
     private string _reportInstanceVersonGuid;
-    #endregion
-    
+        #endregion
+    /// <summary>
+    /// May hold one or more of:
+    /// Email (EmailAddressType),
+    /// Fax (PhoneNumberType),
+    /// WebService (CallFuncActionType),
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("Email", typeof(EmailAddressType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("Fax", typeof(PhoneNumberType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("WebService", typeof(CallFuncActionType), Order=0)]

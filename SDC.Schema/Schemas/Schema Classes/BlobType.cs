@@ -88,8 +88,12 @@ public partial class BlobType : ExtensionBaseType
             }
         }
     }
-    
-    [System.Xml.Serialization.XmlElementAttribute("BinaryMediaBase64", typeof(base64Binary_Stype), Order=2)]
+        /// <summary>
+        /// May be one of the following:
+        /// BinaryMediaBase64 (base64Binary_Stype),
+        /// BlobURI (anyURI_Stype)
+        /// </summary>
+        [System.Xml.Serialization.XmlElementAttribute("BinaryMediaBase64", typeof(base64Binary_Stype), Order=2)]
     [System.Xml.Serialization.XmlElementAttribute("BlobURI", typeof(anyURI_Stype), Order=2)]
     public virtual BaseType Item
     {

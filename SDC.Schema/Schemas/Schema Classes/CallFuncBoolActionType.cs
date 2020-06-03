@@ -31,16 +31,21 @@ public partial class CallFuncBoolActionType : CallFuncBoolType
     
     #region Private fields
     private ExtensionBaseType[] _items1;
-    
-    private Items1ChoiceType[] _items1ElementName;
-    #endregion
-    
+
+        private Items1ChoiceType[] _items1ElementName;
+        #endregion
+        /// <summary>
+        /// May contain one or more of:
+        /// ConditionalActions (PredActionType),
+        /// Actions (ActionsType),
+        /// Else (PredActionType) ,
+        /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("Actions", typeof(ActionsType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("ConditionalActions", typeof(PredActionType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("Else", typeof(PredActionType), Order=0)]
     [System.Xml.Serialization.XmlChoiceIdentifierAttribute("Items1ElementName")]
     public virtual ExtensionBaseType[] Items1
-    {
+        {
         get
         {
             return this._items1;

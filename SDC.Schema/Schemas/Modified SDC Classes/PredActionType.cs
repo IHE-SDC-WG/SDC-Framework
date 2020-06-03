@@ -41,18 +41,28 @@ public partial class PredActionType : FuncBoolBaseType
     private bool _not;
     
     private PredEvalAttribValuesTypeBoolOp _boolOp;
-    #endregion
-    
-    ///// <summary>
-    ///// PredActionType class constructor
-    ///// </summary>
-    //public PredActionType()
-    //{
-    //    this._not = false;
-    //    this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
-    //}
-    
-    [System.Xml.Serialization.XmlElementAttribute("AttributeEval", typeof(AttributeEvalActionType), Order=0)]
+        #endregion
+
+        ///// <summary>
+        ///// PredActionType class constructor
+        ///// </summary>
+        //public PredActionType()
+        //{
+        //    this._not = false;
+        //    this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
+        //}
+        /// <summary>
+        /// Can hold one or more of the following:
+        ///     AttributeEval (AttributeEvalActionType)
+        ///     CallBoolFunction (CallFuncBoolActionType)
+        ///     Group (PredActionType)
+        ///     MultiSelections (MultiSelectionsActionType)
+        ///     ScriptBoolFunc (ScriptBoolFuncActionType)
+        ///     SelectMatchingListItems (RuleSelectMatchingListItemsType)
+        ///     SelectionSets (SelectionSetsActionType)
+        ///     SelectionTest (SelectionTestActionType) 
+        /// </summary>
+        [System.Xml.Serialization.XmlElementAttribute("AttributeEval", typeof(AttributeEvalActionType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("CallBoolFunction", typeof(CallFuncBoolActionType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("Group", typeof(PredActionType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("MultiSelections", typeof(MultiSelectionsActionType), Order=0)]

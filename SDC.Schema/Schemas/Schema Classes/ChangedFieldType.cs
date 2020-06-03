@@ -27,8 +27,13 @@ public partial class ChangedFieldType : ExtensionBaseType
     
     #region Private fields
     private BaseType _item;
-    #endregion
-    
+        #endregion
+    /// <summary>
+    /// May be one of the following:
+    /// TargetItemID (TargetItemIDType),
+    /// TargetItemName (TargetItemNameType),
+    /// TargetItemXPath (TargetItemXPathType),
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("TargetItemID", typeof(TargetItemIDType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("TargetItemName", typeof(TargetItemNameType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("TargetItemXPath", typeof(TargetItemXPathType), Order=0)]

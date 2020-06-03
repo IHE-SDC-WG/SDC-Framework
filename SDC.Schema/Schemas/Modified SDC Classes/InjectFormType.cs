@@ -62,17 +62,22 @@ public partial class InjectFormType : IdentifiedExtensionType
     private string _instanceGUID;
     
     private string _parentGUID;
-    #endregion
-    
-    ///// <summary>
-    ///// InjectFormType class constructor
-    ///// </summary>
-    //public InjectFormType()
-    //{
-    //    this._repeat = "0";
-    //}
-    
-    [System.Xml.Serialization.XmlElementAttribute("FormDesign", typeof(FormDesignType), Order=0)]
+        #endregion
+
+        ///// <summary>
+        ///// InjectFormType class constructor
+        ///// </summary>
+        //public InjectFormType()
+        //{
+        //    this._repeat = "0";
+        //}
+        /// <summary>
+        /// Available Items are:
+        /// FormDesign (FormDesignType),
+        /// Question (QuestionItemType),
+        /// Section (SectionItemType)
+        /// </summary>
+        [System.Xml.Serialization.XmlElementAttribute("FormDesign", typeof(FormDesignType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("Question", typeof(QuestionItemType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("Section", typeof(SectionItemType), Order=0)]
     public virtual IdentifiedExtensionType Item

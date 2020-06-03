@@ -26,11 +26,32 @@ public partial class ActionsType : ExtensionBaseType
 {
     
     #region Private fields
-    private ExtensionBaseType[] _items;
-    
-    private ItemsChoiceType1[] _itemsElementName;
-    #endregion
-    
+    private ExtensionBaseType[] _items; 
+
+        private ItemsChoiceType1[] _itemsElementName;
+        #endregion
+    /// <summary>
+    /// Can hold one or more of the following:
+    ///    Action (ActActionType)
+    ///    AddCode (ActAddCodeType)
+    ///    CallFunction (CallFuncActionType)
+    ///    ConditionalGroupAction (PredActionType)
+    ///    Inject (ActInjectType)
+    ///    PreviewReport (ActPreviewReportType)
+    ///    RunCode (ScriptCodeAnyType)
+    ///    Save (ActSaveResponsesType)
+    ///    SelectMatchingListItems (RuleSelectMatchingListItemsType)
+    ///    SendMessage111 (ActSendMessageType)
+    ///    SendReport (ActSendReportType)
+    ///    SetAttributeValue (ActSetAttributeType)
+    ///    SetAttributeValueScript (ActSetAttrValueScriptType)
+    ///    SetBoolAttributeValueCode (ActSetBoolAttributeValueCodeType)
+    ///    ShowForm (ActShowFormType)
+    ///    ShowMessage (ActShowMessageType)
+    ///    ShowReport (ActShowReportType)
+    ///    ShowURL (CallFuncActionType)
+    ///    ValidateForm (ActValidateFormType) 
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("Action", typeof(ActActionType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("AddCode", typeof(ActAddCodeType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("CallFunction", typeof(CallFuncActionType), Order=0)]
@@ -51,8 +72,8 @@ public partial class ActionsType : ExtensionBaseType
     [System.Xml.Serialization.XmlElementAttribute("ShowURL", typeof(CallFuncActionType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("ValidateForm", typeof(ActValidateFormType), Order=0)]
     [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemsElementName")]
-    public virtual ExtensionBaseType[] Items
-    {
+    public virtual ExtensionBaseType[] Items 
+        {
         get
         {
             return this._items;

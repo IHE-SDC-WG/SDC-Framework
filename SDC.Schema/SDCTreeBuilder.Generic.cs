@@ -34,7 +34,7 @@ namespace SDC.Schema
         {   }
         #endregion
 
-        #region INew
+        #region INew (ToDo)
         //FormDesignType CreateForm(bool addHeader, bool addFooter, string formID, string lineage, string version, string fullURI);
         //FormDesignType CreateFormFromTemplatePath(string path, string formID, string lineage, string version, string fullURI);
         //FormDesignType CreateFormFromTemplateXML(string xml, string formID, string lineage, string version, string fullURI);
@@ -90,14 +90,6 @@ namespace SDC.Schema
 
         #region ITopNode (empty)
         //default implementations for many methods are included directly in the ITopNode definition file
-        #endregion
-
-        #region IBaseType (TBD)
-
-        #endregion
-
-        #region IParentType (TBD)
-
         #endregion
 
         #region IExtensionBase
@@ -1375,171 +1367,171 @@ namespace SDC.Schema
 
         ActActionType ITreeBuilder.AddActAction(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActActionType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         RuleSelectMatchingListItemsType ITreeBuilder.AddActSelectMatchingListItems(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new RuleSelectMatchingListItemsType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActAddCodeType ITreeBuilder.AddActAddCode(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActAddCodeType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActInjectType ITreeBuilder.AddActInject(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActInjectType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         CallFuncActionType ITreeBuilder.AddActShowURL(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new CallFuncActionType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActSaveResponsesType ITreeBuilder.AddActSaveResponses(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActSaveResponsesType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActSendReportType ITreeBuilder.AddActSendReport(ActionsType at, int insertPosition )
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActSendReportType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActSendMessageType ITreeBuilder.AddActSendMessage(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActSendMessageType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActSetAttributeType ITreeBuilder.AddActSetAttributeValue(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActSetAttributeType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActSetAttrValueScriptType ITreeBuilder.AddActSetAttributeValueScript(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActSetAttrValueScriptType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActSetBoolAttributeValueCodeType ITreeBuilder.AddActSetBoolAttributeValueCode(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActSetBoolAttributeValueCodeType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActShowFormType ITreeBuilder.AddActShowForm(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActShowFormType(at);
             at.Items[insertPosition] = act;
             return act;
         }
          ActShowMessageType ITreeBuilder.AddActShowMessage(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActShowMessageType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActShowReportType ITreeBuilder.AddActShowReport(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActShowReportType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActPreviewReportType ITreeBuilder.AddActPreviewReport(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActPreviewReportType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ActValidateFormType ITreeBuilder.AddActValidateForm(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ActValidateFormType(at);
             at.Items[insertPosition] = act;
             return act;
         }
         ScriptCodeAnyType ITreeBuilder.AddActRunCode(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new ScriptCodeAnyType(at);
             at.Items[insertPosition] = act;
             return act;
         }
-        CallFuncActionType ITreeBuilder.AddActCallFunctionction(ActionsType at, int insertPosition)
+        CallFuncActionType ITreeBuilder.AddActCallFunction(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new CallFuncActionType(at);
             at.Items[insertPosition] = act;
             return act;
         }
-        PredActionType ITreeBuilder.AddActConditionalGroupAction(ActionsType at, int insertPosition)
+        PredActionType ITreeBuilder.AddActConditionalGroup(ActionsType at, int insertPosition)
         {
-            var a = at.Items;
-            if (a == null) a = new ExtensionBaseType[10];
-            if (insertPosition > a.Length - 1) Array.Resize(ref a, a.Length + 10);
+            var items = at.Items;
+            if (items == null) items = new ExtensionBaseType[10];
+            if (insertPosition > items.Length - 1) Array.Resize(ref items, items.Length + 10);
             var act = new PredActionType(at);
             at.Items[insertPosition] = act;
             return act;
@@ -1686,7 +1678,7 @@ namespace SDC.Schema
 
         #endregion
 
-        #region IClone (ToDo)
+        #region CloneSubtree (ToDo)
         BaseType ITreeBuilder.CloneSubtree(BaseType top) 
         { throw new NotImplementedException(); }
         #endregion

@@ -35,7 +35,9 @@ public partial class ButtonItemType : DisplayedType
     #region Private fields
     private List<EventType> _items;
     #endregion
-    
+    /// <summary>
+    /// May contain multiple "OnClick" events:
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("OnClick", Order=0)]
     public virtual List<EventType> Items
     {

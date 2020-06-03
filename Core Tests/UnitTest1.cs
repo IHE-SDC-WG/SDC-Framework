@@ -10,6 +10,7 @@ using System.Data;
 using SDC.Schema;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 //using SDC.Schema;
 
 namespace MSTestsCore
@@ -137,7 +138,12 @@ namespace MSTestsCore
                 QuestionItemType Q1 = (QuestionItemType)DI2.ParentNode.ParentNode;
             myXML = SDCHelpers.XmlReorder(FD.GetXml());
             myXML = SDCHelpers.XmlFormat(myXML);
-            
+            var S1 = Q.AddOnEnter().Actions.AddActInject().Item = new SectionItemType(   //Need to add AddActionsNode to numerous classes via IHasActionsNode
+                parentNode: Q, 
+                id:"myid", 
+                elementName:"", 
+                elementPrefix:"s");
+
             Debug.Print(myXML);
             FD.Clear();
             //var myMP = FD.GetMsgPack();

@@ -27,16 +27,16 @@ public partial class ScriptBoolFuncActionType : ScriptCodeBoolType
     
     #region Private fields
     private ExtensionBaseType[] _items;
-    
-    private ItemsChoiceType[] _itemsElementName;
+
+        private ItemsChoiceType[] _itemsElementName;
     #endregion
     
     [System.Xml.Serialization.XmlElementAttribute("Actions", typeof(ActionsType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("ConditionalActions", typeof(PredActionType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("Else", typeof(PredActionType), Order=0)]
     [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemsElementName")]
-    public virtual ExtensionBaseType[] Items
-    {
+    public virtual ExtensionBaseType[] Items 
+        {
         get
         {
             return this._items;

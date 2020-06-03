@@ -44,16 +44,20 @@ public abstract partial class QuestionItemBaseType : RepeatingType
     private bool _changedData;
     
     private bool _newData;
-    #endregion
-    
-    ///// <summary>
-    ///// QuestionItemBaseType class constructor
-    ///// </summary>
-    //public QuestionItemBaseType()
-    //{
-    //    this._readOnly = false;
+        #endregion
+
+        ///// <summary>
+        ///// QuestionItemBaseType class constructor
+        ///// </summary>
+        //public QuestionItemBaseType()
+        //{
+        //    this._readOnly = false;
     //}
-    
+    /// <summary>
+    /// May hold one of the following:
+    ///     ListField (ListFieldType)
+    ///     ResponseField (ResponseFieldType)
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("ListField", typeof(ListFieldType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("ResponseField", typeof(ResponseFieldType), Order=0)]
     public virtual ExtensionBaseType Item

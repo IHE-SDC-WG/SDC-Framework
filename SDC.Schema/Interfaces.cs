@@ -88,7 +88,6 @@ namespace SDC.Schema
         ListItemType ConvertToLIR(bool testOnly = false);
 
     } //Implemented on ListItem and DisplayedItem
-
     public interface IListField
     {
         ListType List { get; set; }
@@ -130,31 +129,92 @@ namespace SDC.Schema
         public bool Remove();
         public bool Move(ExtensionBaseType ebtTarget = null, int newListIndex = -1);
     }
+    public interface IVal { object Val { get; set; } } //Implemented by data types, which have a strongly-type val attribute.  Not implemented by anyType, XML, or HTML
+    public interface IValNumeric: IVal { decimal ValDec{ get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.
+    public interface IValDateTime: IVal {} //Implemented by DateTime data types, which have a strongly-type val attribute.
+    public interface IValInteger : IVal { long ValLong { get; set; }} //Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
+    public interface IIdentifiers
+    {
+        string GetNewCkey();
+
+    }
+
+
     public interface ICoding
     {    }
-    public interface IEvents
-    { }
 
-    public interface IContacts
+    public interface IContact
     {  }
-    public interface IClone
-    {
-        BaseType CloneSubtree();
-    }
-    public interface IRules
-    {    }
-    public interface IAction    
-    {
-        
-    }
+
     public interface IOrganization
     {
-        
+        OrganizationType AddOganization();
     }
     public interface IPerson
     {
-        
+        PersonType AddPerson();
     }
+    public interface IEventsAndGuards
+    { }
+
+    public interface IRules
+    {    }
+
+    public interface IHasElseNode
+    {
+        PredActionType AddElseNode();
+    }
+    public interface IHasConditionalActionsNode
+    {
+        PredActionType AddConditionalActionsNode();
+    }
+    public interface IHasParameterGroup
+    {
+        ParameterItemType AddParameterRefNode();
+        ListItemParameterType AddListItemParameterRefNode();
+        ParameterValueType AddParameterValueNode();
+
+    }
+    public interface IHasDataType_SType
+    {
+        DataTypes_SType AddDataTypes_SType();
+    }
+    public interface IHasDataType_DEType
+    {
+        DataTypes_DEType AddDataTypes_DEType();
+    }
+
+    public interface IHasActionsNode
+    {
+        ActionsType AddActionsNode();
+    }
+
+    public interface IAction    
+    {
+        public ActActionType AddActAction(int insertPosition = -1);
+        public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1);
+        //public abstract ActSetPropertyType AddSetProperty(ActionsType at);
+        public ActAddCodeType AddActAddCode(int insertPosition = -1);
+        //public abstract ActSetValueType AddSetValue(ActionsType at);
+        public ActInjectType AddActInject(int insertPosition = -1);
+        public CallFuncActionType AddActShowURL(int insertPosition = -1);
+        public ActSaveResponsesType AddActSaveResponses(int insertPosition = -1);
+        public ActSendReportType AddActSendReport(int insertPosition = -1);
+        public ActSendMessageType AddActSendMessage(int insertPosition = -1);
+        public ActSetAttributeType AddActSetAttributeValue(int insertPosition = -1);
+        public ActSetAttrValueScriptType AddActSetAttributeValueScript(int insertPosition = -1);
+        public ActSetBoolAttributeValueCodeType AddActSetBoolAttributeValueCode(int insertPosition = -1);
+        public ActShowFormType AddActShowForm(int insertPosition = -1);
+        public ActShowMessageType AddActShowMessage(int insertPosition = -1);
+        public ActShowReportType AddActShowReport(int insertPosition = -1);
+        public ActPreviewReportType AddActPreviewReport(int insertPosition = -1);
+        public ActValidateFormType AddActValidateForm(int insertPosition = -1);
+        public ScriptCodeAnyType AddActRunCode(int insertPosition = -1);
+        public CallFuncActionType AddActCallFunction(int insertPosition = -1);
+        public PredActionType AddActConditionalGroup(int insertPosition = -1);
+
+    }
+
     public interface INavigate
     {
         BaseType GetParent(BaseType Item);
@@ -165,14 +225,10 @@ namespace SDC.Schema
         BaseType GetPrevious(BaseType Item);
         BaseType GetNext(BaseType Item);
     }
-    public interface IVal { object Val { get; set; } } //Implemented by data types, which have a strongly-type val attribute.  Not implemented by anyType, XML, or HTML
-    public interface IValNumeric: IVal { decimal ValDec{ get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.
-    public interface IValDateTime: IVal {} //Implemented by DateTime data types, which have a strongly-type val attribute.
-    public interface IValInteger : IVal { long ValLong { get; set; }} //Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
-    public interface IIdentifiers
+    public interface IClone
     {
-        string GetNewCkey();
-
+        BaseType CloneSubtree();
     }
+
 
 }

@@ -510,160 +510,6 @@ namespace SDC.Schema
     }
     #endregion
 
-    #region  Actions
-    public partial class ActActionType
-    {
-        protected ActActionType() { }
-        public ActActionType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class RuleSelectMatchingListItemsType
-    {
-        protected RuleSelectMatchingListItemsType() { }
-        public RuleSelectMatchingListItemsType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActAddCodeType
-    {
-        protected ActAddCodeType() { }
-        public ActAddCodeType(ActionsType parentNode) : base(parentNode) { }
-
-    }
-    public partial class ActInjectType : InjectFormType
-    {
-        protected ActInjectType() { }
-        public ActInjectType(ActionsType parentNode) : base(parentNode) { }
-
-    }
-    public partial class ActSaveResponsesType
-    {
-        protected ActSaveResponsesType() { }
-        public ActSaveResponsesType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActSendReportType
-    {
-        protected ActSendReportType() { }
-        public ActSendReportType(ActionsType parentNode) : base(parentNode) { }
-
-        internal List<ExtensionBaseType> Email_Phone_WebSvc_List
-        {
-            get { return this.Items; }
-            set { this.Items = value; }
-        }
-    }
-    public partial class ActSendMessageType
-    {
-        protected ActSendMessageType() { }
-        public ActSendMessageType(ActionsType parentNode) : base(parentNode) { }
-
-        /// <summary>
-        /// List<BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
-        /// </summary>
-        internal List<ExtensionBaseType> Email_Phone_WebSvc_List
-        {
-            get { return this.Items; }
-            set { this.Items = value; }
-        }
-    }
-    public partial class ActSetAttributeType
-    {
-        protected ActSetAttributeType() { }
-        public ActSetAttributeType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActSetAttrValueScriptType
-    {
-        protected ActSetAttrValueScriptType() { }
-        public ActSetAttrValueScriptType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActSetBoolAttributeValueCodeType
-    {
-        protected ActSetBoolAttributeValueCodeType()
-        {
-            this._attributeName = "val";
-        }
-        public ActSetBoolAttributeValueCodeType(ActionsType parentNode) : base(parentNode)
-        {
-            this._attributeName = "val";
-        }
-    }
-    public partial class ScriptCodeBoolType
-    {
-        protected ScriptCodeBoolType()
-        {
-            this._not = false;
-        }
-        public ScriptCodeBoolType(ActionsType parentNode) : base(parentNode)
-        { this._not = false; }
-    }
-    public partial class ActShowFormType
-    {
-        protected ActShowFormType() { }
-        public ActShowFormType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActShowMessageType
-    {
-        protected ActShowMessageType() { }
-        public ActShowMessageType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActShowReportType
-    {
-        protected ActShowReportType() { }
-        public ActShowReportType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActPreviewReportType
-    {
-        protected ActPreviewReportType() { }
-        public ActPreviewReportType(ActionsType parentNode) : base(parentNode) { }
-    }
-    public partial class ActValidateFormType
-    {
-        protected ActValidateFormType() { }
-        public ActValidateFormType(ActionsType parentNode) : base(parentNode)
-        {
-            this._validateDataTypes = false;
-            this._validateRules = false;
-            this._validateCompleteness = false;
-        }
-
-        //!+Replaced in original class: protected ActValidateFormType() { }
-        public ActValidateFormType Fill_ActValidateFormType()
-        { return null; }
-    }
-    public partial class ScriptCodeAnyType
-    {
-        protected ScriptCodeAnyType() {
-            this._dataType = "string";
-        }
-        public ScriptCodeAnyType(ActionsType parentNode) : base(parentNode) {
-            this._dataType = "string";
-        }
-    }
-    public partial class ScriptCodeBaseType
-    {
-        protected ScriptCodeBaseType()
-        {
-            this._returnList = false;
-            this._listDelimiter = "|";
-            this._allowNull = true;
-        }
-
-        public ScriptCodeBaseType(ActionsType parentNode) : base(parentNode)
-        {
-            this._returnList = false;
-            this._listDelimiter = "|";
-            this._allowNull = true;
-        }
-    }
-    public partial class CallFuncActionType
-    {
-        protected CallFuncActionType() { }
-        public CallFuncActionType(ActionsType parentNode) : base(parentNode) { }
-    }
-
-
-
-
-
-
-    #endregion
 
     #region ..Main Types
     public partial class ButtonItemType
@@ -3075,6 +2921,291 @@ namespace SDC.Schema
 
     #endregion
 
+    #region  Actions
+
+    public partial class ActionsType:IAction
+    {
+        protected ActionsType() { }
+        public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { }
+
+        public ActActionType AddActAction(int insertPosition = -1)
+        {
+            return sdcTreeBuilder.AddActAction(this, insertPosition);
+        }
+
+        public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActAddCodeType AddActAddCode(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActInjectType AddActInject(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CallFuncActionType AddActShowURL(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActSaveResponsesType AddActSaveResponses(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActSendReportType AddActSendReport(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActSendMessageType AddActSendMessage(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActSetAttributeType AddActSetAttributeValue(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActSetAttrValueScriptType AddActSetAttributeValueScript(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActSetBoolAttributeValueCodeType AddActSetBoolAttributeValueCode(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActShowFormType AddActShowForm(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActShowMessageType AddActShowMessage(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActShowReportType AddActShowReport(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActPreviewReportType AddActPreviewReport(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActValidateFormType AddActValidateForm(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ScriptCodeAnyType AddActRunCode(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CallFuncActionType AddActCallFunction(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PredActionType AddActConditionalGroup(int insertPosition = -1)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public partial class ActActionType
+    {
+        protected ActActionType() { }
+        public ActActionType(ActionsType parentNode) : base(parentNode) { }
+        [XmlIgnore]
+        public List<ExtensionBaseType> ActAction_Items
+        {
+            get { return Items; }
+            set
+            {
+                if (Items == value)
+                    return;
+                Items = value;
+                OnPropertyChanged(nameof(ActAction_Items), this);
+            }
+        }
+        
+    }
+    public partial class RuleSelectMatchingListItemsType
+    {
+        protected RuleSelectMatchingListItemsType() { }
+        public RuleSelectMatchingListItemsType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActAddCodeType
+    {
+        protected ActAddCodeType() { }
+        public ActAddCodeType(ActionsType parentNode) : base(parentNode) { }
+
+    }
+    public partial class ActInjectType : InjectFormType
+    {
+        protected ActInjectType() { }
+        public ActInjectType(ActionsType parentNode) : base(parentNode) { }
+
+    }
+    public partial class ActSaveResponsesType
+    {
+        protected ActSaveResponsesType() { }
+        public ActSaveResponsesType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActSendReportType
+    {
+        protected ActSendReportType() { }
+        public ActSendReportType(ActionsType parentNode) : base(parentNode) { }
+
+        internal List<ExtensionBaseType> Email_Phone_WebSvc_List
+        {
+            get { return this.Items; }
+            set { this.Items = value; }
+        }
+    }
+    public partial class ActSendMessageType
+    {
+        protected ActSendMessageType() { }
+        public ActSendMessageType(ActionsType parentNode) : base(parentNode) { }
+
+        /// <summary>
+        /// List<BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
+        /// </summary>
+        internal List<ExtensionBaseType> Email_Phone_WebSvc_List
+        {
+            get { return this.Items; }
+            set { this.Items = value; }
+        }
+    }
+    public partial class ActSetAttributeType
+    {
+        protected ActSetAttributeType() { }
+        public ActSetAttributeType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActSetAttrValueScriptType
+    {
+        protected ActSetAttrValueScriptType() { }
+        public ActSetAttrValueScriptType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActSetBoolAttributeValueCodeType
+    {
+        protected ActSetBoolAttributeValueCodeType()
+        {
+            this._attributeName = "val";
+        }
+        public ActSetBoolAttributeValueCodeType(ActionsType parentNode) : base(parentNode)
+        {
+            this._attributeName = "val";
+        }
+    }
+    public partial class ScriptCodeBoolType
+    {
+        protected ScriptCodeBoolType()
+        {
+            this._not = false;
+        }
+        public ScriptCodeBoolType(ActionsType parentNode) : base(parentNode)
+        { this._not = false; }
+    }
+    public partial class ActShowFormType
+    {
+        protected ActShowFormType() { }
+        public ActShowFormType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActShowMessageType
+    {
+        protected ActShowMessageType() { }
+        public ActShowMessageType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActShowReportType
+    {
+        protected ActShowReportType() { }
+        public ActShowReportType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActPreviewReportType
+    {
+        protected ActPreviewReportType() { }
+        public ActPreviewReportType(ActionsType parentNode) : base(parentNode) { }
+    }
+    public partial class ActValidateFormType
+    {
+        protected ActValidateFormType() { }
+        public ActValidateFormType(ActionsType parentNode) : base(parentNode)
+        {
+            this._validateDataTypes = false;
+            this._validateRules = false;
+            this._validateCompleteness = false;
+        }
+
+        public ActValidateFormType Fill_ActValidateFormType()
+        { return null; }
+    }
+
+    public partial class ScriptBoolFuncActionType
+    {
+        protected ScriptBoolFuncActionType() { }
+        public ScriptBoolFuncActionType(ActionsType parentNode) : base(parentNode) { }
+    }
+
+    public partial class ScriptCodeAnyType
+    {
+        protected ScriptCodeAnyType() {
+            this._dataType = "string";
+        }
+        public ScriptCodeAnyType(ActionsType parentNode) : base(parentNode) {
+            this._dataType = "string";
+        }
+    }
+    public partial class ScriptCodeBaseType
+    {
+        protected ScriptCodeBaseType()
+        {
+            this._returnList = false;
+            this._listDelimiter = "|";
+            this._allowNull = true;
+        }
+
+        public ScriptCodeBaseType(ActionsType parentNode) : base(parentNode)
+        {
+            this._returnList = false;
+            this._listDelimiter = "|";
+            this._allowNull = true;
+        }
+    }
+    public partial class CallFuncActionType
+    {
+        protected CallFuncActionType() { }
+        public CallFuncActionType(ActionsType parentNode) : base(parentNode) { }
+    }
+
+
+    public partial class CallFuncBoolActionType
+    {
+        protected CallFuncBoolActionType() { }
+        public CallFuncBoolActionType(ActionsType parentNode) : base(parentNode) { }
+    }
+
+
+
+
+
+
+
+
+
+
+    #endregion
     #region Contacts
 
     public partial class ContactType : IDisplayedTypeMember
@@ -3403,7 +3534,6 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
     }
-
     public partial class FileHashType
     {
         protected FileHashType() { }

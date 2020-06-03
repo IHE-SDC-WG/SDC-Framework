@@ -35,17 +35,27 @@ public partial class PredGuardType : FuncBoolBaseType
     private bool _not;
     
     private PredEvalAttribValuesTypeBoolOp _boolOp;
-    #endregion
-    
-    ///// <summary>
-    ///// PredGuardType class constructor
-    ///// </summary>
-    //public PredGuardType()
-    //{
-    //    this._not = false;
-    //    this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
-    //}
-    
+        #endregion
+
+        ///// <summary>
+        ///// PredGuardType class constructor
+        ///// </summary>
+        //public PredGuardType()
+        //{
+        //    this._not = false;
+        //    this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
+        //}
+    /// <summary>
+    /// Can hold one or more of the following:
+    ///    AttributeEval (AttributeEvalActionType)
+    ///    CallBoolFunction (CallFuncBoolActionType)
+    ///    Group (PredActionType)
+    ///    ItemAlternatives (PredAlternativesType)
+    ///    MultiSelections (MultiSelectionsActionType)
+    ///    ScriptBoolFunc (ScriptBoolFuncActionType)
+    ///    SelectionSets (SelectionSetsActionType)
+    ///    SelectionTest (SelectionTestActionType)
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("AttributeEval", typeof(PredEvalAttribValuesType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("CallBoolFunc", typeof(CallFuncBoolType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("Group", typeof(PredGuardType), Order=0)]

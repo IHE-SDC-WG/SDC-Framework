@@ -33,8 +33,13 @@ public partial class ActActionType : ExtensionBaseType
     private List<ExtensionBaseType> _items;
     
     private string _action;
-    #endregion
-    
+        #endregion
+    /// <summary>
+    /// May hold one or more of the following:
+    /// ListItemParameterRef (ListItemParameterType),
+    /// ParameterRef (ParameterItemType),
+    /// ParameterValue (ParameterValueType),
+    /// </summary>
     [System.Xml.Serialization.XmlElementAttribute("ListItemParameterRef", typeof(ListItemParameterType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("ParameterRef", typeof(ParameterItemType), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("ParameterValue", typeof(ParameterValueType), Order=0)]
