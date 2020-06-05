@@ -535,13 +535,6 @@ namespace SDC.Schema
             ElementPrefix = "Inj";
             SetNames(elementName, elementPrefix);
         }
-        #region IUnderChildItem
-
-        public bool Remove()
-            => sdcTreeBuilder.Remove(this);
-        bool IChildItemsMember.Move<T>(T target, int newListIndex)
-            => sdcTreeBuilder.MoveAsChild(this, target, newListIndex);
-        #endregion
     }
 
     public partial class SectionBaseType
