@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
@@ -513,7 +514,7 @@ namespace SDC.Schema
 
     #region ..Main Types
     public partial class ButtonItemType
-        : IChildItemsMember
+        : IChildItemsMember<ButtonItemType>
     {
         protected ButtonItemType() { }
         public ButtonItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -525,7 +526,7 @@ namespace SDC.Schema
 
     }
 
-    public partial class InjectFormType : IChildItemsMember
+    public partial class InjectFormType : IChildItemsMember<InjectFormType>
     {
         protected InjectFormType() { }
         public InjectFormType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -553,14 +554,17 @@ namespace SDC.Schema
         //{ sdcTreeBuilder.FillSectionBase(this); }
     }
 
-    public partial class SectionItemType : IChildItemsParent, IChildItemsMember
+    public partial class SectionItemType : IChildItemsParent<SectionItemType>, IChildItemsMember<SectionItemType>
     {
         public SectionItemType() { }
         public SectionItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
-        { }
+        {    }
+
+
 
 
         #region IChildItemsParent Implementation
+        private IChildItemsParent<SectionItemType> par => this as IChildItemsParent<SectionItemType>;
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ChildItemsType ChildItemsNode
@@ -570,17 +574,30 @@ namespace SDC.Schema
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
         { //return AddChildItem<SectionItemType, SectionItemType>(this, id, insertPosition); 
-            return sdcTreeBuilder.AddChildSection<SectionItemType>(this, id, insertPosition);
+            return par.AddChildSection(this, id, insertPosition);
+            //return sdcTreeBuilder.AddChildSection<SectionItemType>(this, id, insertPosition);
         }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildQuestion<SectionItemType>(this, qType, id); }
+        {
+            return par.AddChildQuestion(this, qType, id, insertPosition);
+            //return sdcTreeBuilder.AddChildQuestion<SectionItemType>(this, qType, id); 
+        }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildInjectedForm<SectionItemType>(this, id); }
+        {
+            return par.AddChildInjectedForm(this, id, insertPosition);
+            //return sdcTreeBuilder.AddChildInjectedForm<SectionItemType>(this, id); 
+        }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildButtonAction<SectionItemType>(this, id); }
+        {
+            return par.AddChildButtonAction(this, id, insertPosition);
+            //return sdcTreeBuilder.AddChildButtonAction<SectionItemType>(this, id); 
+        }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildDisplayedItem<SectionItemType>(this, id); }
-        public bool HasChildItems() => sdcTreeBuilder.HasChildItems(this);
+        {
+            return par.AddChildDisplayedItem(this, id, insertPosition);
+            //return sdcTreeBuilder.AddChildDisplayedItem<SectionItemType>(this, id); 
+        }
+        public bool HasChildItems() => par.HasChildItems(this); //sdcTreeBuilder.HasChildItems(this);
 
         //public IChildItem AddChildItem(IdentifiedExtensionType childType, string childID = "", int insertPosition = -1)
         //{ return sdcTreeBuilder.AddChildItem<SectionItemType, ButtonItemType>(this, childID, insertPosition); }
@@ -592,7 +609,7 @@ namespace SDC.Schema
 
     #region Question
 
-    public partial class QuestionItemType : IChildItemsParent, IChildItemsMember, IQuestionItem, IQuestionList
+    public partial class QuestionItemType : IChildItemsParent<QuestionItemType>, IChildItemsMember<QuestionItemType>, IQuestionItem, IQuestionList
     {
         protected QuestionItemType() { }  //need public parameterless constructor to support generics
         public QuestionItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -756,7 +773,7 @@ namespace SDC.Schema
 
     }
 
-    public partial class ListItemType : IChildItemsParent, IListItem, IQuestionListMember
+    public partial class ListItemType : IChildItemsParent<ListItemType>, IListItem, IQuestionListMember
     {
         protected ListItemType() { }
         public ListItemType(ListType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -1516,9 +1533,9 @@ namespace SDC.Schema
 
     #region DisplayedType and Members
 
-    public partial class DisplayedType : IDisplayedType, IChildItemsMember, IQuestionListMember
+    public partial class DisplayedType : IDisplayedType, IChildItemsMember<DisplayedType>, IQuestionListMember
     {
-        protected DisplayedType() { }
+        protected DisplayedType() {}
         public DisplayedType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
         {
             this._enabled = true;
@@ -1554,11 +1571,11 @@ namespace SDC.Schema
         { return sdcTreeBuilder.AddDeActivateIf(this); }
         #endregion
 
-        #region IChildItemMember
-        public bool Remove() => sdcTreeBuilder.Remove(this);
-        public bool Move<T>(T target, int newListIndex) where T : DisplayedType, IChildItemsParent
-            => sdcTreeBuilder.MoveAsChild(this, target, newListIndex);
-        #endregion
+        //#region IChildItemMember
+        //public bool Remove() => sdcTreeBuilder.Remove(this);
+        //public bool Move<T>(T target, int newListIndex) where T : DisplayedType, IChildItemsParent
+        //    => sdcTreeBuilder.MoveAsChild(this, target, newListIndex);
+        //#endregion
 
         #region IQuestionListMember
         //Explicit implementaion prevents this interface from being inherited directly by subclasses.

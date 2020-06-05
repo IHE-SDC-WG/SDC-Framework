@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Compile Remove="IArrayHelpers.cs" />
+    <Compile Remove="ITreeBuilder.cs" />
     <Compile Remove="Schemas\Customized classes\DataTypesNumeric_DEType.cs" />
     <Compile Remove="Schemas\Schema Classes\BaseType.cs" />
     <Compile Remove="Schemas\Schema Classes\ObjectChangeTracker.cs" />
@@ -39,6 +40,7 @@
     <Compile Remove="Schemas\Schema Classes\SdcBaseType.cs" />
     <Compile Remove="Schemas\Schema Classes\SdcEntityBase.cs" />
     <Compile Remove="Schemas\Schema Classes\SdcSerializer.cs" />
+    <Compile Remove="SDCTreeBuilder.Generic.cs" />
     <Compile Remove="X_Interfaces.cs" />
   </ItemGroup>
 

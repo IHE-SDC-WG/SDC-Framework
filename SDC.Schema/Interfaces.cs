@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks.Sources;
 using Newtonsoft.Json;
@@ -17,11 +18,12 @@ namespace SDC.Schema
     /// This interface is require to support generic classes that must handle the creation ofthe 
     /// ChildItems element, which holds List of type IdentifiedItemType
     /// </summary>
-    public interface IChildItemsParent: IChildItemsMember   //implemented by items that can have a ChildItems node.
-    {
+    public interface IChildItemsParent<T>:IHelpers, IQuestionBuilder //implemented by items that can have a ChildItems node.
+        where T:BaseType, IChildItemsParent<T>
+    { 
         ChildItemsType ChildItemsNode { get; set; }
-        SectionItemType AddChildSection<T>(T T_Parent, string id, int insertPosition)
-            where T : BaseType, IChildItemsParent
+        SectionItemType AddChildSection(string id, int insertPosition);
+        SectionItemType AddChildSection(T T_Parent, string id, int insertPosition)
         {
             var childItemsList = AddChildItemsNode(T_Parent);
             var sNew = new SectionItemType(childItemsList, id);
@@ -31,8 +33,20 @@ namespace SDC.Schema
 
             return sNew;
         }
-        QuestionItemType AddChildQuestion<T>(T T_Parent, QuestionEnum qType, string id, int insertPosition)
-            where T : BaseType, IChildItemsParent
+        //test of "this" usage - does it apply to teh attacehd class or only the interface members?
+        //not sure if "this as T" will work; if it does work, this interface's methods can be simplified to use this technique.
+        SectionItemType AddChildSection2(string id = "", int insertPosition = -1)
+        {
+            var childItemsList = AddChildItemsNode(this as T); 
+            var sNew = new SectionItemType(childItemsList, id);
+            var count = childItemsList.ChildItemsList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            childItemsList.ChildItemsList.Insert(insertPosition, sNew);
+
+            return sNew;
+        }
+        QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1);
+        internal QuestionItemType AddChildQuestion(T T_Parent, QuestionEnum qType, string id, int insertPosition = -1)
         {
             var childItemsList = AddChildItemsNode(T_Parent);
             var qNew = new QuestionItemType(childItemsList, id);
@@ -67,8 +81,8 @@ namespace SDC.Schema
 
             return qNew;
         }
-        DisplayedType AddChildDisplayedItem<T>(T T_Parent, string id, int insertPosition)
-            where T : BaseType, IChildItemsParent
+        DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
+        internal DisplayedType AddChildDisplayedItem(T T_Parent, string id, int insertPosition = -1)
         {
             var childItemsList = AddChildItemsNode(T_Parent);
             var dNew = new DisplayedType(childItemsList, id);  //!+Test this
@@ -77,9 +91,9 @@ namespace SDC.Schema
             childItemsList.ChildItemsList.Insert(insertPosition, dNew);
             return dNew;
         }
-        ButtonItemType AddChildButtonAction<T>(T T_Parent, string id, int insertPosition)
-            where T : BaseType, IChildItemsParent
-        {
+        ButtonItemType AddChildButtonAction(string id, int insertPosition = -1);
+        internal ButtonItemType AddChildButtonAction(T T_Parent, string id, int insertPosition = -1)
+        { 
             //AddChildItem<SectionItemType, SectionItemType>(T_Parent as SectionItemType, id, insertPosition);
             var childItems = AddChildItemsNode(T_Parent);
             var btnNew = new ButtonItemType(childItems, id);
@@ -90,8 +104,8 @@ namespace SDC.Schema
             // TODO: Add TreeBuilder.AddButtonActionTypeItems(btnNew);
             return btnNew;
         }
-        InjectFormType AddChildInjectedForm<T>(T T_Parent, string id, int insertPosition)
-            where T : BaseType, IChildItemsParent
+        InjectFormType AddChildInjectedForm(string id, int insertPosition = -1);
+        internal InjectFormType AddChildInjectedForm(T T_Parent, string id, int insertPosition = -1)
         {
             var childItems = AddChildItemsNode(T_Parent);
             var injForm = new InjectFormType(childItems, id);
@@ -101,7 +115,8 @@ namespace SDC.Schema
 
             return injForm;
         }
-        bool HasChildItems(IChildItemsParent parent)
+        bool HasChildItems();
+        internal bool HasChildItems(IChildItemsParent<T> parent)
         {
             {
                 if (parent?.ChildItemsNode?.ChildItemsList != null)
@@ -112,20 +127,7 @@ namespace SDC.Schema
             }
             return false;
         }
-
-
-        //Remove all child nodes 
-
-
-        //QR AddChildQR(string id = "", int insertPosition = -1);
-        //QS AddChildQS(string id = "", int insertPosition = -1);
-        //QM AddChildQM(string id = "", int insertPosition = -1);
-        //QL AddChildQL(string id = "", int insertPosition = -1);
-
-    }
-    public interface IChildItemsMember : IHelpers, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
-    {
-        protected virtual ChildItemsType AddChildItemsNode<T>(T T_Parent) where T : BaseType, IChildItemsParent //, new()
+        internal ChildItemsType AddChildItemsNode(T T_Parent)
         {
             ChildItemsType childItems = null;  //this class contains an "Items" list
             if (T_Parent == null)
@@ -144,40 +146,54 @@ namespace SDC.Schema
 
             return childItems;
         }
-        bool Remove<T>(T source)
-            where T : notnull, IdentifiedExtensionType, IChildItemsMember
+
+        //Remove all child nodes 
+
+
+        //QR AddChildQR(string id = "", int insertPosition = -1);
+        //QS AddChildQS(string id = "", int insertPosition = -1);
+        //QM AddChildQM(string id = "", int insertPosition = -1);
+        //QL AddChildQL(string id = "", int insertPosition = -1);
+
+    }
+
+    public interface IChildItemsMember<T> : IHelpers, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
+            where T : IdentifiedExtensionType, IChildItemsMember<T>
+    {
+        bool Remove(T source)
         {
             var ci = ((ChildItemsType)source.ParentNode).Items;
             return ci.Remove(source);
         }
-        bool IsMoveAllowedToChild<S, T>(S source, T target, out string error)
-            where S : notnull, IdentifiedExtensionType
-            where T : notnull, IdentifiedExtensionType
+        bool IsMoveAllowedToChild<U>(U Utarget, out string error)
+            where U : notnull, IdentifiedExtensionType
+            //where T : notnull, IdentifiedExtensionType
         {
+            T Tsource = this as T;  
             var errorSource = "";
             var errorTarget = "";
             error = "";
             bool sourceOK = false;
             bool targetOK = false;
 
-            if (source is null) { error = "source is null"; return false; }
-            if (target is null) { error = "target is null"; return false; }
-            if (target is ButtonItemType) { error = "ButtonItemType is not allowed as a target"; return false; }
-            if (target is InjectFormType) { error = "InjectFormType is not allowed as a target"; return false; }
-            if (((ITreeBuilder)this).IsDisplayedItem(target)) { error = "DisplayedItem is not allowed as a target"; return false; }
+            if (Tsource is null) { error = "source is null"; return false; }
+            if (Utarget is null) { error = "target is null"; return false; }
+            if (Utarget is ButtonItemType) { error = "ButtonItemType is not allowed as a target"; return false; }
+            if (Utarget is InjectFormType) { error = "InjectFormType is not allowed as a target"; return false; }
+            if (Utarget is DisplayedType) { error = "DisplayedItem is not allowed as a target"; return false; }
 
-            if (source is ListItemType && !(target is QuestionItemType) && !(target is ListItemType)) { error = "A ListItem can only be moved into a Question List"; return false; };
+            if (Tsource is ListItemType && !(Utarget is QuestionItemType) && !(Utarget is ListItemType)) { error = "A ListItem can only be moved into a Question List"; return false; };
 
             //special case to allow LI to drop on a Q and be added to the Q's List, rather than under ChildItem (which would be illegal)
-            if (source is ListItemType &&
-                target is QuestionItemType &&
-                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionSingle) &&
-                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionMultiple))
+            if (Tsource is ListItemType &&
+                Utarget is QuestionItemType &&
+                !((Utarget as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionSingle) &&
+                !((Utarget as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionMultiple))
             { error = "A Question target must be a QuestionSingle or QuestionMultiple"; return false; }
 
 
-            if (source is DisplayedType || source is InjectFormType) sourceOK = true;
-            if (target is QuestionItemType || target is SectionItemType || target is ListItemType) targetOK = true;
+            if (Tsource is DisplayedType || Tsource is InjectFormType) sourceOK = true;
+            if (Utarget is QuestionItemType || Utarget is SectionItemType || Utarget is ListItemType) targetOK = true;
 
             if (!sourceOK || !targetOK)
             {
@@ -192,7 +208,7 @@ namespace SDC.Schema
         }
         bool MoveAsChild<S, T>(S source, T target, int newListIndex)
             where S : notnull, IdentifiedExtensionType    //, IChildItemMember
-            where T : DisplayedType, IChildItemsParent
+            where T : DisplayedType, IChildItemsParent<T>
         {
             if (source is null) return false;
             if (source.ParentNode is null) return false;
@@ -249,16 +265,16 @@ namespace SDC.Schema
                         }
                         else //use the ChildItems node instead as the targetList
                         {
-                            AddChildItemsNode(q);
+                            (q as IChildItemsParent<QuestionItemType>).AddChildItemsNode(q);
                             targetList = q.ChildItemsNode.Items.ToList<BaseType>();
                         }
                         break;
                     case SectionItemType s:
-                        AddChildItemsNode(s);
+                        (s as IChildItemsParent<SectionItemType>).AddChildItemsNode(s);
                         targetList = s.ChildItemsNode.Items.ToList<BaseType>();
                         break;
                     case ListItemType l:
-                        AddChildItemsNode(l);
+                        (l as IChildItemsParent<ListItemType>).AddChildItemsNode(l);
                         targetList = l.ChildItemsNode.Items.ToList<BaseType>();
                         break;
                     default:
