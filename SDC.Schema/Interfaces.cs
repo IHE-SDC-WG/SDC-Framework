@@ -12,6 +12,80 @@ using Newtonsoft.Json;
 //using SDC;
 namespace SDC.Schema
 {
+    public interface INew //TODO:
+    {
+        //FormDesignType CreateForm(bool addHeader, bool addFooter, string formID, string lineage, string version, string fullURI);
+        //FormDesignType CreateFormFromTemplatePath(string path, string formID, string lineage, string version, string fullURI);
+        //FormDesignType CreateFormFromTemplateXML(string xml, string formID, string lineage, string version, string fullURI);
+        //bool RemoveFormFromPackage(RetrieveFormPackageType pkg, FormDesignType form);
+    }
+    public interface IPackage: ITopNode //TODO:
+    { }
+    public interface IDataElement : ITopNode //TODO:
+    { }
+    public interface IDemogForm : ITopNode //TODO:
+    { }
+    public interface IMap : ITopNode //TODO:
+    { }
+    public interface IFormDesign : ITopNode //TODO:
+    {
+
+        SectionItemType AddHeader();
+        SectionItemType AddBody();
+        SectionItemType AddFooter();
+        bool RemoveHeader();
+        bool RemoveFooter();
+
+
+        //Default Implementations
+        internal SectionItemType AddHeaderI()
+        {
+            var fd = (this as FormDesignType);
+            if (fd.Header == null)
+            {
+                fd.Header = new SectionItemType(fd, fd.ID + "_Header");  //Set a default ID, in case the database template does not have a body
+                fd.Header.name = "Header";
+            }
+            return fd.Header;
+        }
+        internal SectionItemType AddBodyI()
+        {
+            var fd = (this as FormDesignType);
+            if (fd.Body == null)
+            {
+                fd.Body = new SectionItemType(fd, fd.ID + "_Body");  //Set a default ID, in case the database template does not have a body
+                fd.Body.name = "Body";
+            }
+            return fd.Body;
+        }
+        internal SectionItemType AddFooterI()
+        {
+            var fd = (this as FormDesignType);
+            if (fd.Footer == null)
+            {
+                fd.Footer = new SectionItemType(fd, fd.ID + "_Footer");  //Set a default ID, in case the database template does not have a body
+                fd.Footer.name = "Footer";
+            }
+            return fd.Footer;
+        }
+        internal bool RemoveHeaderI()
+        { 
+            (this as FormDesignType).Header = null;
+            return true;
+        }
+        internal bool RemoveFooterI()
+        {
+            (this as FormDesignType).Footer = null;
+            return true;
+        }
+    }
+
+
+
+
+
+
+
     /// <summary>
     /// This interface is applied to the partial classes that can have a ChildItems element.
     /// These are Section, Question and ListItem.  
@@ -23,9 +97,9 @@ namespace SDC.Schema
     { 
         ChildItemsType ChildItemsNode { get; set; }
         SectionItemType AddChildSection(string id, int insertPosition);
-        SectionItemType AddChildSection(T T_Parent, string id, int insertPosition)
+        SectionItemType AddChildSectionI(T T_Parent, string id, int insertPosition)
         {
-            var childItemsList = AddChildItemsNode(T_Parent);
+            var childItemsList = AddChildItemsNodeI(T_Parent);
             var sNew = new SectionItemType(childItemsList, id);
             var count = childItemsList.ChildItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
@@ -37,7 +111,7 @@ namespace SDC.Schema
         //not sure if "this as T" will work; if it does work, this interface's methods can be simplified to use this technique.
         SectionItemType AddChildSection2(string id = "", int insertPosition = -1)
         {
-            var childItemsList = AddChildItemsNode(this as T); 
+            var childItemsList = AddChildItemsNodeI(this as T); 
             var sNew = new SectionItemType(childItemsList, id);
             var count = childItemsList.ChildItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
@@ -46,9 +120,9 @@ namespace SDC.Schema
             return sNew;
         }
         QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1);
-        internal QuestionItemType AddChildQuestion(T T_Parent, QuestionEnum qType, string id, int insertPosition = -1)
+        internal QuestionItemType AddChildQuestionI(T T_Parent, QuestionEnum qType, string id, int insertPosition = -1)
         {
-            var childItemsList = AddChildItemsNode(T_Parent);
+            var childItemsList = AddChildItemsNodeI(T_Parent);
             var qNew = new QuestionItemType(childItemsList, id);
             ListFieldType lf;
             var count = childItemsList.ChildItemsList.Count;
@@ -82,9 +156,9 @@ namespace SDC.Schema
             return qNew;
         }
         DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
-        internal DisplayedType AddChildDisplayedItem(T T_Parent, string id, int insertPosition = -1)
+        internal DisplayedType AddChildDisplayedItemI(T T_Parent, string id, int insertPosition = -1)
         {
-            var childItemsList = AddChildItemsNode(T_Parent);
+            var childItemsList = AddChildItemsNodeI(T_Parent);
             var dNew = new DisplayedType(childItemsList, id);  //!+Test this
             var count = childItemsList.ChildItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
@@ -92,10 +166,10 @@ namespace SDC.Schema
             return dNew;
         }
         ButtonItemType AddChildButtonAction(string id, int insertPosition = -1);
-        internal ButtonItemType AddChildButtonAction(T T_Parent, string id, int insertPosition = -1)
+        internal ButtonItemType AddChildButtonActionI(T T_Parent, string id, int insertPosition = -1)
         { 
             //AddChildItem<SectionItemType, SectionItemType>(T_Parent as SectionItemType, id, insertPosition);
-            var childItems = AddChildItemsNode(T_Parent);
+            var childItems = AddChildItemsNodeI(T_Parent);
             var btnNew = new ButtonItemType(childItems, id);
             var count = childItems.ChildItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
@@ -105,9 +179,9 @@ namespace SDC.Schema
             return btnNew;
         }
         InjectFormType AddChildInjectedForm(string id, int insertPosition = -1);
-        internal InjectFormType AddChildInjectedForm(T T_Parent, string id, int insertPosition = -1)
+        internal InjectFormType AddChildInjectedFormI(T T_Parent, string id, int insertPosition = -1)
         {
-            var childItems = AddChildItemsNode(T_Parent);
+            var childItems = AddChildItemsNodeI(T_Parent);
             var injForm = new InjectFormType(childItems, id);
             var count = childItems.ChildItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
@@ -116,7 +190,7 @@ namespace SDC.Schema
             return injForm;
         }
         bool HasChildItems();
-        internal bool HasChildItems(IChildItemsParent<T> parent)
+        internal bool HasChildItemsI(IChildItemsParent<T> parent)
         {
             {
                 if (parent?.ChildItemsNode?.ChildItemsList != null)
@@ -127,7 +201,7 @@ namespace SDC.Schema
             }
             return false;
         }
-        internal ChildItemsType AddChildItemsNode(T T_Parent)
+        internal ChildItemsType AddChildItemsNodeI(T T_Parent)
         {
             ChildItemsType childItems = null;  //this class contains an "Items" list
             if (T_Parent == null)
@@ -156,7 +230,6 @@ namespace SDC.Schema
         //QL AddChildQL(string id = "", int insertPosition = -1);
 
     }
-
     public interface IChildItemsMember<T> : IHelpers, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
             where T : IdentifiedExtensionType, IChildItemsMember<T>
     {
@@ -265,16 +338,16 @@ namespace SDC.Schema
                         }
                         else //use the ChildItems node instead as the targetList
                         {
-                            (q as IChildItemsParent<QuestionItemType>).AddChildItemsNode(q);
+                            (q as IChildItemsParent<QuestionItemType>).AddChildItemsNodeI(q);
                             targetList = q.ChildItemsNode.Items.ToList<BaseType>();
                         }
                         break;
                     case SectionItemType s:
-                        (s as IChildItemsParent<SectionItemType>).AddChildItemsNode(s);
+                        (s as IChildItemsParent<SectionItemType>).AddChildItemsNodeI(s);
                         targetList = s.ChildItemsNode.Items.ToList<BaseType>();
                         break;
                     case ListItemType l:
-                        (l as IChildItemsParent<ListItemType>).AddChildItemsNode(l);
+                        (l as IChildItemsParent<ListItemType>).AddChildItemsNodeI(l);
                         targetList = l.ChildItemsNode.Items.ToList<BaseType>();
                         break;
                     default:
@@ -450,14 +523,88 @@ namespace SDC.Schema
     }
 
     public interface IExtensionBase
-    { 
+    {
         bool HasExtensionBaseMembers(); //Has Extension, Property or Comment sub-elements
         CommentType AddComment(int insertPosition = -1);
         ExtensionType AddExtension(int insertPosition = -1);
         PropertyType AddProperty(int insertPosition = -1);
+
     }
-    public interface IExtensionBaseTypeMember : IMoveRemove //Used on Extension, Property, Comment
-    { }
+    /// <summary>
+    /// Move and Remove methods for Comment, Extension and Property
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IMoveRemove
+    {
+        bool Remove();
+        bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1);
+    }
+
+    public interface IExtensionBaseTypeMember: IMoveRemove, IHelpers //Used on Extension, Property, Comment
+    {
+        new bool Remove()
+        {
+            switch (this)
+            {
+                case PropertyType prop:
+                    var p = GetListParent(prop);
+                    if (IsList(p)) p.Remove(prop); return true;
+                case CommentType cmt:
+                    var pct = GetListParent(cmt);
+                    if (IsList(pct)) pct.Remove(cmt); return true;
+                case ExtensionType et:
+                    var pet = GetListParent(et);
+                    if (IsList(pet)) pet.Remove(et); return true;
+                default: return false;
+            }
+        }
+            new bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => throw new NotImplementedException();
+        bool Move(ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
+        {
+            if (extension == null) return false;
+
+            var ebt = (ExtensionBaseType)(extension.ParentNode);  //get the list that comment is attached to          
+            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
+            bool b = ebt.Extension.Remove(extension);
+            if (b) ebtTarget.Extension.Insert(newListIndex, extension);
+            var count = ebtTarget.Extension.Count;
+            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
+            if (ebtTarget.Extension[newListIndex] == extension) return true; //success
+            return false;
+        }
+        bool Move(CommentType comment, ExtensionBaseType ebtTarget, int newListIndex)
+        {
+            if (comment == null) return false;
+
+            var ebt = (ExtensionBaseType)(comment.ParentNode);  //get the list that comment is attached to          
+            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
+            bool b = ebt.Comment.Remove(comment);
+            var count = ebt.Comment.Count;
+            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
+            if (b) ebtTarget.Comment.Insert(newListIndex, comment);
+            if (ebtTarget.Comment[newListIndex] == comment) return true; //success
+            return false;
+        }
+        bool Move(PropertyType property, ExtensionBaseType ebtTarget, int newListIndex)
+        {
+            if (property == null) return false;
+
+            var ebt = (ExtensionBaseType)(property.ParentNode);  //get the list that comment is attached to          
+            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
+            bool b = ebt.Property.Remove(property);
+            var count = ebt.Property.Count;
+            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
+            if (b) ebtTarget.Property.Insert(newListIndex, property);
+            if (ebtTarget.Property[newListIndex] == property) return true; //success
+            return false;
+        }
+
+
+
+
+
+
+    }
     public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
     //public interface IDisplayedItem
     //{
@@ -469,11 +616,6 @@ namespace SDC.Schema
         void RemoveUnits(ResponseFieldType rfParent) => rfParent.ResponseUnits = null;
         BaseType DataTypeObject { get; set; }
         RichTextType AddTextAfterResponse { get; set; }
-    }
-    public interface IMoveRemove
-    {
-        public bool Remove();
-        public bool Move(ExtensionBaseType ebtTarget = null, int newListIndex = -1);
     }
     public interface IVal { object Val { get; set; } } //Implemented by data types, which have a strongly-type val attribute.  Not implemented by anyType, XML, or HTML
     public interface IValNumeric: IVal { decimal ValDec{ get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.

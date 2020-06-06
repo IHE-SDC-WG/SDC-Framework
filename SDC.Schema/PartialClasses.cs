@@ -17,21 +17,16 @@ namespace SDC.Schema
 {
 
     #region   ..Top SDC Elements
-    public partial class FormDesignType : ITopNode
+    public partial class FormDesignType : ITopNode, IFormDesign
     {
         #region ctor
 
         protected FormDesignType() : base()
         { }
-        public FormDesignType(ITreeBuilder treeBuilder, BaseType parentNode = null, string id = "")
+        public FormDesignType(BaseType parentNode = null, string id = "")
         : base(parentNode, id)
         //TODO: add ID, lineage, baseURI, version, etc to this constructor? (only ID is required)
-        {
-            sdcTreeBuilder = treeBuilder;
-            //IdentExtNodes = new Dictionary<String, IdentifiedExtensionType>();  //reset this static IdentExtNodes Dictionary of IET IDs for the current form
-
-            //if (fillData) FillBaseTypeItem();  //this must be run after sdcTreeBuilder is assigned, and all sdcTreeBuilder data objects are initialized.
-        }
+        { }
         public void Clear()
         {
             //reset and clean up some items that might hold references to this object, keeping it alive
@@ -39,7 +34,7 @@ namespace SDC.Schema
             Nodes = null;
             ParentNodes = null;
             //IdentExtNodes = null;
-            sdcTreeBuilder = null;
+            //sdcTreeBuilder = null;
             ((ITopNode)this).MaxObjectID = 0;
             Body = null;
             Header = null;
@@ -52,11 +47,9 @@ namespace SDC.Schema
 
         }
         ~FormDesignType()
-        {
-        }
+        { }
         #endregion
 
-        #region Add Methods
         public bool EditBegin()
         {
             if (BaseType.TopNodeTemp == null)
@@ -66,40 +59,29 @@ namespace SDC.Schema
             }
             else return false;
         }
-
-    public void EditFinish()
+        public void EditFinish()
         {
             BaseType.ClearTopNode();
         }
-
+        #region IFormDesign
         public SectionItemType AddBody()
-        {
-            return sdcTreeBuilder.AddBody(this);
-        }
+        { return (this as IFormDesign).AddBodyI(); }
         public SectionItemType AddFooter()
-        {
-            return sdcTreeBuilder.AddFooter(this);
-        }
-
+        { return (this as IFormDesign).AddFooterI(); }
         public SectionItemType AddHeader()
-        {
-            return sdcTreeBuilder.AddHeader(this);
-        }
+        { return (this as IFormDesign).AddHeaderI(); }
+        public bool RemoveFooter()
+        { (this as IFormDesign).RemoveFooterI(); return true; }
+        public bool RemoveHeader()
+        { (this as IFormDesign).RemoveHeaderI(); return true; }
         public RulesType AddRules()
-        {
-            //TODO: AddRules
-            //var r = new RulesType();
-            //this.Rules = r;
-            //return r;
-            return null;
-        }
+        { throw new NotImplementedException(); }
         #endregion
 
         #region ITopNode 
 
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-
         public int GetMaxObjectID { get => ((ITopNode)this).MaxObjectID; }  //save the highest object counter value for the current FormDesign tree
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
@@ -192,8 +174,11 @@ namespace SDC.Schema
     {
         protected DemogFormDesignType() : base()
         { }
-        public DemogFormDesignType(ITreeBuilder treeBuilder, BaseType parentNode = null, string id = "")
-            : base(treeBuilder, parentNode, id)
+        //public DemogFormDesignType(ITreeBuilder treeBuilder, BaseType parentNode = null, string id = "")
+        //    : base(treeBuilder, parentNode, id)
+        //{ }
+        public DemogFormDesignType(BaseType parentNode = null, string id = "")
+            : base( parentNode, id)
         { }
 
         #region ITopNode
@@ -564,7 +549,7 @@ namespace SDC.Schema
 
 
         #region IChildItemsParent Implementation
-        private IChildItemsParent<SectionItemType> par => this as IChildItemsParent<SectionItemType>;
+        private IChildItemsParent<SectionItemType> ci => this as IChildItemsParent<SectionItemType>;
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ChildItemsType ChildItemsNode
@@ -574,30 +559,30 @@ namespace SDC.Schema
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
         { //return AddChildItem<SectionItemType, SectionItemType>(this, id, insertPosition); 
-            return par.AddChildSection(this, id, insertPosition);
+            return ci.AddChildSection2(id, insertPosition); //test of using "this" in the interface
             //return sdcTreeBuilder.AddChildSection<SectionItemType>(this, id, insertPosition);
         }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
         {
-            return par.AddChildQuestion(this, qType, id, insertPosition);
+            return ci.AddChildQuestionI(this, qType, id, insertPosition);
             //return sdcTreeBuilder.AddChildQuestion<SectionItemType>(this, qType, id); 
         }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
         {
-            return par.AddChildInjectedForm(this, id, insertPosition);
+            return ci.AddChildInjectedFormI(this, id, insertPosition);
             //return sdcTreeBuilder.AddChildInjectedForm<SectionItemType>(this, id); 
         }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
         {
-            return par.AddChildButtonAction(this, id, insertPosition);
+            return ci.AddChildButtonActionI(this, id, insertPosition);
             //return sdcTreeBuilder.AddChildButtonAction<SectionItemType>(this, id); 
         }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
         {
-            return par.AddChildDisplayedItem(this, id, insertPosition);
+            return ci.AddChildDisplayedItemI(this, id, insertPosition);
             //return sdcTreeBuilder.AddChildDisplayedItem<SectionItemType>(this, id); 
         }
-        public bool HasChildItems() => par.HasChildItems(this); //sdcTreeBuilder.HasChildItems(this);
+        public bool HasChildItems() => ci.HasChildItemsI(this); //sdcTreeBuilder.HasChildItems(this);
 
         //public IChildItem AddChildItem(IdentifiedExtensionType childType, string childID = "", int insertPosition = -1)
         //{ return sdcTreeBuilder.AddChildItem<SectionItemType, ButtonItemType>(this, childID, insertPosition); }
@@ -622,6 +607,7 @@ namespace SDC.Schema
         }
 
         #region IChildItemsParent
+        IChildItemsParent<QuestionItemType> ci{get=> this as IChildItemsParent<QuestionItemType>;}
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ChildItemsType ChildItemsNode
@@ -630,16 +616,16 @@ namespace SDC.Schema
             set { this.Item1 = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildSection<QuestionItemType>(this, id, insertPosition); }
+        { return ci.AddChildSection(id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildQuestion<QuestionItemType>(this, qType, id, insertPosition); }
+        { return ci.AddChildQuestionI(this, qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildInjectedForm<QuestionItemType>(this, id, insertPosition); }
+        { return ci.AddChildInjectedFormI(this, id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildButtonAction<QuestionItemType>(this, id, insertPosition); }
+        { return ci.AddChildButtonActionI(this, id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildDisplayedItem<QuestionItemType>(this, id, insertPosition); }
-        public bool HasChildItems() => sdcTreeBuilder.HasChildItems(this);
+        { return ci.AddChildDisplayedItemI(this, id, insertPosition); }
+        public bool HasChildItems() => ci.HasChildItems();
         #endregion
 
         #region IQuestionItem
@@ -797,23 +783,27 @@ namespace SDC.Schema
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
+        IChildItemsParent<ListItemType> ci { get => this as IChildItemsParent<ListItemType>; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
         public ChildItemsType ChildItemsNode
         {
             get { return this.Item; }
             set { this.Item = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildSection(this, id, insertPosition); }
+        { return ci.AddChildSection(id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildQuestion(this, qType, id, insertPosition); }
+        { return ci.AddChildQuestionI(this, qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildInjectedForm(this, id, insertPosition); }
+        { return ci.AddChildInjectedFormI(this, id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildButtonAction(this, id, insertPosition); }
+        { return ci.AddChildButtonActionI(this, id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return sdcTreeBuilder.AddChildDisplayedItem(this, id, insertPosition); }
-        public bool HasChildItems() => sdcTreeBuilder.HasChildItems(this);
+        { return ci.AddChildDisplayedItemI(this, id, insertPosition); }
+        public bool HasChildItems() => ci.HasChildItems();
         #endregion
+
 
         #region IQuestionListMember
         //hide inherited with "new" IQuestionListMember from DisplayedType
@@ -910,11 +900,12 @@ namespace SDC.Schema
 
         #region  Local Members
 
-        /// <summary>
-        /// sdcTreeBuilder is an object created and held by the top level FormDesign node, 
-        /// but referenced throughout the FormDesign object tree through the BaseType class
-        /// </summary>
-        protected ITreeBuilder sdcTreeBuilder; //TODO: convert to static field
+        ///// <summary>
+        ///// sdcTreeBuilder is an object created and held by the top level FormDesign node, 
+        ///// but referenced throughout the FormDesign object tree through the BaseType class
+        ///// </summary>
+        //protected ITreeBuilder sdcTreeBuilder; //TODO: convert to static field
+
         private string _elementName = "";
         private string _elementPrefix = "";
         private SdcTopNodeTypesEnum sdcTopType; //Enum that stores the type of the top level node in the node tree
@@ -1218,13 +1209,13 @@ namespace SDC.Schema
             {
                 TopNodeTemp = (ITopNode)this;
                 sdcTopType = SDCHelpers.ConvertStringToEnum<SdcTopNodeTypesEnum>(GetType().Name);
-                if (sdcTreeBuilder == null) sdcTreeBuilder = new SDCTreeBuilder();  //we create SDCTreeBuilder only in the top node
+                //if (sdcTreeBuilder == null) sdcTreeBuilder = new SDCTreeBuilder();  //we create SDCTreeBuilder only in the top node
             }
             else if (TopNodeTemp != null)
             {
                 //We can check to see if a nested ITopNode type (e.g., another FormDesignType) has been created at this point.
                 //It's not clear that we need to handle this any differently
-                sdcTreeBuilder = ((BaseType)TopNodeTemp).sdcTreeBuilder;
+                //sdcTreeBuilder = ((BaseType)TopNodeTemp).sdcTreeBuilder;
             }
             else throw new InvalidOperationException("TopObjectTemp was null and the top object did not implement ITopNode.");
             TopNode = TopNodeTemp;
@@ -1380,16 +1371,18 @@ namespace SDC.Schema
     #region IExtensionBaseTypeMember
     public partial class ExtensionType : IExtensionBaseTypeMember
     {
+        private IExtensionBaseTypeMember Iebtm { get => (IExtensionBaseTypeMember)this; }
         protected ExtensionType() { }
         public ExtensionType(BaseType parentNode) : base(parentNode) { }
         #region IExtensionBaseTypeMember
-        public bool Remove() => sdcTreeBuilder.Remove(this);
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => sdcTreeBuilder.Move(this, ebtTarget, newListIndex);
+        public bool Remove() => Iebtm.Remove();
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.Move(this, ebtTarget, newListIndex);
         #endregion
 
     }
     public partial class PropertyType : IExtensionBaseTypeMember
     {
+        private IExtensionBaseTypeMember Iebtm { get => (IExtensionBaseTypeMember)this; }
         protected PropertyType() { }
         public PropertyType(ExtensionBaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
@@ -1406,13 +1399,14 @@ namespace SDC.Schema
         }
 
         #region IExtensionBaseTypeMember
-        public bool Remove() =>
-            sdcTreeBuilder.Remove(this);
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => sdcTreeBuilder.Move(this, ebtTarget, newListIndex);
+        public bool Remove() => Iebtm.Remove();
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.Move(this, ebtTarget, newListIndex);
         #endregion
+
     }
     public partial class CommentType : IExtensionBaseTypeMember
     {
+        private IExtensionBaseTypeMember Iebtm { get => (IExtensionBaseTypeMember)this; }
         protected CommentType() { }
         public CommentType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
@@ -1421,9 +1415,10 @@ namespace SDC.Schema
         }
 
         #region IExtensionBaseTypeMember
-        public bool Remove() => sdcTreeBuilder.Remove(this);
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => sdcTreeBuilder.Move(this, ebtTarget, newListIndex);
+        public bool Remove() => Iebtm.Remove();
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.Move(this, ebtTarget, newListIndex);
         #endregion
+
     }
     #endregion
 

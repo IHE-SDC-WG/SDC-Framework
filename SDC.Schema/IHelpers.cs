@@ -52,11 +52,12 @@ namespace SDC.Schema
             return -1; //object was not found in list
         }
         protected int GetIndex(BaseType item) { throw new NotImplementedException(); }
-        protected List<BaseType> GetList(BaseType item)
+        protected List<BaseType> GetBaseTypeListParent(BaseType item)
         {   //get the list object that points to the item node
             //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
             //Work out how to return a list of the exact type <T>.
 
+            //TODO: trap errors here: loook for null parent...
             var pn = item.ParentNode;
             List<BaseType> list;
 
@@ -122,6 +123,78 @@ namespace SDC.Schema
 
             return null;
         }
+
+        protected List<T> GetListParent<T>(T item)
+            where T:BaseType
+        {   //get the list object that points to the item node
+            //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
+            //Will not work on named events either
+            //Work out how to return a list of the exact type <T>.
+
+            //TODO: trap errors here: loook for null parent...
+            var pn = item.ParentNode;
+            List<T> list;
+
+            switch (item)
+            {
+                case ExtensionType et:
+                    list = (pn as ExtensionBaseType).Extension as List<T>;
+                    return list;
+                case CommentType ct:
+                    list = (pn as ExtensionBaseType).Comment as List<T>;
+                    return list;
+                case PropertyType pt:
+                    list = (pn as ExtensionBaseType).Property as List<T>;
+                    return list;
+                case EventType ev:
+                    list = (pn as FormDesignType).OnEvent as List<T>;
+                    if (list != null) return list;
+                    list = (pn as DisplayedType).OnEvent as List<T>;
+                    if (list != null) return list;
+                    break;
+                case SectionItemType s:
+                case ListItemType li:
+                case QuestionItemType q:
+                    list = (pn as ChildItemsType).Items as List<T>;
+                    return list;
+                case BlobType bt:
+                    list = (pn as DisplayedType).BlobContent as List<T>;
+                    return list;
+                case CodingType ct:
+                    list = (pn as DisplayedType).CodedValue as List<T>;
+                    return list;
+                case ContactType ctt:
+                    list = (pn as DisplayedType).Contact as List<T>;
+                    return list;
+                case LinkType lt:
+                    list = (pn as DisplayedType).Link as List<T>;
+                    return list;
+                case "OnEnter":
+                    list = (pn as DisplayedType).OnEnter as List<T>;
+                    return list;
+                case "OnSelect":
+                    list = (pn as ListItemBaseType).OnSelect as List<T>;
+                    return list;
+                case "OnDeselect":
+                    list = (pn as ListItemBaseType).OnDeselect as List<T>;
+                    return list;
+                case "xx":
+                    list = (pn as DisplayedType).BlobContent as List<T>;
+                    return list;
+
+
+
+                default:
+                    break;
+
+
+
+            }
+
+
+            return null;
+        }
+
         protected bool IsList(object o)
         {
             if (o == null) return false;

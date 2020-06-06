@@ -3,9 +3,9 @@
 //using SDC;
 namespace SDC.Schema
 {
-    public interface IArrayHelpers
+    public interface IArrayHelpers<T>
     {
-        int GetFirstNullArrayIndex<T>(T[] array, int growthIncrement = 3)
+        int GetFirstNullArrayIndex(T array, int growthIncrement = 3)
         {
             int i = 0;
             if (array is null) array = new T[growthIncrement];
@@ -18,14 +18,14 @@ namespace SDC.Schema
             return i;
         }
 
-        T[] ArrayAddItemReturnArray<T>(T[] array, T itemToAdd, int growthIncrement = 3)
+        T[] ArrayAddItemReturnArray(T array, T itemToAdd, int growthIncrement = 3)
         {
             int i = GetFirstNullArrayIndex(array, growthIncrement);
             array[i] = itemToAdd;
             return array;
 
         }
-        T ArrayAddReturnItem<T>(T[] array, T itemToAdd, int growthIncrement = 3)
+        T ArrayAddReturnItem(T array, T itemToAdd, int growthIncrement = 3)
         {
             ArrayAddItemReturnArray(array, itemToAdd, growthIncrement);
             return itemToAdd;
