@@ -629,18 +629,21 @@ namespace SDC.Schema
         #endregion
 
         #region IQuestionItem
-        public QuestionEnum GetQuestionSubtype() => sdcTreeBuilder.GetQuestionSubtype(this);
-        public ListItemType AddListItem(string id = "", int insertPosition = -1) => sdcTreeBuilder.AddListItem(this, id, insertPosition);
+
+        private IQuestionItem qi { get => this; }
+        
+        public QuestionEnum GetQuestionSubtype() => qi.GetQuestionSubtype();
+        public ListItemType AddListItem(string id = "", int insertPosition = -1) => qi.AddListItem(id, insertPosition);
         public ListItemType AddListItemResponse(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddListItemResponse(this, id, insertPosition);
+            qi.AddListItemResponseI(id, insertPosition);
         public DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddChildDisplayedItem(this, id, insertPosition);
-        public QuestionItemType ConvertToQR(bool testOnly = false) => sdcTreeBuilder.ConvertToQR(this,testOnly);
-        public QuestionItemType ConvertToQS(bool testOnly = false) => sdcTreeBuilder.ConvertToQS(this, testOnly);
-        public QuestionItemType ConvertToQM(int maxSelections = 0, bool testOnly = false) => sdcTreeBuilder.ConvertToQM(this, maxSelections, testOnly);
-        public DisplayedType ConvertToDI(bool testOnly = false) => sdcTreeBuilder.ConvertToDI(this, testOnly);
-        public QuestionItemType ConvertToSection(bool testOnly = false) => sdcTreeBuilder.ConvertToSection(this, testOnly);
-        public QuestionItemType ConvertToLookup(bool testOnly = false) => sdcTreeBuilder.ConvertToLookup(this, testOnly);
+            qi.AddDisplayedTypeToListI(id, insertPosition);
+        public QuestionItemType ConvertToQR(bool testOnly = false) => qi.ConvertToQR_I(testOnly);
+        public QuestionItemType ConvertToQS(bool testOnly = false) => qi.ConvertToQS_I(testOnly);
+        public QuestionItemType ConvertToQM(int maxSelections = 0, bool testOnly = false) => qi.ConvertToQM_I(maxSelections, testOnly);
+        public DisplayedType ConvertToDI(bool testOnly = false) => qi.ConvertToDI_I(testOnly);
+        public QuestionItemType ConvertToSection(bool testOnly = false) => qi.ConvertToSectionI(testOnly);
+        public QuestionItemType ConvertToLookup(bool testOnly = false) => qi.ConvertToLookupI(testOnly);
 
         //public ListItemType AddListItem(int insertPosition = -1) => sdcTreeBuilder.AddListItem(this?.ListField_Item?.List);
         //public ListItemType AddListItemResponse(int insertPosition = -1) => sdcTreeBuilder.AddListItemResponse(this?.ListField_Item?.List);
@@ -710,14 +713,15 @@ namespace SDC.Schema
         }
 
         #region IQuestionList
+        private IQuestionList ql {get =>this; }
         public ListItemType AddListItem(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddListItem(this, id, insertPosition);
+            ql.AddListItemI(this, id, insertPosition);
 
         public ListItemType AddListItemResponse(string id = "", int insertPosition = -1) =>
-         sdcTreeBuilder.AddListItemResponse(this, id, insertPosition); 
+         ql.AddListItemResponseI(this, id, insertPosition); 
 
         public DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1) =>
-            sdcTreeBuilder.AddDisplayedItemToList(this, id, insertPosition = -1);
+            ql.AddDisplayedItemToListI(this, id, insertPosition = -1);
 
         #endregion
     }
@@ -769,7 +773,14 @@ namespace SDC.Schema
         }
 
         #region IListItem
-        public ListItemResponseFieldType AddListItemResponseField() => sdcTreeBuilder.AddListItemResponseField(this);
+
+        private IListItem li { get => this; }
+                
+        public ListItemResponseFieldType AddListItemResponseField() => li.AddListItemResponseFieldI();
+        public EventType AddOnDeselect() => li.AddOnDeselect();
+        public EventType AddOnSelect() => li.AddOnSelectI();
+        public PredGuardType AddSelectIf() => li.AddSelectIfI();
+        public PredGuardType AddDeSelectIf() => li.AddDeSelectIfI();
         #endregion
 
         #region IChildItemsParent
@@ -783,7 +794,7 @@ namespace SDC.Schema
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        IChildItemsParent<ListItemType> ci { get => this as IChildItemsParent<ListItemType>; }
+        private IChildItemsParent<ListItemType> ci { get => this as IChildItemsParent<ListItemType>; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ChildItemsType ChildItemsNode
@@ -806,15 +817,16 @@ namespace SDC.Schema
 
 
         #region IQuestionListMember
+        IQuestionListMember qlm { get => this as IQuestionListMember; }
         //hide inherited with "new" IQuestionListMember from DisplayedType
-        public bool Remove(bool removeDecendants = false) => sdcTreeBuilder.Remove<ListItemType>(this);
+        public bool Remove(bool removeDecendants = false) => qlm.RemoveI(removeDecendants);
         public bool Move(ListItemType target = null, bool moveAbove = false, bool testOnly = false) //drop on LI
-            => sdcTreeBuilder.Move(this, this.ParentNode as ListItemType, moveAbove, testOnly);
+            => qlm.MoveI(ParentNode as ListItemType, moveAbove, testOnly);
         public bool Move(QuestionItemType target = null, bool moveAbove = false, bool testOnly = false) //drop on QS/QM
-            => sdcTreeBuilder.Move(this, this.ParentIETypeNode as QuestionItemType, moveAbove, testOnly);
-        ListItemType ConvertToLI(bool testOnly = false) => sdcTreeBuilder.ConvertToLI(testOnly);
-        public DisplayedType ConvertToDI(bool testOnly = false) => sdcTreeBuilder.ConvertToDI(testOnly);
-        public ListItemType ConvertToLIR(bool testOnly = false) => sdcTreeBuilder.ConvertToLIR(testOnly);
+            => qlm.MoveI(ParentIETypeNode as QuestionItemType, moveAbove, testOnly);
+        public ListItemType ConvertToLI(bool testOnly = false) => qlm.ConvertToLI_I(testOnly);
+        public DisplayedType ConvertToDI(bool testOnly = false) => qlm.ConvertToDI_I(testOnly);
+        public ListItemType ConvertToLIR(bool testOnly = false) => qlm.ConvertToLIR_I(testOnly);
         #endregion
     }
 
@@ -1358,10 +1370,11 @@ namespace SDC.Schema
         {
         }
         #region IExtensionBase
-        public bool HasExtensionBaseMembers() => sdcTreeBuilder.HasExtensionBaseMembers(this);
-        public PropertyType AddProperty(int insertPosition = -1) { return sdcTreeBuilder.AddProperty(this, insertPosition); }
-        public CommentType AddComment(int insertPosition = -1) { return sdcTreeBuilder.AddComment(this, insertPosition); }
-        public ExtensionType AddExtension(int insertPosition = -1) { return sdcTreeBuilder.AddExtension(this, insertPosition); }
+        private IExtensionBase eb { get => this; }
+        public bool HasExtensionBaseMembers() => eb.HasExtensionBaseMembers();
+        public PropertyType AddProperty(int insertPosition = -1) { return eb.AddProperty(insertPosition); }
+        public CommentType AddComment(int insertPosition = -1) { return eb.AddComment(insertPosition); }
+        public ExtensionType AddExtension(int insertPosition = -1) { return eb.AddExtension(insertPosition); }
         #endregion
 
 
@@ -1380,7 +1393,7 @@ namespace SDC.Schema
         #endregion
 
     }
-    public partial class PropertyType : IExtensionBaseTypeMember
+    public partial class PropertyType : IExtensionBaseTypeMember, IHtmlHelpers
     {
         private IExtensionBaseTypeMember Iebtm { get => (IExtensionBaseTypeMember)this; }
         protected PropertyType() { }
@@ -1391,13 +1404,14 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
 
-        protected HTML_Stype AddHTML()
+        public HTML_Stype AddHTML()
         {
-            var rtf = new RichTextType(this);
-            var h = sdcTreeBuilder.AddHTML(rtf);
+            this.TypedValue = new DataTypes_SType(this);
+            var rtf = new RichTextType(TypedValue);
+            var h = (this as IHtmlHelpers).AddHTML(rtf);
             return h;
         }
-
+        
         #region IExtensionBaseTypeMember
         public bool Remove() => Iebtm.Remove();
         public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.Move(this, ebtTarget, newListIndex);
@@ -1543,27 +1557,28 @@ namespace SDC.Schema
         }
 
         #region IDisplayedType
-        public LinkType AddLink()
-        { return sdcTreeBuilder.AddLink(this); }
-        public BlobType AddBlob()
-        { return sdcTreeBuilder.AddBlob(this); }
-        public ContactType AddContact()
-        { return sdcTreeBuilder.AddContact(this); }
-        public CodingType AddCoding()
-        { return sdcTreeBuilder.AddCodedValue(this); }
+        IDisplayedType idt { get => this as IDisplayedType; }
+        public LinkType AddLink(int insertPosition = -1)
+        { return idt.AddLinkI(insertPosition); }
+        public BlobType AddBlob(int insertPosition = -1)
+        { return idt.AddBlobI(insertPosition); }
+        public ContactType AddContact(int insertPosition = -1)
+        { return idt.AddContactI(insertPosition); }
+        public CodingType AddCodedValue(int insertPosition = -1)
+        { return idt.AddCodedValueI(insertPosition); }
         #endregion
 
         #region DisplayedType Events
         public OnEventType AddOnEvent()
-        { return sdcTreeBuilder.AddOnEventEvent(this); }
+        { return idt.AddOnEventI(); }
         public EventType AddOnEnter()
-        { return sdcTreeBuilder.AddOnEnterEvent(this); }
+        { return idt.AddOnEnterI(); }
         public EventType AddOnExit()
-        { return sdcTreeBuilder.AddOnExitEvent(this); }
+        { return idt.AddOnExitI(); }
         public PredGuardType AddActivateIf()
-        { return sdcTreeBuilder.AddActivateIf(this); }
+        { return idt.AddActivateIfI(); }
         public PredGuardType AddDeActivateIf()
-        { return sdcTreeBuilder.AddDeActivateIf(this); }
+        { return idt.AddDeActivateIfI(); }
         #endregion
 
         //#region IChildItemMember
@@ -1573,15 +1588,16 @@ namespace SDC.Schema
         //#endregion
 
         #region IQuestionListMember
+        IQuestionListMember qlm { get => this as IQuestionListMember; }
         //Explicit implementaion prevents this interface from being inherited directly by subclasses.
-        bool IQuestionListMember.Remove(bool removeDecendants) => sdcTreeBuilder.Remove<DisplayedType>(this);
+        bool IQuestionListMember.Remove(bool removeDecendants) => qlm.RemoveI(removeDecendants);
         bool IQuestionListMember.Move(ListItemType target, bool moveAbove, bool testOnly) //drop on LI
-            => sdcTreeBuilder.Move(this, this.ParentNode as ListItemType, moveAbove, testOnly);
+            => qlm.MoveI(this.ParentNode as ListItemType, moveAbove, testOnly);
         bool IQuestionListMember.Move(QuestionItemType target, bool moveAbove, bool testOnly) //drop on QS/QM
-            => sdcTreeBuilder.Move(this, this.ParentIETypeNode as QuestionItemType, moveAbove, testOnly);
-        ListItemType IQuestionListMember.ConvertToLI(bool testOnly) => sdcTreeBuilder.ConvertToLI(testOnly);
-        DisplayedType IQuestionListMember.ConvertToDI(bool testOnly) => sdcTreeBuilder.ConvertToDI(testOnly);
-        ListItemType IQuestionListMember.ConvertToLIR(bool testOnly) => sdcTreeBuilder.ConvertToLIR(testOnly);
+            => qlm.MoveI(this.ParentIETypeNode as QuestionItemType, moveAbove, testOnly);
+        ListItemType IQuestionListMember.ConvertToLI(bool testOnly) => qlm.ConvertToLI_I(testOnly);
+        DisplayedType IQuestionListMember.ConvertToDI(bool testOnly) => qlm.ConvertToDI_I(testOnly);
+        ListItemType IQuestionListMember.ConvertToLIR(bool testOnly) => qlm.ConvertToLIR_I(testOnly);
         #endregion
 
     }
@@ -2935,7 +2951,7 @@ namespace SDC.Schema
 
         public ActActionType AddActAction(int insertPosition = -1)
         {
-            return sdcTreeBuilder.AddActAction(this, insertPosition);
+            return (this as IAction).AddActAction(insertPosition);
         }
 
         public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1)
@@ -3213,7 +3229,7 @@ namespace SDC.Schema
     #endregion
     #region Contacts
 
-    public partial class ContactType : IDisplayedTypeMember
+    public partial class ContactType : IDisplayedTypeMember, IAddPerson, IAddOrganization
     {
         protected ContactType() { }
         public ContactType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -3224,11 +3240,11 @@ namespace SDC.Schema
 
         public PersonType AddPerson()
         {
-            return sdcTreeBuilder.AddPerson(this);
+            return (this as IAddPerson).AddPersonI(this);
         }
-        public OrganizationType AddOrganization()
+        public OrganizationType AddOganization()
         {
-            return sdcTreeBuilder.AddOrganization(this);
+            return (this as IAddOrganization).AddOrganizationI(this);
         }
 
     }
@@ -3275,7 +3291,7 @@ namespace SDC.Schema
     #endregion
 
     #region Resources
-    public partial class RichTextType
+    public partial class RichTextType: IHtmlHelpers
     {
         protected RichTextType() { }
         public RichTextType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
@@ -3284,9 +3300,10 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
 
+        IHtmlHelpers idh { get => this; }
         public HTML_Stype AddHTML()
         {
-            var h = sdcTreeBuilder.AddHTML(this);
+            var h = idh.AddHTML(this);
             return h;
         }
     }

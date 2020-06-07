@@ -79,13 +79,6 @@ namespace SDC.Schema
             return true;
         }
     }
-
-
-
-
-
-
-
     /// <summary>
     /// This interface is applied to the partial classes that can have a ChildItems element.
     /// These are Section, Question and ListItem.  
@@ -402,6 +395,133 @@ namespace SDC.Schema
         QuestionItemType ConvertToSection(bool testOnly = false);
         QuestionItemType ConvertToLookup(bool testOnly = false);//abort if LIs present
 
+        QuestionEnum GetQuestionSubtypeI()
+        {
+            var q = this as QuestionItemType;
+            if (q.ResponseField_Item != null) return QuestionEnum.QuestionFill;
+            if (q.ListField_Item is null) return QuestionEnum.QuestionRaw;
+            if (q.ListField_Item.LookupEndpoint == null && q.ListField_Item?.maxSelections == 1) return QuestionEnum.QuestionSingle;
+            if (q.ListField_Item.LookupEndpoint == null && q.ListField_Item?.maxSelections != 1) return QuestionEnum.QuestionMultiple;
+            if (q.ListField_Item.LookupEndpoint != null && q.ListField_Item.maxSelections == 1) return QuestionEnum.QuestionLookupSingle;
+            if (q.ListField_Item.LookupEndpoint != null && q.ListField_Item.maxSelections != 1) return QuestionEnum.QuestionLookupMultiple;
+            if (q.ListField_Item.LookupEndpoint != null) return QuestionEnum.QuestionLookup;
+
+            return QuestionEnum.QuestionGroup;
+        }
+        ListItemType AddListItemI(string id, int insertPosition)
+        {  //Check for QS/QM first!
+            var q = this as QuestionItemType;
+            if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionSingle)
+            {
+                if (q.ListField_Item is null) AddListFieldToQuestionI();
+                ListType list = q.ListField_Item.List;
+                if (list is null) AddListToListFieldI(q.ListField_Item);
+                return AddListItemI(list, id, insertPosition);
+            }
+            else throw new InvalidOperationException("Can only add ListItem to QuestionSingle or QuestionMultiple");
+        }
+        ListItemType AddListItemResponseI(string id, int insertPosition)
+        {
+            var q = this as QuestionItemType;
+            if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionSingle)
+            {
+                if (q.ListField_Item is null) AddListFieldToQuestionI();
+                ListType list = q.ListField_Item.List;
+                if (list is null) AddListToListFieldI(q.ListField_Item);
+                return AddListItemResponseI(list, id, insertPosition);
+            }
+            else throw new InvalidOperationException("Can only add ListItem to QuestionSingle or QuestionMultiple");
+        }
+        DisplayedType AddDisplayedTypeToListI(string id, int insertPosition)
+        {
+            var q = this as QuestionItemType;
+            if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionSingle)
+            {
+                if (q.ListField_Item is null) AddListFieldToQuestionI();
+                ListType list = q.ListField_Item.List;
+                if (list is null) AddListToListFieldI(q.ListField_Item);
+                return AddDisplayedItemToListI(list, id, insertPosition);
+            }
+            else throw new InvalidOperationException("Can only add DisplayedItem to QuestionSingle or QuestionMultiple");
+        }
+        QuestionItemType ConvertToQR_I(bool testOnly)
+        {
+            throw new NotImplementedException();
+        }
+        QuestionItemType ConvertToQS_I(bool testOnly)
+        {
+            throw new NotImplementedException();
+        }
+        QuestionItemType ConvertToQM_I(int maxSelections, bool testOnly)
+        {
+            throw new NotImplementedException();
+        }
+        DisplayedType ConvertToDI_I(bool testOnly)
+        {
+            throw new NotImplementedException();
+        }
+        QuestionItemType ConvertToSectionI(bool testOnly)
+        {
+            throw new NotImplementedException();
+        }
+        QuestionItemType ConvertToLookupI(bool testOnly)
+        {
+            throw new NotImplementedException();
+        }
+        protected virtual ResponseFieldType AddQuestionResponseFieldI()
+        {
+            var qParent = this as QuestionItemType;
+            var rf = new ResponseFieldType(qParent);
+            qParent.ResponseField_Item = rf;
+
+            return rf;
+        }
+        protected virtual LookupEndPointType AddEndpointToListFieldI(ListFieldType listFieldParent)
+        {
+            if (listFieldParent.List == null)
+            {
+                var lep = new LookupEndPointType(listFieldParent);
+                listFieldParent.LookupEndpoint = lep;
+                return lep;
+            }
+            else throw new InvalidOperationException("Can only add LookupEndpoint to ListField if List object is not present");
+        }
+        protected virtual ListType AddListToListFieldI(ListFieldType listFieldParent)
+        {
+            ListType list;  //this is not the .NET List class; It's an answer list
+            if (listFieldParent.List == null)
+            {
+                list = new ListType(listFieldParent);
+                listFieldParent.List = list;
+            }
+            else list = listFieldParent.List;
+
+            //The "list" item contains a list<DisplayedType>, to which the ListItems and ListNotes (DisplayedItems) are added.
+            if (list.QuestionListMembers == null)
+
+                list.QuestionListMembers = new List<DisplayedType>();
+
+            return list;
+        }
+        protected virtual ListFieldType AddListFieldToQuestionI()
+        {
+            var qParent = this as QuestionItemType;
+            if (qParent.ListField_Item == null)
+            {
+                var listField = new ListFieldType(qParent);
+                qParent.ListField_Item = listField;
+            }
+
+            return qParent.ListField_Item;
+        }
+
+
+
+
+
 
         //bool ConvertToButton(); //abort if LIs or children present
 
@@ -418,8 +538,25 @@ namespace SDC.Schema
         ListItemType AddListItem(string id = "", int insertPosition = -1); //check that no ListItemResponseField object is present
         ListItemType AddListItemResponse(string id = "", int insertPosition = -1); //check that no ListFieldType object is present
         DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1);
+
+
+        ListItemType AddListItemI(ListType lt, string id, int insertPosition) //check that no ListItemResponseField object is present
+        {
+            ListItemType li = new ListItemType(lt, id);
+            var count = lt.QuestionListMembers.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            lt.QuestionListMembers.Insert(insertPosition, li);
+            return li;
+
+        }
+        ListItemType AddListItemResponseI(ListType lt, string id, int insertPosition) //check that no ListFieldType object is present
+        { throw new NotImplementedException(); }
+        DisplayedType AddDisplayedItemToListI(ListType lt, string id, int insertPosition)
+        { throw new NotImplementedException(); }
+
+
     }
-    public interface IQuestionListMember
+    public interface IQuestionListMember: IHelpers, IQuestionBuilder
     {
         //for DI, make sure parent is a ListType object
         bool Remove(bool removeDecendants = false);
@@ -428,6 +565,117 @@ namespace SDC.Schema
         ListItemType ConvertToLI(bool testOnly = false);
         DisplayedType ConvertToDI(bool testOnly = false); //abort if children of LI are present
         ListItemType ConvertToLIR(bool testOnly = false);
+
+
+        //for DI, make sure parent is a ListType object
+        bool RemoveI(bool removeDecendants) { throw new NotImplementedException(); }
+        bool MoveI(QuestionItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
+        bool MoveI(ListItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
+        ListItemType ConvertToLI_I(bool testOnly) { throw new NotImplementedException(); }
+        DisplayedType ConvertToDI_I(bool testOnly) { throw new NotImplementedException(); } //abort if children of LI are present
+        ListItemType ConvertToLIR_I(bool testOnly) { throw new NotImplementedException(); }
+        bool IsMoveAllowedToListI<T>(T target, out string error)
+            where T:notnull, IQuestionListMember
+        {
+            error = "";
+
+            //if (source is null) { error = "source is null"; return false; }
+            //if (target is null) { error = "target is null"; return false; }
+            //if (source is SectionItemType) return false; //S is illegal in the list
+            //if (target is SectionItemType) return false; //S is illegal in the list
+            //if (source is ButtonItemType) return false; //B is illegal in the list
+            //if (target is ButtonItemType) return false; //B is illegal in the list
+
+            //if (source is QuestionItemType) return false; //Q is illegal in the list
+
+
+            //if (!(source is ListItemType) && !(source is DisplayedType)) { error = "The source must be a ListItem or DisplayedItem"; return false; };
+            //if (!(target is ListItemType) && !(target is QuestionItemType)) { error = "The target must be a ListItem or Question"; return false; };
+
+            if (target is QuestionItemType &&
+                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionSingle) &&
+                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionMultiple) &&
+                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionRaw))
+            { error = "A Question target must be a QuestionSingle, QuestionMultiple or of unassigned (QuestionRaw) type"; return false; }
+
+            return true;
+
+        }
+        bool MoveInListI(DisplayedType source, QuestionItemType target, bool moveAbove)
+        {
+            if (source is null) return false;
+            if (source is RepeatingType) return false; //S, Q are illegal in the list
+            if (source is ButtonItemType) return false; //B is illegal in the list
+
+            if (target is null) target = source.ParentNode?.ParentNode?.ParentNode as QuestionItemType; //LI-->List-->ListField-->Q  - see if we can capture a Question from the source node
+            if (target is null) return false;
+
+            List<BaseType> sourceList = (source.ParentNode as ListType)?.Items?.ToList<BaseType>();//guess that the sourrce node is inside a List
+            if (sourceList is null) sourceList = (source.ParentNode as ChildItemsType)?.ChildItemsList?.ToList<BaseType>();//try again - guess that source node is inside a ChildItems node
+            if (sourceList is null) return false;//both guesses failed - this is probably a disconnected node, and we can't work with that.
+
+            if (target.ListField_Item is null) AddListToListField(AddListFieldToQuestion(target));  //make sure there is a ist instantiated on this target Question; if not, then create it.          
+            var targetList = target.ListField_Item.List.Items;
+            if (targetList is null) return false;  //unkown problem getting Question-->ListField-->List
+
+            var indexSource = GetListIndex(sourceList, source);
+            int index = targetList.Count;
+            sourceList.Remove(source);
+            targetList.Insert(index, source);
+            if (targetList[index] == source)
+            {
+                source.TopNode.ParentNodes[source.ObjectGUID] = target;
+                return true;
+            }
+
+            //Error - the source item is now disconnected from the list.  Lets add it back to the end of the list.
+            sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
+            return false;
+
+        }
+        bool MoveInListI(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType)
+        {
+            //this function allows dropping items inside a QS o QM list to rearrange the list
+            //prevent illegal operationss
+            if (source is null) return false;
+            if (source is RepeatingType) return false; //S, Q (RepeatingTypes) are illegal in the Q's list
+            if (target is RepeatingType) return false; //S, Q (RepeatingTypes) are illegal in the Q's list
+            if (source is ButtonItemType) return false; //B is illegal in the Q's list
+            if (target is ButtonItemType) return false; //B is illegal in the Q's list
+
+            List<BaseType> sourceList = (source.ParentNode?.ParentNode as ListType)?.Items?.ToList<BaseType>();
+            if (sourceList is null) sourceList = (source.ParentNode as ChildItemsType)?.ChildItemsList?.ToList<BaseType>();
+            if (sourceList is null) return false;
+
+            var qTarget = target.ParentNode?.ParentNode?.ParentNode as QuestionItemType;
+            if (qTarget is null) return false;  //we did not get a Q object, so we are not moving  a node into a Q List
+
+            var targetList = qTarget.ListField_Item?.List?.Items;
+
+
+            if (targetList is null) return false;
+
+            var indexSource = GetListIndex(sourceList, source);
+            sourceList.Remove(source);
+
+            //Determine where to insert the node in the list, based on the location of the existing Lis
+            var index = GetListIndex(targetList, target);
+            if (index < 0) index = targetList.Count; //target node not found in list, so insert source at the end of the list; this should never execute
+            if (moveAbove) index--;
+
+            targetList.Insert(index, source);
+            if (targetList[index] == source)
+            {
+                source.TopNode.ParentNodes[source.ObjectGUID] = target;
+                return true;
+            }
+
+            //Error - the source item is now disconnected from the list.  Lets add it back to the end of the list.
+            sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
+            return false;
+        }
+
+
 
     } //Implemented on ListItem and DisplayedItem
     public interface IListField
@@ -444,34 +692,53 @@ namespace SDC.Schema
     public interface IListItem
     {
         ListItemResponseFieldType AddListItemResponseField();
-        EventType AddOnDeselect()
+        EventType AddOnDeselect();
+        EventType AddOnSelect();
+        PredGuardType AddSelectIf();
+        PredGuardType AddDeSelectIf();
+
+
+
+        internal ListItemResponseFieldType AddListItemResponseFieldI()
+        {
+            var liParent = this as ListItemType;
+            var liRF = new ListItemResponseFieldType(liParent);
+            liParent.ListItemResponseField = liRF;
+
+            return liRF;
+        }
+        internal EventType AddOnDeselectI()
         {
             var li = (ListItemType)this;
             var ods = new EventType(li);
             li.OnDeselect.Add(ods);
             return ods;
         }
-        EventType AddOnSelect()
+        internal EventType AddOnSelectI()
         {
             var li = (ListItemType)this;
             var n = new EventType(li);
             li.OnSelect.Add(n);
             return n;
         }
-        PredGuardType AddSelectIf()
+        internal PredGuardType AddSelectIfI()
         {
             var li = (ListItemType)this;
             var n = new PredGuardType(li);
             li.SelectIf=n;
             return n;
         }
-        PredGuardType AddDeSelectIf()
+        internal PredGuardType AddDeSelectIfI()
         {
             var li = (ListItemType)this;
             var n = new PredGuardType(li);
             li.DeselectIf = n;
             return n;
         }
+
+
+
+
     }
     public interface IQuestionBuilder
     {
@@ -521,13 +788,65 @@ namespace SDC.Schema
         }
 
     }
-
     public interface IExtensionBase
     {
         bool HasExtensionBaseMembers(); //Has Extension, Property or Comment sub-elements
         CommentType AddComment(int insertPosition = -1);
         ExtensionType AddExtension(int insertPosition = -1);
         PropertyType AddProperty(int insertPosition = -1);
+
+        bool HasExtensionBaseMembersI() //Has Extension, Property or Comment sub-elements
+        {
+            var item = this as ExtensionBaseType;
+            if (item?.Property?.Count() > 0)
+            {
+                foreach (var n in item.Property)
+                { if (n != null) return true; }
+            }
+            if (item?.Comment?.Count() > 0)
+            {
+                foreach (var n in item.Comment)
+                { if (n != null) return true; }
+            }
+            if (item?.Extension?.Count() > 0)
+            {
+                foreach (var n in item.Extension)
+                { if (n != null) return true; }
+            }
+            return false;
+        }
+        ExtensionType AddExtensionI(int insertPosition = -1)
+        {
+            var ebtParent = this as ExtensionBaseType;
+            var e = new ExtensionType(ebtParent);
+            if (ebtParent.Extension == null) ebtParent.Extension = new List<ExtensionType>();
+            var count = ebtParent.Extension.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            ebtParent.Extension.Insert(insertPosition, e);
+            return e;
+        }
+        CommentType AddCommentI(int insertPosition = -1)
+        {
+            var ebtParent = this as ExtensionBaseType;
+            if (ebtParent.Comment == null) ebtParent.Comment = new List<CommentType>();
+            CommentType ct = null;
+            var count = ebtParent.Comment.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            ebtParent.Comment.Insert(insertPosition, ct);  //return new empty Comment object for caller to fill
+            return ct;
+        }
+        PropertyType AddPropertyI(int insertPosition = -1)
+        {
+            var ebtParent = this as ExtensionBaseType;
+            var prop = new PropertyType(ebtParent);
+            if (ebtParent.Property == null) ebtParent.Property = new List<PropertyType>();
+            var count = ebtParent.Property.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            ebtParent.Property.Insert(insertPosition, prop);
+
+            return prop;
+        }
+
 
     }
     /// <summary>
@@ -606,10 +925,7 @@ namespace SDC.Schema
 
     }
     public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
-    //public interface IDisplayedItem
-    //{
-    //    bool ConvertToLI(bool testOnly = false);
-    //}
+
     public interface IResponse //marks LIR and QR
     {
         UnitsType AddUnits(ResponseFieldType rfParent);
@@ -626,18 +942,111 @@ namespace SDC.Schema
         string GetNewCkey() { throw new NotImplementedException(); }
 
     }
-
-    public interface ICoding
-    {    }
-    public interface IContact
-    {  }
-    public interface IOrganization
-    {
+    public interface ICoding    {    }
+    public interface IContact    {  }
+    public interface IAddOrganization    {
         OrganizationType AddOganization();
+
+        internal OrganizationType AddOrganizationI(ContactType contactParent)
+        {
+            var ot = new OrganizationType(contactParent);
+            contactParent.Organization = ot;
+
+            return ot;
+        }
+        internal OrganizationType AddOrganizationI(JobType jobParent)
+        {
+            var ot = new OrganizationType(jobParent);
+            jobParent.Organization = ot;
+
+            return ot;
+        }
+        internal OrganizationType AddOrganizationItemsI(OrganizationType ot)
+        {
+            throw new NotImplementedException();
+        }
+
     }
-    public interface IPerson
+    public interface IAddPerson
     {
         PersonType AddPerson();
+
+        internal PersonType AddPersonI(ContactType contactParent)
+        {
+
+            var newPerson = new PersonType(contactParent);
+            contactParent.Person = newPerson;
+
+            AddPersonItems(newPerson);  //AddFillPersonItems?
+
+            return newPerson;
+        }
+        internal PersonType AddPersonI(DisplayedType dtParent, int insertPosition)
+        {
+            List<ContactType> contactList;
+            if (dtParent.Contact == null)
+            {
+                contactList = new List<ContactType>();
+                dtParent.Contact = contactList;
+            }
+            else
+                contactList = dtParent.Contact;
+            var newContact = new ContactType(dtParent); //newContact will contain a person child
+            var count = contactList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            contactList.Insert(insertPosition, newContact);
+
+            var newPerson = AddPersonI(newContact);
+
+            return newPerson;
+        }
+        internal PersonType AddContactPersonI(OrganizationType otParent, int insertPosition)
+        {
+            List<PersonType> contactPersonList;
+            if (otParent.ContactPerson == null)
+            {
+                contactPersonList = new List<PersonType>();
+                otParent.ContactPerson = contactPersonList;
+            }
+            else
+                contactPersonList = otParent.ContactPerson;
+
+            var newPerson = new PersonType(otParent);
+            AddPersonItems(newPerson);
+
+            var count = contactPersonList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            contactPersonList.Insert(insertPosition, newPerson);
+
+            return newPerson;
+        }
+        protected virtual PersonType AddPersonItems(PersonType pt)  //AddFillPersonItems, make this abstract and move to subclass?
+        {
+            pt.PersonName = new NameType(pt);//TODO: Need separate method(s) for this
+            //pt.Alias = new NameType();
+            //pt.PersonName.FirstName.val = (string)drFormDesign["FirstName"];  //TODO: replace with real data
+            //pt.PersonName.LastName.val = (string)drFormDesign["LastName"];  //TODO: replace with real data
+
+            pt.Email = new List<EmailType>();//TODO: Need separate method(s) for this
+            var email = new EmailType(pt);//TODO: Need separate method(s) for this
+            pt.Email.Add(email);
+
+            pt.Phone = new List<PhoneType>();//TODO: Need separate method(s) for this
+            pt.Job = new List<JobType>();//TODO: Need separate method(s) for this
+
+            pt.Role = new string_Stype(pt, "Role");
+
+            pt.StreetAddress = new List<AddressType>();//TODO: Need separate method(s) for this
+            pt.Identifier = new List<IdentifierType>();
+
+            pt.Usage = new string_Stype(pt, "Usage");
+
+            pt.WebURL = new List<anyURI_Stype>();//TODO: Need separate method(s) for this
+
+            return pt;
+        }
+
+
     }
     public interface IEvent : IHasActionElseGroup, IHelpers  //Used for events (PredActionType)
     {
