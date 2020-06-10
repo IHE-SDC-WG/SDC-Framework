@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 //using SDC;
 namespace SDC.Schema
 {
-    public interface INew //TODO:
+    public interface INewTopLevel //TODO:
     {
         //FormDesignType CreateForm(bool addHeader, bool addFooter, string formID, string lineage, string version, string fullURI);
         //FormDesignType CreateFormFromTemplatePath(string path, string formID, string lineage, string version, string fullURI);
@@ -90,37 +90,27 @@ namespace SDC.Schema
     { 
         ChildItemsType ChildItemsNode { get; set; }
         SectionItemType AddChildSection(string id, int insertPosition);
-        SectionItemType AddChildSectionI(T T_Parent, string id, int insertPosition)
+        SectionItemType AddChildSectionI(string id, int insertPosition)
         {
-            var childItemsList = AddChildItemsNodeI(T_Parent);
-            var sNew = new SectionItemType(childItemsList, id);
-            var count = childItemsList.ChildItemsList.Count;
+            var childItems = AddChildItemsNodeI(this as T);
+            var childItemsList = childItems.ChildItemsList;
+            var sNew = new SectionItemType(childItems, id);
+            var count = childItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            childItemsList.ChildItemsList.Insert(insertPosition, sNew);
-
-            return sNew;
-        }
-        //test of "this" usage - does it apply to teh attacehd class or only the interface members?
-        //not sure if "this as T" will work; if it does work, this interface's methods can be simplified to use this technique.
-        SectionItemType AddChildSection2(string id = "", int insertPosition = -1)
-        {
-            var childItemsList = AddChildItemsNodeI(this as T); 
-            var sNew = new SectionItemType(childItemsList, id);
-            var count = childItemsList.ChildItemsList.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            childItemsList.ChildItemsList.Insert(insertPosition, sNew);
+            childItemsList.Insert(insertPosition, sNew);
 
             return sNew;
         }
         QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1);
-        internal QuestionItemType AddChildQuestionI(T T_Parent, QuestionEnum qType, string id, int insertPosition = -1)
+        internal QuestionItemType AddChildQuestionI(QuestionEnum qType, string id, int insertPosition = -1)
         {
-            var childItemsList = AddChildItemsNodeI(T_Parent);
-            var qNew = new QuestionItemType(childItemsList, id);
+            var childItems = AddChildItemsNodeI(this as T);
+            var childItemsList = childItems.ChildItemsList;
+            var qNew = new QuestionItemType(childItems, id);
             ListFieldType lf;
-            var count = childItemsList.ChildItemsList.Count;
+            var count = childItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            childItemsList.ChildItemsList.Insert(insertPosition, qNew);
+            childItemsList.Insert(insertPosition, qNew);
 
             switch (qType)
             {
@@ -149,36 +139,40 @@ namespace SDC.Schema
             return qNew;
         }
         DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
-        internal DisplayedType AddChildDisplayedItemI(T T_Parent, string id, int insertPosition = -1)
+        internal DisplayedType AddChildDisplayedItemI(string id, int insertPosition = -1)
         {
-            var childItemsList = AddChildItemsNodeI(T_Parent);
-            var dNew = new DisplayedType(childItemsList, id);  //!+Test this
-            var count = childItemsList.ChildItemsList.Count;
+            var childItems = AddChildItemsNodeI(this as T);
+            var childItemsList = childItems.ChildItemsList;
+            var dNew = new DisplayedType(childItems, id);
+            var count = childItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            childItemsList.ChildItemsList.Insert(insertPosition, dNew);
+            childItemsList.Insert(insertPosition, dNew);
+
             return dNew;
         }
         ButtonItemType AddChildButtonAction(string id, int insertPosition = -1);
-        internal ButtonItemType AddChildButtonActionI(T T_Parent, string id, int insertPosition = -1)
-        { 
-            //AddChildItem<SectionItemType, SectionItemType>(T_Parent as SectionItemType, id, insertPosition);
-            var childItems = AddChildItemsNodeI(T_Parent);
+        internal ButtonItemType AddChildButtonActionI(string id, int insertPosition = -1)
+        {
+            var childItems = AddChildItemsNodeI(this as T);
+            var childItemsList = childItems.ChildItemsList;
             var btnNew = new ButtonItemType(childItems, id);
-            var count = childItems.ChildItemsList.Count;
+            var count = childItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            childItems.ChildItemsList.Insert(insertPosition, btnNew);
+            childItemsList.Insert(insertPosition, btnNew);
 
-            // TODO: Add TreeBuilder.AddButtonActionTypeItems(btnNew);
+            // TODO: Add AddButtonActionTypeItems(btnNew);
             return btnNew;
         }
         InjectFormType AddChildInjectedForm(string id, int insertPosition = -1);
-        internal InjectFormType AddChildInjectedFormI(T T_Parent, string id, int insertPosition = -1)
+        internal InjectFormType AddChildInjectedFormI(string id, int insertPosition = -1)
         {
-            var childItems = AddChildItemsNodeI(T_Parent);
+            var childItems = AddChildItemsNodeI(this as T);
+            var childItemsList = childItems.ChildItemsList;
             var injForm = new InjectFormType(childItems, id);
-            var count = childItems.ChildItemsList.Count;
+            var count = childItemsList.Count;
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            childItems.ChildItemsList.Insert(insertPosition, injForm);
+            childItemsList.Insert(insertPosition, injForm);
+            //TODO: init this InjectForm object
 
             return injForm;
         }
@@ -223,10 +217,10 @@ namespace SDC.Schema
         //QL AddChildQL(string id = "", int insertPosition = -1);
 
     }
-    public interface IChildItemsMember<T> : IHelpers, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
-            where T : IdentifiedExtensionType, IChildItemsMember<T>
+    public interface IChildItemsMember<Tchild> : IHelpers, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
+            where Tchild : IdentifiedExtensionType, IChildItemsMember<Tchild>
     {
-        bool Remove(T source)
+        bool Remove(Tchild source)
         {
             var ci = ((ChildItemsType)source.ParentNode).Items;
             return ci.Remove(source);
@@ -235,7 +229,7 @@ namespace SDC.Schema
             where U : notnull, IdentifiedExtensionType
             //where T : notnull, IdentifiedExtensionType
         {
-            T Tsource = this as T;  
+            Tchild Tsource = this as Tchild;  
             var errorSource = "";
             var errorTarget = "";
             error = "";
@@ -354,7 +348,7 @@ namespace SDC.Schema
             var count = targetList.Count;
             if (newListIndex < 0 || newListIndex > count) newListIndex = count; //add to end  of list
 
-            var indexSource = GetListIndex(sourceList, source);  //save the original source index in case we need to replace the source node back to it's origin
+            var indexSource = sourceList.IndexOf(source);  //save the original source index in case we need to replace the source node back to it's origin
             bool b = sourceList.Remove(source); if (!b) return false;
             targetList.Insert(newListIndex, source);
             if (targetList[newListIndex] == source) //check for success
@@ -373,8 +367,6 @@ namespace SDC.Schema
             //iupdate TopNode.ParentNodes
             throw new Exception(String.Format("Not Implemented"));
         }
-
-
 
         //bool Remove();
         //bool Move<T>(T target = null, int newListIndex = -1) where T : ExtensionBaseType, IChildItemsParent;
@@ -556,7 +548,7 @@ namespace SDC.Schema
 
 
     }
-    public interface IQuestionListMember: IHelpers, IQuestionBuilder
+    public interface IQuestionListMember: IHelpers, IQuestionBuilder //decorates LI/LIR and DI
     {
         //for DI, make sure parent is a ListType object
         bool Remove(bool removeDecendants = false);
@@ -618,7 +610,7 @@ namespace SDC.Schema
             var targetList = target.ListField_Item.List.Items;
             if (targetList is null) return false;  //unkown problem getting Question-->ListField-->List
 
-            var indexSource = GetListIndex(sourceList, source);
+            var indexSource = sourceList.IndexOf(source);
             int index = targetList.Count;
             sourceList.Remove(source);
             targetList.Insert(index, source);
@@ -655,11 +647,11 @@ namespace SDC.Schema
 
             if (targetList is null) return false;
 
-            var indexSource = GetListIndex(sourceList, source);
+            var indexSource = sourceList.IndexOf(source);
             sourceList.Remove(source);
 
             //Determine where to insert the node in the list, based on the location of the existing Lis
-            var index = GetListIndex(targetList, target);
+            var index = targetList.IndexOf(target);
             if (index < 0) index = targetList.Count; //target node not found in list, so insert source at the end of the list; this should never execute
             if (moveAbove) index--;
 
@@ -696,7 +688,6 @@ namespace SDC.Schema
         EventType AddOnSelect();
         PredGuardType AddSelectIf();
         PredGuardType AddDeSelectIf();
-
 
 
         internal ListItemResponseFieldType AddListItemResponseFieldI()
@@ -858,7 +849,6 @@ namespace SDC.Schema
         bool Remove();
         bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1);
     }
-
     public interface IExtensionBaseTypeMember: IMoveRemove, IHelpers //Used on Extension, Property, Comment
     {
         new bool Remove()
@@ -867,18 +857,21 @@ namespace SDC.Schema
             {
                 case PropertyType prop:
                     var p = GetListParent(prop);
-                    if (IsList(p)) p.Remove(prop); return true;
+                    if (IsList(p)) { p.Remove(prop); return true; }
+                    return false;
                 case CommentType cmt:
                     var pct = GetListParent(cmt);
-                    if (IsList(pct)) pct.Remove(cmt); return true;
+                    if (IsList(pct)) { pct.Remove(cmt); return true; }
+                    return false;
                 case ExtensionType et:
                     var pet = GetListParent(et);
-                    if (IsList(pet)) pet.Remove(et); return true;
+                    if (IsList(pet)) { pet.Remove(et); return true; }
+                    return false;
                 default: return false;
             }
         }
-            new bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => throw new NotImplementedException();
-        bool Move(ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
+        new bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => throw new NotImplementedException();
+        bool MoveI(ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
         {
             if (extension == null) return false;
 
@@ -891,7 +884,7 @@ namespace SDC.Schema
             if (ebtTarget.Extension[newListIndex] == extension) return true; //success
             return false;
         }
-        bool Move(CommentType comment, ExtensionBaseType ebtTarget, int newListIndex)
+        bool MoveI(CommentType comment, ExtensionBaseType ebtTarget, int newListIndex)
         {
             if (comment == null) return false;
 
@@ -904,7 +897,7 @@ namespace SDC.Schema
             if (ebtTarget.Comment[newListIndex] == comment) return true; //success
             return false;
         }
-        bool Move(PropertyType property, ExtensionBaseType ebtTarget, int newListIndex)
+        bool MoveI(PropertyType property, ExtensionBaseType ebtTarget, int newListIndex)
         {
             if (property == null) return false;
 
@@ -925,10 +918,16 @@ namespace SDC.Schema
 
     }
     public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
-
     public interface IResponse //marks LIR and QR
     {
         UnitsType AddUnits(ResponseFieldType rfParent);
+        UnitsType AddUnitsI(ResponseFieldType rfParent)
+        {
+            UnitsType u = new UnitsType(rfParent);
+            rfParent.ResponseUnits = u;
+            return u;
+        }
+
         void RemoveUnits(ResponseFieldType rfParent) => rfParent.ResponseUnits = null;
         BaseType DataTypeObject { get; set; }
         RichTextType AddTextAfterResponse { get; set; }
@@ -942,8 +941,52 @@ namespace SDC.Schema
         string GetNewCkey() { throw new NotImplementedException(); }
 
     }
-    public interface ICoding    {    }
-    public interface IContact    {  }
+    public interface ICoding
+    {
+        CodingType AddCodedValue(DisplayedType dt, int insertPosition)
+        {
+            throw new NotImplementedException();
+        }
+
+        CodingType AddCodedValue(LookupEndPointType lep, int insertPosition)
+        {
+            throw new NotImplementedException();
+        }
+        UnitsType AddUnits(CodingType ctParent)
+        {
+            UnitsType u = new UnitsType(ctParent);
+            ctParent.Units = u;
+            return u;
+        }
+    }
+    public interface IContact //(File)
+    {
+        ContactType AddContact(FileType ftParent, int insertPosition)
+        {
+            ContactsType c;
+            if (ftParent.Contacts == null)
+                c = AddContactsListToFileType(ftParent);
+            else
+                c = ftParent.Contacts;
+            var ct = new ContactType(c);
+            var count = c.Contact.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            c.Contact.Insert(insertPosition, ct);
+            //TODO: Need to be able to add multiple people/orgs by reading the data source or ORM
+            var p = (this as IAddPerson).AddPersonI(ct);
+            var org = (this as IAddOrganization).AddOrganizationI(ct);
+
+            return ct;
+        }
+        private ContactsType AddContactsListToFileType(FileType ftParent)
+        {
+            if (ftParent.Contacts == null)
+                ftParent.Contacts = new ContactsType(ftParent);
+
+            return ftParent.Contacts; //returns a .NET List<ContactType>
+
+        }
+    }
     public interface IAddOrganization    {
         OrganizationType AddOganization();
 
@@ -1089,7 +1132,7 @@ namespace SDC.Schema
 
 
     }
-    public interface IRules    {    }
+    public interface IRules { }
     public interface IHasConditionalActionsNode
     {
         PredActionType AddConditionalActionsNode();
@@ -1099,7 +1142,6 @@ namespace SDC.Schema
         ParameterItemType AddParameterRefNode();
         ListItemParameterType AddListItemParameterRefNode();
         ParameterValueType AddParameterValueNode();
-
     }
     public interface IHasDataType_SType
     {
@@ -1260,7 +1302,6 @@ namespace SDC.Schema
             return (T)ArrayAddReturnItem(p.Items, act);
         }
     }
-
     public interface INavigate
     {
         protected int GetListIndex<T>(List<T> list, T node) where T : notnull //TODO: could make this an interface feature of all list children
@@ -1401,6 +1442,8 @@ namespace SDC.Schema
     public interface IClone
     {
         BaseType CloneSubtree();
+        BaseType CloneSubtree(BaseType top)
+        { throw new NotImplementedException(); }
     }
 
 }

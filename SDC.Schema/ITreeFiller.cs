@@ -40,22 +40,22 @@ namespace SDC.Schema
 
         #region Other Main Items
 
-        SectionItemType AddSection<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent; //, new();
+        SectionItemType AddSection<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent<T>; //, new();
         SectionBaseType FillSectionBase(SectionBaseType s);
         InjectFormType FillInjectedForm(InjectFormType injForm);
 
-        DisplayedType AddDisplayedItem<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent; //, new();
+        DisplayedType AddDisplayedItem<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent<T>; //, new();
         DisplayedType FillDisplayedTypeItems(DisplayedType dt, Boolean fillData = true);
         RepeatingType FillRepeatingTypeItems(RepeatingType rt, Boolean fillData = true);
         //DisplayedType AddDisplayedItemToList(ListType list);
 
-        ButtonItemType AddButtonAction<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent; //, new();
-        InjectFormType AddInjectedForm<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent; //, new();
+        ButtonItemType AddButtonAction<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent<T>; //, new();
+        InjectFormType AddInjectedForm<T>(T T_Parent, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent<T>; //, new();
 
         #endregion
 
         #region QAS
-        QuestionItemType AddQuestion<T>(T T_Parent, QuestionEnum qType, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent; //, new();
+        QuestionItemType AddQuestion<T>(T T_Parent, QuestionEnum qType, Boolean fillData = true, string id = null) where T : BaseType, IChildItemsParent<T>; //, new();
         QuestionItemBaseType FillQuestionItemBase(QuestionItemBaseType q);
 
         ListFieldType FillListField(ListFieldType lf);

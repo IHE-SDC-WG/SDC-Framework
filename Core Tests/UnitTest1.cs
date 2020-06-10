@@ -11,6 +11,7 @@ using SDC.Schema;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
+using Newtonsoft.Json;
 //using SDC.Schema;
 
 namespace MSTestsCore
@@ -47,6 +48,13 @@ namespace MSTestsCore
             DemogFormDesignType FD = DemogFormDesignType.DeserializeFromXmlPath(path);
             var myXML = FD.GetXml(); 
             Debug.Print(myXML);
+            //Debug.Print(FD.GetJson());
+            var doc = new XmlDocument();
+            doc.LoadXml(myXML);
+            var json = JsonConvert.SerializeXmlNode(doc);
+            Debug.Print(json);
+            doc = JsonConvert.DeserializeXmlNode(json);
+            Debug.Print(doc.OuterXml);
 
         }
         [TestMethod]
@@ -90,6 +98,8 @@ namespace MSTestsCore
             DataElementType DE = DataElementType.DeserializeFromXmlPath(path);
             var myXML = DE.GetXml();
             Debug.Print(myXML);
+            Debug.Print(DE.GetJson());
+
 
         }
         public void DeserializeDEFromXml()
@@ -148,8 +158,8 @@ namespace MSTestsCore
             FD.Clear();
             //var myMP = FD.GetMsgPack();
             //FD.SaveMsgPackToFile("C:\\MPfile");  //also support REST transactions, like sending packages to SDC endpoints; consider FHIR support
-            //var myJson = FD.GetJson();
-            //Debug.Print(myJson);
+            var myJson = FD.GetJson();
+            Debug.Print(myJson);
         }
         
     }

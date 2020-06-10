@@ -75,7 +75,7 @@ public abstract partial class CallFuncBaseType : ExtensionBaseType
         ///    FunctionURI (anyURI_Stype)
         ///    LocalFunctionName (anyURI_Stype)
         /// </summary>
-        [System.Xml.Serialization.XmlElementAttribute("FunctionURI", typeof(anyURI_Stype), Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("FunctionURI", typeof(anyURI_Stype), Order=0)]
     [System.Xml.Serialization.XmlElementAttribute("LocalFunctionName", typeof(anyURI_Stype), Order=0)]
     [System.Xml.Serialization.XmlChoiceIdentifierAttribute("ItemElementName")]
     public virtual anyURI_Stype Item

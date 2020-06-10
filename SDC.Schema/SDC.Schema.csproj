@@ -28,6 +28,7 @@
   <ItemGroup>
     <Compile Remove="IArrayHelpers.cs" />
     <Compile Remove="ITreeBuilder.cs" />
+    <Compile Remove="ITreeFiller.cs" />
     <Compile Remove="Schemas\Customized classes\DataTypesNumeric_DEType.cs" />
     <Compile Remove="Schemas\Schema Classes\BaseType.cs" />
     <Compile Remove="Schemas\Schema Classes\ObjectChangeTracker.cs" />

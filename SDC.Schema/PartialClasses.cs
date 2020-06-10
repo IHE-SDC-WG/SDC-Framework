@@ -559,27 +559,27 @@ namespace SDC.Schema
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
         { //return AddChildItem<SectionItemType, SectionItemType>(this, id, insertPosition); 
-            return ci.AddChildSection2(id, insertPosition); //test of using "this" in the interface
+            return ci.AddChildSectionI(id, insertPosition); //test of using "this" in the interface
             //return sdcTreeBuilder.AddChildSection<SectionItemType>(this, id, insertPosition);
         }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
         {
-            return ci.AddChildQuestionI(this, qType, id, insertPosition);
+            return ci.AddChildQuestionI(qType, id, insertPosition);
             //return sdcTreeBuilder.AddChildQuestion<SectionItemType>(this, qType, id); 
         }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
         {
-            return ci.AddChildInjectedFormI(this, id, insertPosition);
+            return ci.AddChildInjectedFormI(id, insertPosition);
             //return sdcTreeBuilder.AddChildInjectedForm<SectionItemType>(this, id); 
         }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
         {
-            return ci.AddChildButtonActionI(this, id, insertPosition);
+            return ci.AddChildButtonActionI(id, insertPosition);
             //return sdcTreeBuilder.AddChildButtonAction<SectionItemType>(this, id); 
         }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
         {
-            return ci.AddChildDisplayedItemI(this, id, insertPosition);
+            return ci.AddChildDisplayedItemI(id, insertPosition);
             //return sdcTreeBuilder.AddChildDisplayedItem<SectionItemType>(this, id); 
         }
         public bool HasChildItems() => ci.HasChildItemsI(this); //sdcTreeBuilder.HasChildItems(this);
@@ -616,16 +616,16 @@ namespace SDC.Schema
             set { this.Item1 = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return ci.AddChildSection(id, insertPosition); }
+        { return ci.AddChildSectionI(id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return ci.AddChildQuestionI(this, qType, id, insertPosition); }
+        { return ci.AddChildQuestionI(qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return ci.AddChildInjectedFormI(this, id, insertPosition); }
+        { return ci.AddChildInjectedFormI(id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return ci.AddChildButtonActionI(this, id, insertPosition); }
+        { return ci.AddChildButtonActionI(id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return ci.AddChildDisplayedItemI(this, id, insertPosition); }
-        public bool HasChildItems() => ci.HasChildItems();
+        { return ci.AddChildDisplayedItemI(id, insertPosition); }
+        public bool HasChildItems() => ci.HasChildItemsI(ci);
         #endregion
 
         #region IQuestionItem
@@ -803,15 +803,15 @@ namespace SDC.Schema
             set { this.Item = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return ci.AddChildSection(id, insertPosition); }
+        { return ci.AddChildSectionI(id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return ci.AddChildQuestionI(this, qType, id, insertPosition); }
+        { return ci.AddChildQuestionI(qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return ci.AddChildInjectedFormI(this, id, insertPosition); }
+        { return ci.AddChildInjectedFormI(id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return ci.AddChildButtonActionI(this, id, insertPosition); }
+        { return ci.AddChildButtonActionI(id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return ci.AddChildDisplayedItemI(this, id, insertPosition); }
+        { return ci.AddChildDisplayedItemI(id, insertPosition); }
         public bool HasChildItems() => ci.HasChildItems();
         #endregion
 
@@ -1155,7 +1155,7 @@ namespace SDC.Schema
             {
                 if (elementName.Length > 0)
                     ElementName = elementName;
-                //else if (ElementName.Length == 0) ElementName = GetType().ToString().Replace("Type", "").Replace("type", ""); //assign default ElementName from the type.
+                else if (ElementName.Length == 0) ElementName = GetType().ToString().Replace("Type", "").Replace("type", ""); //assign default ElementName from the type.
 
                 if (elementPrefix.Length > 0)
                     ElementPrefix = elementPrefix;
@@ -1254,7 +1254,7 @@ namespace SDC.Schema
             XmlNode xmlNode;
 
             foreach (BaseType bt in obj.Nodes.Values)
-            {   //As we interate through the nodes, we will need code to skip over any non-element node (using i2), 
+            {   //As we interate through the nodes, we will need code to skip over any non-element node, 
                 //and still stay in sync with FD (using iFD). For now, we assume that every nodeList node is an element.
                 //https://docs.microsoft.com/en-us/dotnet/api/system.xml.xmlnodetype?view=netframework-4.8
                 //https://docs.microsoft.com/en-us/dotnet/standard/data/xml/types-of-xml-nodes
@@ -1269,6 +1269,10 @@ namespace SDC.Schema
                 a.Value = iXmlNode.ToString();
                 var e = (XmlElement)xmlNode;
                 e.SetAttributeNode(a);
+
+                //Set the correct Element Name, in case we have errors in the SDC object tree logic
+                bt.ElementName = e.LocalName;
+
 
                 //Create  dictionary to track the matched indexes of the XML and FD node collections
                 dX_obj[iXmlNode] = bt.ObjectGUID;
@@ -1372,9 +1376,9 @@ namespace SDC.Schema
         #region IExtensionBase
         private IExtensionBase eb { get => this; }
         public bool HasExtensionBaseMembers() => eb.HasExtensionBaseMembers();
-        public PropertyType AddProperty(int insertPosition = -1) { return eb.AddProperty(insertPosition); }
-        public CommentType AddComment(int insertPosition = -1) { return eb.AddComment(insertPosition); }
-        public ExtensionType AddExtension(int insertPosition = -1) { return eb.AddExtension(insertPosition); }
+        public PropertyType AddProperty(int insertPosition = -1) { return eb.AddPropertyI(insertPosition); }
+        public CommentType AddComment(int insertPosition = -1) { return eb.AddCommentI(insertPosition); }
+        public ExtensionType AddExtension(int insertPosition = -1) { return eb.AddExtensionI(insertPosition); }
         #endregion
 
 
@@ -1389,7 +1393,7 @@ namespace SDC.Schema
         public ExtensionType(BaseType parentNode) : base(parentNode) { }
         #region IExtensionBaseTypeMember
         public bool Remove() => Iebtm.Remove();
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.Move(this, ebtTarget, newListIndex);
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
         #endregion
 
     }
@@ -1414,7 +1418,7 @@ namespace SDC.Schema
         
         #region IExtensionBaseTypeMember
         public bool Remove() => Iebtm.Remove();
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.Move(this, ebtTarget, newListIndex);
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
         #endregion
 
     }
@@ -1430,7 +1434,7 @@ namespace SDC.Schema
 
         #region IExtensionBaseTypeMember
         public bool Remove() => Iebtm.Remove();
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.Move(this, ebtTarget, newListIndex);
+        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
         #endregion
 
     }
@@ -1579,6 +1583,8 @@ namespace SDC.Schema
         { return idt.AddActivateIfI(); }
         public PredGuardType AddDeActivateIf()
         { return idt.AddDeActivateIfI(); }
+        public bool MoveEvent(EventType ev, List<EventType> targetList = null, int index = -1)
+        { return idt.MoveEventI(ev, targetList, index); }
         #endregion
 
         //#region IChildItemMember
