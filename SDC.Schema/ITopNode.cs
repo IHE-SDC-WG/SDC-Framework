@@ -123,6 +123,7 @@ namespace SDC.Schema
             {
                 Console.WriteLine(ex.Message);
                 ValidationLastMessage = ex.Message;
+                //TODO: Should create error list to deliver all messages to ValidationLastMessage
             }
             return ValidationLastMessage;
 
@@ -145,6 +146,7 @@ namespace SDC.Schema
                     break;
             }
             ValidationLastMessage = e.Message;
+            //Should create error list to deliver all messages to ValidationLastMessage
         }
 
 

@@ -14,28 +14,15 @@ using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using Newtonsoft.Json;
 //using SDC.Schema;
 
-namespace MSTestsCore
+namespace SDC_Tests
 {
     [TestClass]
     public class SDC_XML
     {
-        [TestMethod]
-        public void TestMethod1()
+        public SDC_XML()
         {
-            var serializer = new XmlSerializer(typeof(BaseType));
-
-            (int curr, int prev) Fib(int i)
-            {
-                if (i == 0) return (1, 0);
-                var (curr, prev) = Fib(i - 1);
-                return (curr + prev, curr);
-            }
-
-            var a = Fib(9);
-            var b = a.ToTuple();
         }
 
-       
         [TestMethod]
         public void DeserializeDemogFormDesignFromPath()
         {
@@ -161,28 +148,14 @@ namespace MSTestsCore
             var myJson = FD.GetJson();
             Debug.Print(myJson);
         }
-        
-    }
-
-    public class AddChildDisplayedItem
-    {
-        
-        public AddChildDisplayedItem()
-        {
-            
-        }
-    }
-
-    public class SdcComponents1
-    {
-        
-        public SdcComponents1()
-        {
-            
-        }
 
         [TestMethod]
-        public void Test()
+        public void SdcToJson()
+        {
+            
+        }
+        [TestMethod]
+        public void JsonToXML()
         {
             
         }
@@ -190,9 +163,199 @@ namespace MSTestsCore
 
     }
     [TestClass]
-    public class SdcComponents2
+    public class FormDesignBuilder
+    {
+        
+        public FormDesignBuilder()
+        {
+
+        }
+
+        [TestMethod]
+        public void AddRemoveHeader()
+        {
+            
+        }
+        [TestMethod]
+        public void AddRemoveFooter()
+        {
+            
+        }
+        [TestMethod]
+        public void AddQuestions()
+        {
+            
+        }
+        [TestMethod]
+        public void AddListItemToQuestionList()
+        {
+            
+        }
+        [TestMethod]
+        public void AddListItemOnListItem()
+        {
+            
+        }
+        [TestMethod]
+        public void AdListItemOnDisplayedItem()
+        {
+            
+        }
+        [TestMethod]
+        public void AddDisplayedItemToQuestionList()
+        {
+
+        }
+        [TestMethod]
+        public void AddDisplayedItemOnListItem()
+        {
+
+        }
+        [TestMethod]
+        public void AdDisplayedItemOnDisplayedItem()
+        {
+
+        }
+        [TestMethod]
+        public void AddDisplayedItemAsChild()
+        {
+            
+        }
+        [TestMethod]
+        public void AddQuestionAsChild()
+        { //to LI, DI in List, DI, S, Q
+
+        }
+        [TestMethod]
+        public void AddSectionAsChild()
+        {
+
+        }
+        
+        [TestMethod]
+        public void AddProperties()
+        {
+            
+        }
+        [TestMethod]
+        public void AddComments()
+        {
+            
+        }
+    }
+
+    [TestClass]
+    public class SerializationTests
+    {
+
+        string formDesignWithHtmlXml;
+        string idrXml;
+        string retrieveFormComplexXml;
+        string messageXml;
+        string retrieveFormXml;
+        string demogFormDesignXml;
+        string dataElementXml;
+        string formDesignXml;
+
+        public SerializationTests()
+        {
+        }
+
+        public string FormDesignXml
+        {
+            get => formDesignXml;
+            set => formDesignXml = value;
+        }
+
+        public string DataElementXml
+        {
+            get => dataElementXml;
+            set => dataElementXml = value;
+        }
+
+        public string DemogFormDesignXml
+        {
+            get => demogFormDesignXml;
+            set => demogFormDesignXml = value;
+        }
+
+
+        public string RetrieveFormXml
+        {
+            get => retrieveFormXml;
+            set => retrieveFormXml = value;
+        }
+
+        public string MessageXml
+        {
+            get => messageXml;
+            set => messageXml = value;
+        }
+
+        public string RetrieveFormComplexXml
+        {
+            get => retrieveFormComplexXml;
+            set => retrieveFormComplexXml = value;
+        }
+
+        public string IdrXml
+        {
+            get => idrXml;
+            set => idrXml = value;
+        }
+        
+        public string FormDesignWithHtmlXml
+        {
+            get => formDesignWithHtmlXml;
+            set => formDesignWithHtmlXml = value;
+        }
+        
+
+        [TestMethod]
+        public void RoundtripFormDesign()
+        {
+            
+        }
+        [TestMethod]
+        public void RoundtripDemogFormDesign()
+        {
+
+        }
+        [TestMethod]
+        public void RoundtripDataElement()
+        {
+
+        }
+        [TestMethod]
+        public void RoundtripPackage()
+        {
+
+        }
+        [TestMethod]
+        public void RoundtripComplexPackage()
+        {
+
+        }
+        [TestMethod]
+        public void RoundtripIdr()
+        {
+
+        }
+        [TestMethod]
+        public void RoundtripMap()
+        {
+
+        }
+
+
+    }
+    [TestClass]
+    public class ValidationTests
     {
         private TestContext testContextInstance;
+        public ValidationTests()
+        {
+        }
 
         /// <summary>
         ///Gets or sets the test context which provides
@@ -209,8 +372,214 @@ namespace MSTestsCore
                 testContextInstance = value;
             }
         }
+        [TestMethod]
+        public void ValidateJsonFormDesign()
+        {
+            
+        }
+        [TestMethod]
+        public void ValidateXmlFormDesign()
+        {
+            
+        }
 
+        [TestMethod]
+        public void ValidateXmlDemogFormDesign()
+        {
+
+        }
+
+        public void ValidateXmlPackage()
+        {
+
+        }
+        public void ValidateJsonPackage()
+        {
+
+        }
+
+        [TestMethod]
+        public void ValidateXmlDataElement()
+        {
+
+        }
+
+        [TestMethod]
+        public void ValidateXmlMap()
+        {
+
+        }
+
+    }
+    [TestClass]
+    public class NavigationTests
+    {
+        FormDesignType fd;
+        private TestContext testContextInstance;
+        
+        public FormDesignType FD
+        {
+            get => fd;
+            set => fd = value;
+        }
+        
+        public NavigationTests()
+        {
+            BaseType.ClearTopNode();
+            string path = Path.Combine(".", "Test files", "Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml");
+            fd = FormDesignType.DeserializeFromXmlPath(path);
+        }
+
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext
+        {
+            get
+            {
+                return testContextInstance;
+            }
+            set
+            {
+                testContextInstance = value;
+            }
+        }
+        [TestMethod]
+        public void MoveNext_ListSib()
+        {
+            
+        }
+
+        [TestMethod]
+        public void MovePrev_ListSib()
+        {
+
+        }
+        [TestMethod]
+        public void MoveNext_SameClass()
+        {
+
+        }
+        [TestMethod]
+        public void MoveNext_NextClass()
+        {
+
+        }
+        public void MovePrev_SameClass()
+        {
+
+        }
+        [TestMethod]
+        public void MovePrev_PrevClass()
+        {
+
+        }
+        [TestMethod]
+        public void IsList()
+        {
+            
+        }
+        [TestMethod]
+        public void GetReflectedElementName()
+        {
+            
+        }
+
+        [TestMethod]
+        public void GetNamedItem()
+        {
+            
+        }
+
+        [TestMethod]
+        public void GetReflectedListParent()
+        {
+            
+        }
+        [TestMethod]
+        public void GetNextInList()
+        {
+            
+        }
+        [TestMethod]
+        public void GetPreviousInList()
+        {
+            
+        }
+        [TestMethod]
+        public void GetNextSib()
+        {
+            
+        }
+        [TestMethod]
+        public void GetPrevSib()
+        {
+            
+        }
+
+        [TestMethod]
+        public void GetEventParent()
+        {
+            
+        }
+
+        [TestMethod]
+        public void IsItemChangeAllowed()
+        {
+            
+        }
 
 
     }
+
+    [TestClass]
+    public class MiscTests
+    {   
+        private TestContext testContextInstance;
+        public MiscTests()
+        {
+        }
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext
+        {
+            get
+            {
+                return testContextInstance;
+            }
+            set
+            {
+                testContextInstance = value;
+            }
+
+        }
+
+        [TestMethod]
+        public void Fibonacci()
+        {
+            var serializer = new XmlSerializer(typeof(BaseType));
+
+            (int curr, int prev) Fib(int i)
+            {
+                if (i == 0) return (1, 0);
+                var (curr, prev) = Fib(i - 1);
+                return (curr + prev, curr);
+            }
+
+            var a = Fib(9);
+            var b = a.ToTuple();
+        }
+
+        [TestMethod]
+        public void Test()
+        {
+            
+        }
+
     }
+
+
+}

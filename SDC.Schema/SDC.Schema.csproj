@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="IArrayHelpers.cs" />
     <Compile Remove="ITreeBuilder.cs" />
     <Compile Remove="ITreeFiller.cs" />
     <Compile Remove="Schemas\Customized classes\DataTypesNumeric_DEType.cs" />

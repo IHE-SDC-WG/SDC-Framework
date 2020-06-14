@@ -192,7 +192,7 @@ namespace SDC.Schema
             int? parOrder = null;
             par = item.ParentNode;
             if (par is null) return null;
-            var props = GetXmlElementProps(par);
+            var props = X_GetXmlElementAttributesPIs(par);
             //Get the max Order among all the XmlElementAttributes.  This will be an upper bound for later searching
             int maxOrder = GetMaxOrderFromXmlElementAttributes(par);
 
@@ -237,7 +237,7 @@ namespace SDC.Schema
             }
             return null;
         }
-        internal PropertyInfo[] GetXmlElementProps<T>(T item) where T : class
+        internal PropertyInfo[] X_GetXmlElementAttributesPIs<T>(T item) where T : class
         {
             var props = item.GetType().GetProperties();
             if (props is null) return null;
@@ -253,7 +253,7 @@ namespace SDC.Schema
         }
         internal int GetMaxOrderFromXmlElementAttributes(BaseType item)
         {
-            var props = GetXmlElementProps(item);
+            var props = X_GetXmlElementAttributesPIs(item);
 
             //Get the max Order among all the XmlElementAttributes in props.  This will be an upper bound for later searching
             int maxOrder = -1;
@@ -268,6 +268,76 @@ namespace SDC.Schema
             return maxOrder;
 
         }
+        internal XmlChoiceIdentifierAttribute GetXmlChoiceIdentifierAttribute<T>(T item) where T : BaseType
+        {
+            var xci = (XmlChoiceIdentifierAttribute) Attribute.GetCustomAttribute(item.GetType(), typeof(XmlChoiceIdentifierAttribute));
+            return xci;           
+        }
+        internal XmlElementAttribute[] GetXmlElementAttributes<T>(T item) where T : BaseType
+        {
+            XmlElementAttribute[] xea = (XmlElementAttribute[])Attribute.GetCustomAttributes(item.GetType(), typeof(XmlElementAttribute));
+            return xea;
+        }
+
+        public string GetItemElementName<T>(T item, int? index = null) where T : BaseType
+        {
+            XmlChoiceIdentifierAttribute xci = GetXmlChoiceIdentifierAttribute(item);
+
+            var par = item.ParentNode;
+            string val = "";
+            if (par is null) 
+
+            if (xci != null) //We have to look up the name in a name enumeration
+                {
+                    var piEnum = par.GetType().GetProperty(xci.MemberName);  //should return a PropertyInfo for the XmlChoiceIdentifier property
+                    if (piEnum is null) throw new TypeAccessException("Could not locate property by reflection of XmlChoiceIdentifierAttribute");
+
+                    if (piEnum.ReflectedType is IEnumerable<BaseType>)
+                    {//we have a list or array here 
+                        //we need the list position of item to look up its enum value
+                        if (index == null) throw new TypeAccessException("Could not locate property by reflection of XmlChoiceIdentifierAttribute because the list index was null ");
+                        var e1 = piEnum.GetValue(par, new object[] { index });  //should return an Enum from a list or array of enums
+                        if (e1 is null || !(e1.GetType().IsSubclassOf(typeof(Enum)))) throw new TypeAccessException("Could not obtain Enum property by reflection of XmlChoiceIdentifierAttribute");
+                        val = (e1 as Enum).ToString();
+                        return val;
+                    }
+                    else
+                    { //the name is found in a simple enumeration, not an array of Enums
+                        var e2 = piEnum.GetValue(par) as Enum;//get the enum object (not a List of Enum type)
+                        if (e2 is null) throw new TypeAccessException("Could not obtain Enum from reflection of XmlChoiceIdentifierAttribute");
+                        val = (e2 as Enum).ToString();
+                        return val;
+                    }
+                    
+                }
+            //the item name is not found in an enum.  It's either the property name itself, or found in an XML element attribute.
+
+
+
+            //the item name is not found in an enum or in a list of parent XmlElementAttributes.  It's either the property name itself, or found in an XML element attribute.
+            //XmlChoiceIdentifierAttribute not present on item, but there may be a list of XmlElementAttributes, only one of which is the right type to match
+            XmlElementAttribute[] xea = GetXmlElementAttributes(item);
+            var n = xea.Where(n => n.Type == item.GetType()).ToArray();  //there should be only a singel match to the property type.
+            if (n.Count() > 1) throw new TypeAccessException("Could not obtain a unique element name by matching the item type");
+            if (n[0] != null || string.IsNullOrEmpty(n[0].ElementName) )
+            {
+                val = n[0].ElementName;
+                return val;
+            }
+            else //no usable XmlElementAttribute attributes found to deteremine ElementName, so look for the actual property name on the parent object, if we can find it.
+            {
+                var props = par.GetType().GetProperties().Where(n => n.GetType() == item.GetType() && n.GetValue(item) == item).ToList();
+                if (props.Count == 1)
+                { val = props[0].Name; }  //name ot the matching property on the parent type
+                else
+                { throw new TypeAccessException("Could not obtain ElementName by reflecting parent properties"); }
+            }
+                 
+            return null;
+
+        }
+
+
         internal (string, int?) GetXmlElementNameOrder(BaseType item)  //tuple return
         {
             //See if item has a single XML element attribute, so we can extract the name.
@@ -290,21 +360,24 @@ namespace SDC.Schema
             //and see if our item is inside one of the parent's properties (i.e., in a List or Array parent object)
             var par = item.ParentNode;
             if (par is null) return (null, -2);
-            //TODO: Do we need to check to see if par is a List vs Array, vs neither?
-            PropertyInfo parPI = par.GetType()
-                .GetProperties() //check the properties on the parent object
-                .Where(p => (p.GetValue(p) as BaseType) == item)? //find a property of the ParentNode that refers to our item object
-                .First(); //Get the matching property - there can only be one match in SDC object trees
-            if (parPI is null) return (null, -3); //so where is that item node??? Do we need to go higher in the object tree to find it?
-
-            int? count = parPI.GetCustomAttributes<XmlElementAttribute>()?.Count();
-            if (count == 1)
+            //check to see if par is a List vs Array, vs neither?
+            if (!(par is IEnumerable<BaseType>))
             {
-                elName = parPI.GetCustomAttributes<XmlElementAttribute>()?
-                    .First()?.ElementName; //get elName from XmlElementAttribute, if present
+                PropertyInfo parPI = par.GetType()
+                    .GetProperties() //check the properties on par
+                    .Where(p => (p.GetValue(p) as BaseType) == item)? //find a property of the ParentNode that refers to our item object
+                    .First(); //Get the matching property - there can only be one match in SDC object trees
+                if (parPI is null) return (null, -3); //so where is that item node??? Do we need to go higher in the object tree to find it?
 
-                if (string.IsNullOrEmpty(elName)) 
-                    elName = parPI.Name; //get elName from the property Name itself, since it wasn't found in the XmlElementAttribute
+                int? count = parPI.GetCustomAttributes<XmlElementAttribute>()?.Count();
+                if (count == 1)
+                {
+                    elName = parPI.GetCustomAttributes<XmlElementAttribute>()?
+                        .First()?.ElementName; //get elName from XmlElementAttribute, if present
+
+                    if (string.IsNullOrEmpty(elName))
+                        elName = parPI.Name; //get elName from the property Name itself, since it wasn't found in the XmlElementAttribute
+                }
             }
 
             //Check for XMLChoiceIdentifierAttribute if we are on a parent Array--> look up name in the ItemTypeChoice enum

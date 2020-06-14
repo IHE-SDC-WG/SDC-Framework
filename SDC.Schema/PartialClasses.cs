@@ -2873,87 +2873,45 @@ namespace SDC.Schema
 
 
     #endregion
-
-    #region Events
-    public partial class OnEventType : IDisplayedTypeMember
+    #region PredActions
+    //AttributeEval -       AttributeEvalActionType (actions)
+    //ScriptBoolFunc -      ScriptBoolFuncActionType (actions)
+    //CallBoolFunction -    CallFuncBoolActionType (actions)
+    //MultiSelections -     MultiSelectionsActionType
+    //SelectionSets -       SelectionSetsActionType (rule)
+    //SelectionTest -       SelectionTestActionType
+    //Group -               PredActionType (events)
+    //SelectMatchingListItems - RuleSelectMatchingListItemsType (actions)
+    public partial class MultiSelectionsActionType
+    {       
+        protected MultiSelectionsActionType()
+        { }
+        public MultiSelectionsActionType(BaseType parentNode) : base(parentNode )
+        { }
+    }
+    public partial class SelectionTestActionType
     {
-        protected OnEventType() { }
-        public OnEventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
-        {
-            ElementPrefix = "onev";
-            SetNames(elementName, elementPrefix);
-        }
+        protected SelectionTestActionType()
+        {}
+        public SelectionTestActionType(BaseType parentNode) : base(parentNode)
+        { }
     }
 
-    public partial class RulesType
+    public partial class PredMultiSelectionSetBoolType
     {
-        protected RulesType() { }
-        public RulesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
-        {
-            ElementPrefix = "rul";
-            SetNames(elementName, elementPrefix);
-        }
-    }
-
-    public partial class EventType : IDisplayedTypeMember
-    {
-        protected EventType() { }
-        public EventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
-        {
-            ElementPrefix = "evnt";
-            SetNames(elementName, elementPrefix);
-        }
-    }
-
-    public partial class PredGuardType : IDisplayedTypeMember
-    {
-        
-        protected PredGuardType() { }
-        public PredGuardType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
-        {
-            this._not = false;
-            this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
-        }
-    }
-
-
-
-
-    public partial class PredActionType 
-    {
-        protected PredActionType() { }
-        public PredActionType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
-        {
-            this._not = false;
-            this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
-
-            ElementPrefix = "cga";
-            SetNames(elementName, elementPrefix);
-        }
-
-    }
-
-    public partial class FuncBoolBaseType 
-    {
-        protected FuncBoolBaseType() { }
-        public FuncBoolBaseType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
-        {
-            this._allowNull = true;
-            ElementPrefix = "fbb";
-            SetNames(elementName, elementPrefix);
-        }
-
+        protected PredMultiSelectionSetBoolType() { }
+        public PredMultiSelectionSetBoolType(BaseType parentNode) : base(parentNode)
+        { }
     }
 
 
     #endregion
-
     #region  Actions
 
     public partial class ActionsType:IAction
     {
         protected ActionsType() { }
-        public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { }
+        public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { ElementName = "Actions"; }
 
         public ActActionType AddActAction(int insertPosition = -1)
         {
@@ -3053,7 +3011,7 @@ namespace SDC.Schema
     public partial class ActActionType
     {
         protected ActActionType() { }
-        public ActActionType(ActionsType parentNode) : base(parentNode) { }
+        public ActActionType(ActionsType parentNode) : base(parentNode) { ElementName = "Action"; }
         [XmlIgnore]
         public List<ExtensionBaseType> ActAction_Items
         {
@@ -3071,29 +3029,29 @@ namespace SDC.Schema
     public partial class RuleSelectMatchingListItemsType
     {
         protected RuleSelectMatchingListItemsType() { }
-        public RuleSelectMatchingListItemsType(ActionsType parentNode) : base(parentNode) { }
+        public RuleSelectMatchingListItemsType(ActionsType parentNode) : base(parentNode) { ElementName = "SelectMatchingListItems"; }
     }
     public partial class ActAddCodeType
     {
         protected ActAddCodeType() { }
-        public ActAddCodeType(ActionsType parentNode) : base(parentNode) { }
+        public ActAddCodeType(ActionsType parentNode) : base(parentNode) { ElementName = "AddCode"; }
 
     }
     public partial class ActInjectType : InjectFormType
     {
         protected ActInjectType() { }
-        public ActInjectType(ActionsType parentNode) : base(parentNode) { }
+        public ActInjectType(ActionsType parentNode) : base(parentNode) { ElementName = "Inject"; }
 
     }
     public partial class ActSaveResponsesType
     {
         protected ActSaveResponsesType() { }
-        public ActSaveResponsesType(ActionsType parentNode) : base(parentNode) { }
+        public ActSaveResponsesType(ActionsType parentNode) : base(parentNode) { ElementName = "Save"; }
     }
     public partial class ActSendReportType
     {
         protected ActSendReportType() { }
-        public ActSendReportType(ActionsType parentNode) : base(parentNode) { }
+        public ActSendReportType(ActionsType parentNode) : base(parentNode) { ElementName = "SendReport"; }
 
         internal List<ExtensionBaseType> Email_Phone_WebSvc_List
         {
@@ -3104,7 +3062,7 @@ namespace SDC.Schema
     public partial class ActSendMessageType
     {
         protected ActSendMessageType() { }
-        public ActSendMessageType(ActionsType parentNode) : base(parentNode) { }
+        public ActSendMessageType(ActionsType parentNode) : base(parentNode) { ElementName = "SendMessage"; } //"SendMessage111" in Schema
 
         /// <summary>
         /// List<BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
@@ -3118,21 +3076,23 @@ namespace SDC.Schema
     public partial class ActSetAttributeType
     {
         protected ActSetAttributeType() { }
-        public ActSetAttributeType(ActionsType parentNode) : base(parentNode) { }
+        public ActSetAttributeType(ActionsType parentNode) : base(parentNode) { ElementName = "SetAttributeValue"; }
     }
     public partial class ActSetAttrValueScriptType
     {
         protected ActSetAttrValueScriptType() { }
-        public ActSetAttrValueScriptType(ActionsType parentNode) : base(parentNode) { }
+        public ActSetAttrValueScriptType(ActionsType parentNode) : base(parentNode) { ElementName = "SetAttributeValueScript"; }
     }
     public partial class ActSetBoolAttributeValueCodeType
     {
         protected ActSetBoolAttributeValueCodeType()
         {
+            ElementName = "SetBoolAttributeValueCode";
             this._attributeName = "val";
         }
         public ActSetBoolAttributeValueCodeType(ActionsType parentNode) : base(parentNode)
         {
+            ElementName = "SetBoolAttributeValueCode";
             this._attributeName = "val";
         }
     }
@@ -3140,36 +3100,40 @@ namespace SDC.Schema
     {
         protected ScriptCodeBoolType()
         {
+            ElementName = "";
             this._not = false;
         }
         public ScriptCodeBoolType(ActionsType parentNode) : base(parentNode)
-        { this._not = false; }
+        {
+            ElementName = "";
+            this._not = false; }
     }
     public partial class ActShowFormType
     {
         protected ActShowFormType() { }
-        public ActShowFormType(ActionsType parentNode) : base(parentNode) { }
+        public ActShowFormType(ActionsType parentNode) : base(parentNode) { ElementName = "ShowForm"; }
     }
     public partial class ActShowMessageType
     {
         protected ActShowMessageType() { }
-        public ActShowMessageType(ActionsType parentNode) : base(parentNode) { }
+        public ActShowMessageType(ActionsType parentNode) : base(parentNode) { ElementName = "ShowMessage"; }
     }
     public partial class ActShowReportType
     {
         protected ActShowReportType() { }
-        public ActShowReportType(ActionsType parentNode) : base(parentNode) { }
+        public ActShowReportType(ActionsType parentNode) : base(parentNode) { ElementName = "ShowReport"; }
     }
     public partial class ActPreviewReportType
     {
         protected ActPreviewReportType() { }
-        public ActPreviewReportType(ActionsType parentNode) : base(parentNode) { }
+        public ActPreviewReportType(ActionsType parentNode) : base(parentNode) { ElementName = "PreviewReport"; }
     }
     public partial class ActValidateFormType
     {
         protected ActValidateFormType() { }
         public ActValidateFormType(ActionsType parentNode) : base(parentNode)
         {
+            ElementName = "ValidateForm";
             this._validateDataTypes = false;
             this._validateRules = false;
             this._validateCompleteness = false;
@@ -3182,7 +3146,7 @@ namespace SDC.Schema
     public partial class ScriptBoolFuncActionType
     {
         protected ScriptBoolFuncActionType() { }
-        public ScriptBoolFuncActionType(ActionsType parentNode) : base(parentNode) { }
+        public ScriptBoolFuncActionType(ActionsType parentNode) : base(parentNode) { ElementName = "ScriptBoolFunc"; }
     }
 
     public partial class ScriptCodeAnyType
@@ -3191,6 +3155,7 @@ namespace SDC.Schema
             this._dataType = "string";
         }
         public ScriptCodeAnyType(ActionsType parentNode) : base(parentNode) {
+            ElementName = "RunCode";
             this._dataType = "string";
         }
     }
@@ -3198,6 +3163,7 @@ namespace SDC.Schema
     {
         protected ScriptCodeBaseType()
         {
+            ElementName = "";
             this._returnList = false;
             this._listDelimiter = "|";
             this._allowNull = true;
@@ -3205,6 +3171,7 @@ namespace SDC.Schema
 
         public ScriptCodeBaseType(ActionsType parentNode) : base(parentNode)
         {
+            ElementName = "";
             this._returnList = false;
             this._listDelimiter = "|";
             this._allowNull = true;
@@ -3213,14 +3180,14 @@ namespace SDC.Schema
     public partial class CallFuncActionType
     {
         protected CallFuncActionType() { }
-        public CallFuncActionType(ActionsType parentNode) : base(parentNode) { }
+        public CallFuncActionType(ActionsType parentNode) : base(parentNode) { ElementName = "CallFunction"; }
     }
 
 
     public partial class CallFuncBoolActionType
     {
         protected CallFuncBoolActionType() { }
-        public CallFuncBoolActionType(ActionsType parentNode) : base(parentNode) { }
+        public CallFuncBoolActionType(ActionsType parentNode) : base(parentNode) { ElementName = "CallBoolFunction"; }
     }
 
 
@@ -3233,6 +3200,80 @@ namespace SDC.Schema
 
 
     #endregion
+    #region Events
+    public partial class OnEventType : IDisplayedTypeMember
+    {
+        protected OnEventType() { }
+        public OnEventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            ElementPrefix = "onev";
+            SetNames(elementName, elementPrefix);
+        }
+    }
+
+    public partial class RulesType
+    {
+        protected RulesType() { }
+        public RulesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            ElementPrefix = "rul";
+            SetNames(elementName, elementPrefix);
+        }
+    }
+
+    public partial class EventType : IDisplayedTypeMember
+    {
+        protected EventType() { }
+        public EventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            ElementPrefix = "evnt";
+            SetNames(elementName, elementPrefix);
+        }
+    }
+
+    public partial class PredGuardType : IDisplayedTypeMember
+    {
+        
+        protected PredGuardType() { }
+        public PredGuardType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+            this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
+        }
+    }
+
+
+
+
+    public partial class PredActionType 
+    {
+        protected PredActionType() { }
+        public PredActionType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._not = false;
+            this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
+
+            ElementPrefix = "cga";
+            SetNames(elementName, elementPrefix);
+        }
+
+    }
+
+    public partial class FuncBoolBaseType 
+    {
+        protected FuncBoolBaseType() { }
+        public FuncBoolBaseType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            this._allowNull = true;
+            ElementPrefix = "fbb";
+            SetNames(elementName, elementPrefix);
+        }
+
+    }
+
+
+    #endregion
+
     #region Contacts
 
     public partial class ContactType : IDisplayedTypeMember, IAddPerson, IAddOrganization
@@ -3325,7 +3366,7 @@ namespace SDC.Schema
         protected ComplianceRuleType() { }
         public ComplianceRuleType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "cmpr";
+            this.ElementPrefix = "cr";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3335,7 +3376,7 @@ namespace SDC.Schema
         protected SubmissionRuleType() { }
         public SubmissionRuleType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "subr";
+            this.ElementPrefix = "sr";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3357,7 +3398,7 @@ namespace SDC.Schema
         protected IdentifierType() { }
         public IdentifierType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "idn";
+            this.ElementPrefix = "id";
             SetNames(elementName, elementPrefix);
 
         }
@@ -3368,7 +3409,7 @@ namespace SDC.Schema
         protected LanguageCodeISO6393_Type() { }
         public LanguageCodeISO6393_Type(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "lngc";
+            this.ElementPrefix = "lc";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3378,7 +3419,7 @@ namespace SDC.Schema
         protected LanguageType() { }
         public LanguageType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "lang";
+            this.ElementPrefix = "lng";
             SetNames(elementName, elementPrefix);
 
         }
@@ -3434,7 +3475,7 @@ namespace SDC.Schema
         protected ContactsType() { }
         public ContactsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "cont";
+            this.ElementPrefix = "ctc";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3444,7 +3485,7 @@ namespace SDC.Schema
         protected CountryCodeType() { }
         public CountryCodeType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "cycd";
+            ElementPrefix = "ctc";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3454,7 +3495,7 @@ namespace SDC.Schema
         protected DestinationType() { }
         public DestinationType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "dest";
+            ElementPrefix = "dst";
             SetNames(elementName, elementPrefix);
 
         }
@@ -3499,7 +3540,7 @@ namespace SDC.Schema
         protected EmailAddressType() { }
         public EmailAddressType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "emad";
+            ElementPrefix = "emd";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3509,7 +3550,7 @@ namespace SDC.Schema
         protected EmailType() { }
         public EmailType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "eml";
+            ElementPrefix = "em";
             SetNames(elementName, elementPrefix);
             //this.Usage = new string_Stype();
             //this.EmailClass = new string_Stype();
@@ -3527,7 +3568,7 @@ namespace SDC.Schema
         protected ApprovalType() { }
         public ApprovalType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "appr";
+            ElementPrefix = "app";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3537,7 +3578,7 @@ namespace SDC.Schema
         protected AssociatedFilesType() { }
         public AssociatedFilesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "asfils";
+            ElementPrefix = "asf";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3558,7 +3599,7 @@ namespace SDC.Schema
         protected FileDatesType() { }
         public FileDatesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "fildts";
+            ElementPrefix = "fld";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3567,7 +3608,7 @@ namespace SDC.Schema
         protected FileHashType() { }
         public FileHashType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "filhsh";
+            ElementPrefix = "flh";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3577,7 +3618,7 @@ namespace SDC.Schema
         protected FileType() { }
         public FileType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "file";
+            ElementPrefix = "fil";
             SetNames(elementName, elementPrefix);
         }
     }
@@ -3587,7 +3628,7 @@ namespace SDC.Schema
         protected FileUsageType() { }
         public FileUsageType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "filus";
+            ElementPrefix = "flu";
             SetNames(elementName, elementPrefix);
         }
     }

@@ -57,7 +57,7 @@ public partial class ActValidateFormType : ExtensionBaseType
     //    this._validateCompleteness = false;
     //}
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual CallFuncActionType ValidationWebService
     {
         get
