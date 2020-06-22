@@ -678,7 +678,7 @@ namespace SDC.Schema
     }
     public interface IQuestionBase
     {
-        ListFieldType ListField_Item { get; set; }
+        //ListFieldType ListField_Item { get; set; }
         ResponseFieldType ResponseField_Item { get; set; }
     }
     public interface IListItem
@@ -856,16 +856,16 @@ namespace SDC.Schema
             switch (this)
             {
                 case PropertyType prop:
-                    var p = GetListParent(prop);
-                    if (IsList(p)) { p.Remove(prop); return true; }
+                    var p = GetStatedListParent(prop);
+                    if (IsGenericList(p)) { p.Remove(prop); return true; }
                     return false;
                 case CommentType cmt:
-                    var pct = GetListParent(cmt);
-                    if (IsList(pct)) { pct.Remove(cmt); return true; }
+                    var pct = GetStatedListParent(cmt);
+                    if (IsGenericList(pct)) { pct.Remove(cmt); return true; }
                     return false;
                 case ExtensionType et:
-                    var pet = GetListParent(et);
-                    if (IsList(pet)) { pet.Remove(et); return true; }
+                    var pet = GetStatedListParent(et);
+                    if (IsGenericList(pet)) { pet.Remove(et); return true; }
                     return false;
                 default: return false;
             }

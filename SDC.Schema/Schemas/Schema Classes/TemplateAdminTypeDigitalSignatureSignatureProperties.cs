@@ -43,7 +43,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
     private TemplateAdminTypeDigitalSignatureSignaturePropertiesImage _image;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Signer", Order=0)]
     public virtual ContactType Signer
     {
         get
@@ -65,7 +65,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("SignerPublicKeyCertificate", Order=1)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesSignerPublicKeyCertificate SignerPublicKeyCertificate
     {
         get
@@ -87,7 +87,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("SignatureReason", Order=2)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesSignatureReason SignatureReason
     {
         get
@@ -109,7 +109,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("SignatureDateTimeStamp", Order=3)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesSignatureDateTimeStamp SignatureDateTimeStamp
     {
         get
@@ -131,7 +131,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("X_CertificateAuthority", Order=4)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesX_CertificateAuthority X_CertificateAuthority
     {
         get
@@ -153,7 +153,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("X_SignerPublicKey", Order=5)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesX_SignerPublicKey X_SignerPublicKey
     {
         get
@@ -175,7 +175,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("X_SignatureAlgorithm", Order=6)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesX_SignatureAlgorithm X_SignatureAlgorithm
     {
         get
@@ -197,7 +197,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("Image", Order=7)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesImage Image
     {
         get

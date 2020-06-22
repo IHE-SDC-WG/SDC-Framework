@@ -72,7 +72,7 @@ public partial class OrganizationType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("Department", Order=1)]
     public virtual string_Stype Department
     {
         get
@@ -256,7 +256,7 @@ public partial class OrganizationType : ExtensionBaseType
     /// When this organization should be
     /// contacted.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+    [System.Xml.Serialization.XmlElementAttribute("Usage", Order=9)]
     public virtual string_Stype Usage
     {
         get

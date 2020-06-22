@@ -45,7 +45,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// coding system curators, or as recommended by the agency that creates
     /// standards for the code map in use.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("CodeSystemName", Order=0)]
     public virtual string_Stype CodeSystemName
     {
         get
@@ -70,7 +70,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// The day that the selected version of the coding system was released for general use by the coding system curators.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("ReleaseDate", Order=1)]
     public virtual dateTime_Stype ReleaseDate
     {
         get
@@ -95,7 +95,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// Version of the coding system, using the version format defined by the coding system
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("Version", Order=2)]
     public virtual string_Stype Version
     {
         get
@@ -120,7 +120,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// The ISO object identifier (OID) for the coding system, as found at the HL7 OID Registry: https://www.hl7.org/oid/index.cfm
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("OID", Order=3)]
     public virtual string_Stype OID
     {
         get
@@ -145,7 +145,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// Web resource that uniquely identifies the coding system
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("CodeSystemURI", Order=4)]
     public virtual anyURI_Stype CodeSystemURI
     {
         get

@@ -31,7 +31,7 @@ public partial class MultiSelectionsActionType : PredMultiSelectionSetBoolType
     private List<PredActionType> _else;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Actions", Order=0)]
     public virtual ActionsType Actions
     {
         get

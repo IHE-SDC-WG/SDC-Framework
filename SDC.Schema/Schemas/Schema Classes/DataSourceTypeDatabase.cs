@@ -29,7 +29,7 @@ public partial class DataSourceTypeDatabase : DataStoreType
     private SQL_Type _sQL;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("SQL", Order=0)]
     public virtual SQL_Type SQL
     {
         get

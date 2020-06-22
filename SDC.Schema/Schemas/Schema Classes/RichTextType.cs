@@ -35,7 +35,7 @@ public partial class RichTextType : ExtensionBaseType
     private string _val;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("RichText", Order=0)]
     public virtual HTML_Stype RichText
     {
         get

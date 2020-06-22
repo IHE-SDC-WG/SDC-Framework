@@ -91,7 +91,7 @@ public partial class PredActionType : FuncBoolBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("Actions", Order=1)]
     public virtual ActionsType Actions
     {
         get

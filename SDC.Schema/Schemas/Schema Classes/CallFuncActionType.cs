@@ -40,7 +40,7 @@ public partial class CallFuncActionType : CallFuncType
     /// Conditions may be combined by Boolean operators and nested to any
     /// level.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("ConditionalActions", Order=0)]
     public virtual PredActionType ConditionalActions
     {
         get

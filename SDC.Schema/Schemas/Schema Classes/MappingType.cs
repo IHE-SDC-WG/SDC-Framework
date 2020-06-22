@@ -42,7 +42,7 @@ public partial class MappingType : ExtensionBaseType
     /// <summary>
     /// Specifies the default coding system to be implied for all MappedCode elements listed in thte ItemMap entries.  Any CodeSystem explicitly used in a MappedCode entry will override the default value.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("DefaultCodeSystem", Order=0)]
     public virtual CodeSystemType DefaultCodeSystem
     {
         get

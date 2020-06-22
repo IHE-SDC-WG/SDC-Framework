@@ -34,7 +34,7 @@ public partial class ContactType : ExtensionBaseType
     private OrganizationType _organization;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Person", Order=0)]
     public virtual PersonType Person
     {
         get
@@ -56,7 +56,7 @@ public partial class ContactType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("Organization", Order=1)]
     public virtual OrganizationType Organization
     {
         get

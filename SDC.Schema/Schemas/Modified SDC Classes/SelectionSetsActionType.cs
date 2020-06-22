@@ -43,7 +43,7 @@ public partial class SelectionSetsActionType : PredSingleSelectionSetsType
     //    this._not = false;
     //}
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Actions", Order=0)]
     public virtual ActionsType Actions
     {
         get

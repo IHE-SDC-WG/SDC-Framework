@@ -46,7 +46,7 @@ public partial class FileDatesType : ExtensionBaseType
     private List<dateTime_Stype> _otherDate;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("FileDate", Order=0)]
     public virtual dateTime_Stype FileDate
     {
         get
@@ -90,7 +90,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("ReleaseDate", Order=2)]
     public virtual dateTime_Stype ReleaseDate
     {
         get
@@ -112,7 +112,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("EffectiveDate", Order=3)]
     public virtual dateTime_Stype EffectiveDate
     {
         get
@@ -134,7 +134,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("FirstReleaseDate", Order=4)]
     public virtual dateTime_Stype FirstReleaseDate
     {
         get
@@ -156,7 +156,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("UsageStartDate", Order=5)]
     public virtual dateTime_Stype UsageStartDate
     {
         get
@@ -178,7 +178,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("RetirementDate", Order=6)]
     public virtual dateTime_Stype RetirementDate
     {
         get

@@ -42,7 +42,7 @@ public partial class DataStoreType : ExtensionBaseType
     /// <summary>
     /// Logon credentials should be provided only if the connection is trusted, secure, and encrypted.  Whenever possible, this information should not be communicated in this manner, and another security model should be adopted.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("SecurityInfo", Order=0)]
     public virtual DataStoreTypeSecurityInfo SecurityInfo
     {
         get
@@ -67,7 +67,7 @@ public partial class DataStoreType : ExtensionBaseType
     /// <summary>
     /// The path to the database server.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("DataStoreLocation", Order=1)]
     public virtual string_Stype DataStoreLocation
     {
         get
@@ -89,7 +89,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("DatabaseSoftware", Order=2)]
     public virtual string_Stype DatabaseSoftware
     {
         get
@@ -111,7 +111,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("DatabaseName", Order=3)]
     public virtual string_Stype DatabaseName
     {
         get
@@ -133,7 +133,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("ConnectiontonString", Order=4)]
     public virtual string_Stype ConnectiontonString
     {
         get
@@ -155,7 +155,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("OtherConnectionParameters", Order=5)]
     public virtual string_Stype OtherConnectionParameters
     {
         get

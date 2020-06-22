@@ -38,7 +38,7 @@ public partial class DestinationType : ExtensionBaseType
     private OrganizationType _organization;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Endpoint", Order=0)]
     public virtual anyURI_Stype Endpoint
     {
         get
@@ -60,7 +60,7 @@ public partial class DestinationType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("EndpointDescription", Order=1)]
     public virtual string_Stype EndpointDescription
     {
         get
@@ -104,7 +104,7 @@ public partial class DestinationType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("Organization", Order=3)]
     public virtual OrganizationType Organization
     {
         get

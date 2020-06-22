@@ -64,7 +64,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("CountryCode", Order=1)]
     public virtual CountryCodeType CountryCode
     {
         get
@@ -86,7 +86,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("AreaCode", Order=2)]
     public virtual AreaCodeType AreaCode
     {
         get
@@ -108,7 +108,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("PhoneNumber", Order=3)]
     public virtual PhoneNumberType PhoneNumber
     {
         get
@@ -130,7 +130,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("PhoneExtension", Order=4)]
     public virtual string_Stype PhoneExtension
     {
         get
@@ -155,7 +155,7 @@ public partial class PhoneType : ExtensionBaseType
     /// <summary>
     /// When this phone number should be used
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("Usage", Order=5)]
     public virtual string_Stype Usage
     {
         get

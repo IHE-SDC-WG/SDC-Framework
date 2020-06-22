@@ -102,7 +102,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// control form rendering according to user
     /// preferences.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("BeforeLoadForm", Order=0)]
     public virtual EventType BeforeLoadForm
     {
         get
@@ -130,7 +130,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// visible. For example, It may be used to determine the data to be
     /// loaded and to perform the data loading.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("BeforeLoadData", Order=1)]
     public virtual EventType BeforeLoadData
     {
         get
@@ -158,7 +158,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// is displayed. It may be used to perform form activities that are
     /// controlled by the loaded data.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("BeforeShowForm", Order=2)]
     public virtual EventType BeforeShowForm
     {
         get
@@ -180,7 +180,7 @@ public partial class FormDesignType : IdentifiedExtensionType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("BeforeDataSubmit", Order=3)]
     public virtual EventType BeforeDataSubmit
     {
         get
@@ -202,7 +202,7 @@ public partial class FormDesignType : IdentifiedExtensionType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("BeforeCloseForm", Order=4)]
     public virtual EventType BeforeCloseForm
     {
         get
@@ -254,7 +254,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// Optional Section that stays at the top of a
     /// form.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("Header", Order=6)]
     public virtual SectionItemType Header
     {
         get
@@ -279,7 +279,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// <summary>
     /// Main Section of form
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("Body", Order=7)]
     public virtual SectionItemType Body
     {
         get
@@ -305,7 +305,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// Optional Section that stays at the bottom of a
     /// form.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("Footer", Order=8)]
     public virtual SectionItemType Footer
     {
         get
@@ -327,7 +327,7 @@ public partial class FormDesignType : IdentifiedExtensionType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+    [System.Xml.Serialization.XmlElementAttribute("Rules", Order=9)]
     public virtual RulesType Rules
     {
         get

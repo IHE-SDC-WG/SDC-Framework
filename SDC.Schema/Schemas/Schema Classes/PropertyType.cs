@@ -52,7 +52,7 @@ public partial class PropertyType : ExtensionBaseType
     /// <summary>
     /// Contains optional typed data.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("TypedValue", Order=0)]
     public virtual DataTypes_SType TypedValue
     {
         get

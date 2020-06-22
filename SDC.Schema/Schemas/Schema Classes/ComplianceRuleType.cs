@@ -38,7 +38,7 @@ public partial class ComplianceRuleType : ExtensionBaseType
     private string _formID;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Description", Order=0)]
     public virtual string_Stype Description
     {
         get

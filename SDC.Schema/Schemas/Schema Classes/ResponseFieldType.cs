@@ -50,7 +50,7 @@ public partial class ResponseFieldType : ExtensionBaseType
     /// <summary>
     /// W3C Schema data type details
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Response", Order=0)]
     public virtual DataTypes_DEType Response
     {
         get
@@ -100,7 +100,7 @@ public partial class ResponseFieldType : ExtensionBaseType
     /// the right of) the user's response on the data entry form. This may
     /// be text for units such as "mm", "cm", etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("TextAfterResponse", Order=2)]
     public virtual RichTextType TextAfterResponse
     {
         get
@@ -122,7 +122,7 @@ public partial class ResponseFieldType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("ResponseUnits", Order=3)]
     public virtual UnitsType ResponseUnits
     {
         get

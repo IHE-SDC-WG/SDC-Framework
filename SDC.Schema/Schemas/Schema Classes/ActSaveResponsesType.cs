@@ -34,7 +34,7 @@ public partial class ActSaveResponsesType : ExtensionBaseType
     private RichTextType _messageText;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("MessageText", Order=0)]
     public virtual RichTextType MessageText
     {
         get

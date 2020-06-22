@@ -53,7 +53,7 @@ public partial class VersionType : ExtensionBaseType
     /// <summary>
     /// Information about the document that describes the versioning methodology nomenclature.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("VersioningReference", Order=0)]
     public virtual FileType VersioningReference
     {
         get
@@ -78,7 +78,7 @@ public partial class VersionType : ExtensionBaseType
     /// <summary>
     /// Comments about the changes in this version
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("VersionComments", Order=1)]
     public virtual RichTextType VersionComments
     {
         get
@@ -103,7 +103,7 @@ public partial class VersionType : ExtensionBaseType
     /// <summary>
     /// Itemized list of changes in the new version
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("Changes", Order=2)]
     public virtual VersionTypeChanges Changes
     {
         get

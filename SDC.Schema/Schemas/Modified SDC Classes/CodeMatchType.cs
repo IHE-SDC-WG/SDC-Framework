@@ -45,7 +45,7 @@ public partial class CodeMatchType : BaseType
     /// Comment about the degree of match between the mapped item and the assigned
     /// code.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("CodingMatchComment", Order=0)]
     public virtual string_Stype CodingMatchComment
     {
         get

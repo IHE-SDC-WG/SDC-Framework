@@ -1580,7 +1580,7 @@ public partial class TemplateAdminType : ExtensionBaseType
     /// <summary>
     /// Information about the registry that contains the XML template, and registration status of the XML template. (The XML template may contain a package of sub-templates.  In this case, the the RegistryData refers primarily to the package, not the sub-templates.)
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual RegistryType RegistryData
     {
         get
@@ -1605,7 +1605,7 @@ public partial class TemplateAdminType : ExtensionBaseType
     /// <summary>
     /// Information about the  XML template's file characteristics (The XML template may contain a package of sub-templates.  In this case, the the RegistryData refers primarily to the entire package, not the sub-templates.)
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual FileType TemplateFile
     {
         get
@@ -1776,7 +1776,7 @@ public partial class RichTextType : ExtensionBaseType
     private bool _valSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual HTML_Stype RichText
     {
         get
@@ -2987,7 +2987,7 @@ public partial class PropertyType : ExtensionBaseType
     /// <summary>
     /// Contains optional typed data.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual DataTypes_SType TypedValue
     {
         get
@@ -3266,7 +3266,7 @@ public partial class DataTypes_SType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     [System.Xml.Serialization.XmlIgnoreAttribute()]
     public virtual ItemChoiceType ItemElementName
     {
@@ -23800,7 +23800,7 @@ public partial class PackageListType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual HTMLPackageType HTML
     {
         get
@@ -25341,7 +25341,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// control form rendering according to user
     /// preferences.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual EventType BeforeLoadForm
     {
         get
@@ -25369,7 +25369,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// visible. For example, It may be used to determine the data to be
     /// loaded and to perform the data loading.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual EventType BeforeLoadData
     {
         get
@@ -25397,7 +25397,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// is displayed. It may be used to perform form activities that are
     /// controlled by the loaded data.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual EventType BeforeShowForm
     {
         get
@@ -25419,7 +25419,7 @@ public partial class FormDesignType : IdentifiedExtensionType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual EventType BeforeDataSubmit
     {
         get
@@ -25441,7 +25441,7 @@ public partial class FormDesignType : IdentifiedExtensionType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual EventType BeforeCloseForm
     {
         get
@@ -25493,7 +25493,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// Optional Section that stays at the top of a
     /// form.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual SectionItemType Header
     {
         get
@@ -25518,7 +25518,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// <summary>
     /// Main Section of form
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual SectionItemType Body
     {
         get
@@ -25544,7 +25544,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// Optional Section that stays at the bottom of a
     /// form.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=8)]
     public virtual SectionItemType Footer
     {
         get
@@ -25566,7 +25566,7 @@ public partial class FormDesignType : IdentifiedExtensionType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=9)]
     public virtual RulesType Rules
     {
         get
@@ -26692,7 +26692,7 @@ public partial class PredActionType : FuncBoolBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual ActionsType Actions
     {
         get
@@ -26923,7 +26923,7 @@ public partial class AttributeEvalActionType : PredEvalAttribValuesType
     private bool _elseSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ActionsType Actions
     {
         get
@@ -27781,7 +27781,7 @@ public partial class ActAddCodeType : ItemNameType
     private bool _codeSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual CodingType Code
     {
         get
@@ -27918,7 +27918,7 @@ public partial class CodingType : ExtensionBaseType
     /// here. This may be important if the code value will need to be
     /// manipulated mathematically.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual DataTypes_SType TypedValue
     {
         get
@@ -27944,7 +27944,7 @@ public partial class CodingType : ExtensionBaseType
     /// The human readable text that accompanies the assigned code and represents the code's precise meaning (semantics) or
     /// usage.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual RichTextType CodeText
     {
         get
@@ -27970,7 +27970,7 @@ public partial class CodingType : ExtensionBaseType
     /// Degree of match between the mapped item and the assigned code - @codeMatchType holds an entry from an enumerated
     /// list of match types.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual CodeMatchType CodeMatch
     {
         get
@@ -27992,7 +27992,7 @@ public partial class CodingType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual CodeSystemType CodeSystem
     {
         get
@@ -28017,7 +28017,7 @@ public partial class CodingType : ExtensionBaseType
     /// <summary>
     /// NEW: Web resource that provides information about the code
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual anyURI_Stype CodeURI
     {
         get
@@ -28039,7 +28039,7 @@ public partial class CodingType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual UnitsType Units
     {
         get
@@ -28258,7 +28258,7 @@ public partial class CodeMatchType : BaseType
     /// Comment about the degree of match between the mapped item and the assigned
     /// code.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype CodingMatchComment
     {
         get
@@ -28450,7 +28450,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// coding system curators, or as recommended by the agency that creates
     /// standards for the code map in use.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype CodeSystemName
     {
         get
@@ -28475,7 +28475,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// The day that the selected version of the coding system was released for general use by the coding system curators.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual dateTime_Stype ReleaseDate
     {
         get
@@ -28500,7 +28500,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// Version of the coding system, using the version format defined by the coding system
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype Version
     {
         get
@@ -28525,7 +28525,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// The ISO object identifier (OID) for the coding system, as found at the HL7 OID Registry: https://www.hl7.org/oid/index.cfm
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual string_Stype OID
     {
         get
@@ -28550,7 +28550,7 @@ public partial class CodeSystemType : ExtensionBaseType
     /// <summary>
     /// Web resource that uniquely identifies the coding system
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual anyURI_Stype CodeSystemURI
     {
         get
@@ -29628,7 +29628,7 @@ public partial class CallFuncActionType : CallFuncType
     /// Conditions may be combined by Boolean operators and nested to any
     /// level.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual PredActionType ConditionalActions
     {
         get
@@ -29876,7 +29876,7 @@ public abstract partial class CallFuncBaseType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     [System.Xml.Serialization.XmlIgnoreAttribute()]
     public virtual ItemChoiceType1 ItemElementName
     {
@@ -29898,7 +29898,7 @@ public abstract partial class CallFuncBaseType : ExtensionBaseType
     /// <summary>
     /// Information about securly accessing the web service.  More detailed service patterns may be required.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual RichTextType Security
     {
         get
@@ -32044,7 +32044,7 @@ public partial class DisplayedType : IdentifiedExtensionType
     /// Activate the DisplayedType item if the guard
     /// conditions are met.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual PredGuardType ActivateIf
     {
         get
@@ -32070,7 +32070,7 @@ public partial class DisplayedType : IdentifiedExtensionType
     /// DeActivate the DisplayedType item if the guard
     /// conditions are met.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=8)]
     public virtual PredGuardType DeActivateIf
     {
         get
@@ -32581,7 +32581,7 @@ public partial class LinkType : ExtensionBaseType
     /// <summary>
     /// A description of the URI link, usually for display purposes.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual RichTextType LinkText
     {
         get
@@ -32606,7 +32606,7 @@ public partial class LinkType : ExtensionBaseType
     /// <summary>
     /// Link to external information.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual anyURI_Stype LinkURI
     {
         get
@@ -32748,7 +32748,7 @@ public partial class BlobType : ExtensionBaseType
     /// <summary>
     /// Binary hash of the blob data
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual HashType Hash
     {
         get
@@ -32987,7 +32987,7 @@ public partial class ContactType : ExtensionBaseType
     private bool _organizationSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual PersonType Person
     {
         get
@@ -33009,7 +33009,7 @@ public partial class ContactType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual OrganizationType Organization
     {
         get
@@ -33144,7 +33144,7 @@ public partial class PersonType : ExtensionBaseType
     private bool _usageSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual NameType PersonName
     {
         get
@@ -33301,7 +33301,7 @@ public partial class PersonType : ExtensionBaseType
     /// <summary>
     /// Role of the person, e.g., creator, copyright holder, accreditor, certifier, curator, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual string_Stype Role
     {
         get
@@ -33348,7 +33348,7 @@ public partial class PersonType : ExtensionBaseType
     /// <summary>
     /// When this person should be contacted.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=9)]
     public virtual string_Stype Usage
     {
         get
@@ -33639,7 +33639,7 @@ public partial class NameType : ExtensionBaseType
     private bool _titleSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype NamePrefix
     {
         get
@@ -33683,7 +33683,7 @@ public partial class NameType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype MiddleName
     {
         get
@@ -33727,7 +33727,7 @@ public partial class NameType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual string_Stype NameSuffix
     {
         get
@@ -33774,7 +33774,7 @@ public partial class NameType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual string_Stype Title
     {
         get
@@ -34013,7 +34013,7 @@ public partial class JobType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual OrganizationType Organization
     {
         get
@@ -34035,7 +34035,7 @@ public partial class JobType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual date_Stype StartDate
     {
         get
@@ -34057,7 +34057,7 @@ public partial class JobType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual date_Stype StopDate
     {
         get
@@ -34082,7 +34082,7 @@ public partial class JobType : ExtensionBaseType
     /// <summary>
     /// Job Description
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual string_Stype Description
     {
         get
@@ -34302,7 +34302,7 @@ public partial class OrganizationType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype Department
     {
         get
@@ -34486,7 +34486,7 @@ public partial class OrganizationType : ExtensionBaseType
     /// When this organization should be
     /// contacted.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=9)]
     public virtual string_Stype Usage
     {
         get
@@ -34858,7 +34858,7 @@ public partial class AddressType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual string_Stype City
     {
         get
@@ -34883,7 +34883,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// Other optional locale identifier.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual string_Stype Jurisdiction
     {
         get
@@ -34908,7 +34908,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// State, Province, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual string_Stype State
     {
         get
@@ -34933,7 +34933,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// Local postal code, e.g., zip code.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual string_Stype PostalCode
     {
         get
@@ -34958,7 +34958,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// **Need list of official country codes or text?
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual string_Stype Country
     {
         get
@@ -34983,7 +34983,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// When this address should be used
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=8)]
     public virtual string_Stype Usage
     {
         get
@@ -35237,7 +35237,7 @@ public partial class EmailType : ExtensionBaseType
     private bool _usageSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual EmailAddressType EmailAddress
     {
         get
@@ -35262,7 +35262,7 @@ public partial class EmailType : ExtensionBaseType
     /// <summary>
     /// Type of email, e.g., home, office, etc
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype EmailClass
     {
         get
@@ -35287,7 +35287,7 @@ public partial class EmailType : ExtensionBaseType
     /// <summary>
     /// When this email should be used
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype Usage
     {
         get
@@ -35527,7 +35527,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual CountryCodeType CountryCode
     {
         get
@@ -35549,7 +35549,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual AreaCodeType AreaCode
     {
         get
@@ -35571,7 +35571,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual PhoneNumberType PhoneNumber
     {
         get
@@ -35593,7 +35593,7 @@ public partial class PhoneType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual string_Stype PhoneExtension
     {
         get
@@ -35618,7 +35618,7 @@ public partial class PhoneType : ExtensionBaseType
     /// <summary>
     /// When this phone number should be used
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual string_Stype Usage
     {
         get
@@ -38470,7 +38470,7 @@ public partial class MultiSelectionsActionType : PredMultiSelectionSetBoolType
     private bool _elseSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ActionsType Actions
     {
         get
@@ -38760,7 +38760,7 @@ public partial class SelectionSetsActionType : PredSingleSelectionSetsType
         this._not = false;
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ActionsType Actions
     {
         get
@@ -39017,7 +39017,7 @@ public partial class SelectionTestActionType : PredSelectionTestType
     private bool _elseSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ActionsType Actions
     {
         get
@@ -39810,7 +39810,7 @@ public partial class ActSetAttrValueScriptType : ScriptCodeAnyType
     private bool _targetSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ItemNameAttributeType Target
     {
         get
@@ -41789,7 +41789,7 @@ public partial class ListFieldType : ExtensionBaseType
     /// has more than one column, the column text is separated by the
     /// colTextDelimiter.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual RichTextType ListHeaderText
     {
         get
@@ -41820,7 +41820,7 @@ public partial class ListFieldType : ExtensionBaseType
     /// optionally specify any exceptions in a dedicated CodeSystem column
     /// in the returned list data.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual CodeSystemType DefaultCodeSystem
     {
         get
@@ -42709,7 +42709,7 @@ public abstract partial class ListItemBaseType : DisplayedType
     /// directly associated with, and attached to, a selected answer
     /// choice.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ListItemResponseFieldType ListItemResponseField
     {
         get
@@ -42775,7 +42775,7 @@ public abstract partial class ListItemBaseType : DisplayedType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual PredGuardType SelectIf
     {
         get
@@ -42797,7 +42797,7 @@ public abstract partial class ListItemBaseType : DisplayedType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual PredGuardType DeselectIf
     {
         get
@@ -43621,7 +43621,7 @@ public partial class ResponseFieldType : ExtensionBaseType
     /// <summary>
     /// W3C Schema data type details
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual DataTypes_DEType Response
     {
         get
@@ -43671,7 +43671,7 @@ public partial class ResponseFieldType : ExtensionBaseType
     /// the right of) the user's response on the data entry form. This may
     /// be text for units such as "mm", "cm", etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual RichTextType TextAfterResponse
     {
         get
@@ -43693,7 +43693,7 @@ public partial class ResponseFieldType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual UnitsType ResponseUnits
     {
         get
@@ -43989,7 +43989,7 @@ public partial class DataTypes_DEType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     [System.Xml.Serialization.XmlIgnoreAttribute()]
     public virtual ItemChoiceType2 ItemElementName
     {
@@ -44451,7 +44451,7 @@ public partial class ActSaveResponsesType : ExtensionBaseType
     private bool _messageTextSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual RichTextType MessageText
     {
         get
@@ -44530,7 +44530,7 @@ public partial class RuleSelectMatchingListItemsType : ExtensionBaseType
     private bool _listItemMatchTargetsSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ItemNameAttributeType MatchSource
     {
         get
@@ -44552,7 +44552,7 @@ public partial class RuleSelectMatchingListItemsType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual RuleListItemMatchTargetsType ListItemMatchTargets
     {
         get
@@ -47010,7 +47010,7 @@ public partial class ActValidateFormType : ExtensionBaseType
         this._validateCompleteness = false;
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual CallFuncActionType ValidationWebService
     {
         get
@@ -48427,7 +48427,7 @@ public partial class MappingType : ExtensionBaseType
     /// <summary>
     /// Specifies the default coding system to be implied for all MappedCode elements listed in thte ItemMap entries.  Any CodeSystem explicitly used in a MappedCode entry will override the default value.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual CodeSystemType DefaultCodeSystem
     {
         get
@@ -48645,7 +48645,7 @@ public partial class ItemMapType : ExtensionBaseType
     /// <summary>
     /// Target item in a FormDesignTemplate.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual TemplateTargetType TemplateTarget
     {
         get
@@ -48670,7 +48670,7 @@ public partial class ItemMapType : ExtensionBaseType
     /// <summary>
     /// The DataSource is an object that maps to a target item in a FormDesignTemplate.  DataSources objects can include terminology codes, local values, XML-based document entries, database records, RDF store triples, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual DataSourceType DataSource
     {
         get
@@ -48813,7 +48813,7 @@ public partial class TemplateTargetType : ExtensionBaseType
     private bool _targetDisplayTextSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual anyURI_Stype TargetItemID
     {
         get
@@ -48835,7 +48835,7 @@ public partial class TemplateTargetType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual RichTextType TargetDisplayText
     {
         get
@@ -49009,7 +49009,7 @@ public partial class DataSourceTypeDatabase : DataStoreType
     private bool _sQLSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual SQL_Type SQL
     {
         get
@@ -49107,7 +49107,7 @@ public partial class DataStoreType : ExtensionBaseType
     /// <summary>
     /// Logon credentials should be provided only if the connection is trusted, secure, and encrypted.  Whenever possible, this information should not be communicated in this manner, and another security model should be adopted.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual DataStoreTypeSecurityInfo SecurityInfo
     {
         get
@@ -49132,7 +49132,7 @@ public partial class DataStoreType : ExtensionBaseType
     /// <summary>
     /// The path to the database server.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype DataStoreLocation
     {
         get
@@ -49154,7 +49154,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype DatabaseSoftware
     {
         get
@@ -49176,7 +49176,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual string_Stype DatabaseName
     {
         get
@@ -49198,7 +49198,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual string_Stype ConnectiontonString
     {
         get
@@ -49220,7 +49220,7 @@ public partial class DataStoreType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual string_Stype OtherConnectionParameters
     {
         get
@@ -49522,7 +49522,7 @@ public partial class DataSourceTypeRDF_Store : DataStoreType
     private bool _sPARQLSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual DataSourceTypeRDF_StoreSPARQL SPARQL
     {
         get
@@ -50090,7 +50090,7 @@ public partial class BasePackageType : ExtensionBaseType
     /// <summary>
     /// Admin contains information about a package, including a description of the package contents and purpose (PackageDescription), information about the registry that contains the package file (RegistryData), and information about the package file characteristics (TemplateFile).
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual TemplateAdminType Admin
     {
         get
@@ -51436,7 +51436,7 @@ public partial class SubmissionRuleType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype RuleDescription
     {
         get
@@ -51633,7 +51633,7 @@ public partial class DestinationType : ExtensionBaseType
     private bool _organizationSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual anyURI_Stype Endpoint
     {
         get
@@ -51655,7 +51655,7 @@ public partial class DestinationType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype EndpointDescription
     {
         get
@@ -51699,7 +51699,7 @@ public partial class DestinationType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual OrganizationType Organization
     {
         get
@@ -51852,7 +51852,7 @@ public partial class ComplianceRuleType : ExtensionBaseType
     private bool _formIDSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype Description
     {
         get
@@ -52087,7 +52087,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
     private bool _previousStatusSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual AcceptabilityType Acceptability
     {
         get
@@ -52109,7 +52109,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype AdministrativeStatus
     {
         get
@@ -52131,7 +52131,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype AdministrativeNote
     {
         get
@@ -52153,7 +52153,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual string_Stype RegistrationStatus
     {
         get
@@ -52175,7 +52175,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual date_Stype RegistrationStatusDate
     {
         get
@@ -52197,7 +52197,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual date_Stype EffectiveDate
     {
         get
@@ -52219,7 +52219,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual date_Stype UntilDate
     {
         get
@@ -52241,7 +52241,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual string_Stype PreviousStatus
     {
         get
@@ -52506,7 +52506,7 @@ public partial class RegisteredItemType : ExtensionBaseType
     /// <summary>
     /// Status of the Registered Item
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual RegisteredItemStateType State
     {
         get
@@ -52787,7 +52787,7 @@ public partial class FileType : ExtensionBaseType
     /// Internal/local File ID, not necessarily in the format
     /// of the FileURI used for all SDC FormDesign items.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype FileID
     {
         get
@@ -52809,7 +52809,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual anyURI_Stype FileURI
     {
         get
@@ -52836,7 +52836,7 @@ public partial class FileType : ExtensionBaseType
     /// contents. This may be the same as the internal Title of the
     /// file.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype DisplayName
     {
         get
@@ -52861,7 +52861,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Official title of the file.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual string_Stype Title
     {
         get
@@ -52886,7 +52886,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// File version
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual VersionType Version
     {
         get
@@ -52911,7 +52911,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// The name of the file as saved on disk or other persistant storage.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual string_Stype FileName
     {
         get
@@ -52939,7 +52939,7 @@ public partial class FileType : ExtensionBaseType
     /// after the last period in the file name, e.g., txt, docx,
     /// etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual string_Stype FileExtension
     {
         get
@@ -52964,7 +52964,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// A short description of the class of file, such as "FormDesign XML"
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual string_Stype FileClass
     {
         get
@@ -52986,7 +52986,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=8)]
     public virtual positiveInteger_Stype FileSizeKB
     {
         get
@@ -53034,7 +53034,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=10)]
     public virtual string_Stype Copyright
     {
         get
@@ -53056,7 +53056,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=11)]
     public virtual string_Stype TermsofUse
     {
         get
@@ -53081,7 +53081,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Guidance for when this file should be used, and when it should not be used.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=12)]
     public virtual FileUsageType Usage
     {
         get
@@ -53106,7 +53106,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Various dates associated with the file release, versioning and usage.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=13)]
     public virtual FileDatesType Dates
     {
         get
@@ -53133,7 +53133,7 @@ public partial class FileType : ExtensionBaseType
     /// Specify the type of Contact in the @type attribute. Examples of
     /// @type include Curator, Author, and Authority.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=14)]
     public virtual ContactsType Contacts
     {
         get
@@ -53180,7 +53180,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=16)]
     public virtual FileHashType FileHash
     {
         get
@@ -53227,7 +53227,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Link to any associated files, such as schemas, reference documents, manuals, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=18)]
     public virtual AssociatedFilesType AssociatedFiles
     {
         get
@@ -53249,7 +53249,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=19)]
     public virtual ProvenanceType Provenance
     {
         get
@@ -53851,7 +53851,7 @@ public partial class VersionType : ExtensionBaseType
     /// <summary>
     /// Information about the document that describes the versioning methodology nomenclature.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual FileType VersioningReference
     {
         get
@@ -53876,7 +53876,7 @@ public partial class VersionType : ExtensionBaseType
     /// <summary>
     /// Comments about the changes in this version
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual RichTextType VersionComments
     {
         get
@@ -53901,7 +53901,7 @@ public partial class VersionType : ExtensionBaseType
     /// <summary>
     /// Itemized list of changes in the new version
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual VersionTypeChanges Changes
     {
         get
@@ -54433,7 +54433,7 @@ public partial class ChangeLogType : ExtensionBaseType
     private bool _changeTrackingSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ChangedFieldType ChangedField
     {
         get
@@ -54455,7 +54455,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual DataTypes_SType ChangedTo
     {
         get
@@ -54477,7 +54477,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual DataTypes_SType ChangedFrom
     {
         get
@@ -54524,7 +54524,7 @@ public partial class ChangeLogType : ExtensionBaseType
     /// <summary>
     /// The retired/deprecated item that is being replaced.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual ReplacedIDsType Replaces
     {
         get
@@ -54546,7 +54546,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual dateTime_Stype ChangeDate
     {
         get
@@ -54568,7 +54568,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual string_Stype ChangeDescription
     {
         get
@@ -54590,7 +54590,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual ContactsType Editors
     {
         get
@@ -54612,7 +54612,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=8)]
     public virtual ChangeTrackingType ChangeTracking
     {
         get
@@ -55538,7 +55538,7 @@ public partial class FileDatesType : ExtensionBaseType
     private bool _otherDateSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual dateTime_Stype FileDate
     {
         get
@@ -55582,7 +55582,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual dateTime_Stype ReleaseDate
     {
         get
@@ -55604,7 +55604,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual dateTime_Stype EffectiveDate
     {
         get
@@ -55626,7 +55626,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual dateTime_Stype FirstReleaseDate
     {
         get
@@ -55648,7 +55648,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual dateTime_Stype UsageStartDate
     {
         get
@@ -55670,7 +55670,7 @@ public partial class FileDatesType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual dateTime_Stype RetirementDate
     {
         get
@@ -56049,7 +56049,7 @@ public partial class LanguageType : ExtensionBaseType
     /// <summary>
     /// The language used for text in SDC templates.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype Language
     {
         get
@@ -56344,7 +56344,7 @@ public partial class InterfaceType : ExtensionBaseType
     private bool _documentationSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype Identifer
     {
         get
@@ -56366,7 +56366,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype InterfaceName
     {
         get
@@ -56388,7 +56388,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype Description
     {
         get
@@ -56410,7 +56410,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual string_Stype URL
     {
         get
@@ -56432,7 +56432,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual string_Stype Version
     {
         get
@@ -56454,7 +56454,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual InterfaceTypeFields Fields
     {
         get
@@ -56476,7 +56476,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual InterfaceTypeDocumentation Documentation
     {
         get
@@ -56763,7 +56763,7 @@ public partial class InterfaceTypeFieldsField : ExtensionBaseType
     private bool _actionSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual string_Stype Getter
     {
         get
@@ -56785,7 +56785,7 @@ public partial class InterfaceTypeFieldsField : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual string_Stype Setter
     {
         get
@@ -56807,7 +56807,7 @@ public partial class InterfaceTypeFieldsField : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual string_Stype Action
     {
         get
@@ -57169,7 +57169,7 @@ public partial class RegistryType : ExtensionBaseType
     private bool _registrationStatusSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual RegistrySummaryType OriginalRegistry
     {
         get
@@ -57191,7 +57191,7 @@ public partial class RegistryType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual RegistrySummaryType CurrentRegistry
     {
         get
@@ -57213,7 +57213,7 @@ public partial class RegistryType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual RegisteredItemType RegistrationStatus
     {
         get
@@ -57377,7 +57377,7 @@ public partial class DataTypesDateTime_SType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     [System.Xml.Serialization.XmlIgnoreAttribute()]
     public virtual ItemChoiceType3 ItemElementName
     {
@@ -57819,7 +57819,7 @@ public partial class ChangeType : ExtensionBaseType
     private bool _newValueSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual TargetItemIDType TargetItemID
     {
         get
@@ -57841,7 +57841,7 @@ public partial class ChangeType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual TargetItemNameType TargetItemName
     {
         get
@@ -57863,7 +57863,7 @@ public partial class ChangeType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual TargetItemXPathType TargetItemXPath
     {
         get
@@ -57888,7 +57888,7 @@ public partial class ChangeType : ExtensionBaseType
     /// <summary>
     /// The new value that the targeted item's content is set to.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual DataTypes_SType NewValue
     {
         get
@@ -59351,7 +59351,7 @@ public partial class TemplateAdminTypeDigitalSignature : ExtensionBaseType
     private bool _signaturePropertiesSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual TemplateAdminTypeDigitalSignaturePackageSignature PackageSignature
     {
         get
@@ -59373,7 +59373,7 @@ public partial class TemplateAdminTypeDigitalSignature : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual TemplateAdminTypeDigitalSignatureSignatureProperties SignatureProperties
     {
         get
@@ -59564,7 +59564,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
     private bool _imageSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ContactType Signer
     {
         get
@@ -59586,7 +59586,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=1)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesSignerPublicKeyCertificate SignerPublicKeyCertificate
     {
         get
@@ -59608,7 +59608,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=2)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesSignatureReason SignatureReason
     {
         get
@@ -59630,7 +59630,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=3)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesSignatureDateTimeStamp SignatureDateTimeStamp
     {
         get
@@ -59652,7 +59652,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=4)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesX_CertificateAuthority X_CertificateAuthority
     {
         get
@@ -59674,7 +59674,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=5)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesX_SignerPublicKey X_SignerPublicKey
     {
         get
@@ -59696,7 +59696,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=6)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesX_SignatureAlgorithm X_SignatureAlgorithm
     {
         get
@@ -59718,7 +59718,7 @@ public partial class TemplateAdminTypeDigitalSignatureSignatureProperties : Exte
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=7)]
     public virtual TemplateAdminTypeDigitalSignatureSignaturePropertiesImage Image
     {
         get
@@ -60446,7 +60446,7 @@ public partial class PredActionType2 : PredGuardType
     private bool _elseSpecified;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("", Order=0)]
     public virtual ActionsType Actions
     {
         get

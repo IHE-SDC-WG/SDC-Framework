@@ -49,7 +49,7 @@ public partial class ChangeLogType : ExtensionBaseType
     private ChangeTrackingType _changeTracking;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("ChangedField", Order=0)]
     public virtual ChangedFieldType ChangedField
     {
         get
@@ -71,7 +71,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("ChangedTo", Order=1)]
     public virtual DataTypes_SType ChangedTo
     {
         get
@@ -93,7 +93,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("ChangedFrom", Order=2)]
     public virtual DataTypes_SType ChangedFrom
     {
         get
@@ -140,7 +140,7 @@ public partial class ChangeLogType : ExtensionBaseType
     /// <summary>
     /// The retired/deprecated item that is being replaced.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("Replaces", Order=4)]
     public virtual ReplacedIDsType Replaces
     {
         get
@@ -162,7 +162,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("ChangeDate", Order=5)]
     public virtual dateTime_Stype ChangeDate
     {
         get
@@ -184,7 +184,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("ChangeDescription", Order=6)]
     public virtual string_Stype ChangeDescription
     {
         get
@@ -206,7 +206,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("Editors", Order=7)]
     public virtual ContactsType Editors
     {
         get
@@ -228,7 +228,7 @@ public partial class ChangeLogType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("ChangeTracking", Order=8)]
     public virtual ChangeTrackingType ChangeTracking
     {
         get

@@ -54,7 +54,7 @@ public partial class PackageListType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("HTML", Order=1)]
     public virtual HTMLPackageType HTML
     {
         get

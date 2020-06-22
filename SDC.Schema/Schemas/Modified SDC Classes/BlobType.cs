@@ -67,7 +67,7 @@ public partial class BlobType : ExtensionBaseType
     /// <summary>
     /// Binary hash of the blob data
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("Hash", Order=1)]
     public virtual HashType Hash
     {
         get

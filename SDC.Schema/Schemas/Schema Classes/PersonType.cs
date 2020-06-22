@@ -50,7 +50,7 @@ public partial class PersonType : ExtensionBaseType
     private string_Stype _usage;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("PersonName", Order=0)]
     public virtual NameType PersonName
     {
         get
@@ -207,7 +207,7 @@ public partial class PersonType : ExtensionBaseType
     /// <summary>
     /// Role of the person, e.g., creator, copyright holder, accreditor, certifier, curator, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("Role", Order=7)]
     public virtual string_Stype Role
     {
         get
@@ -254,7 +254,7 @@ public partial class PersonType : ExtensionBaseType
     /// <summary>
     /// When this person should be contacted.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+    [System.Xml.Serialization.XmlElementAttribute("Usage", Order=9)]
     public virtual string_Stype Usage
     {
         get

@@ -38,7 +38,7 @@ public partial class ChangeType : ExtensionBaseType
     private DataTypes_SType _newValue;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("TargetItemID", Order=0)]
     public virtual TargetItemIDType TargetItemID
     {
         get
@@ -60,7 +60,7 @@ public partial class ChangeType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("TargetItemName", Order=1)]
     public virtual TargetItemNameType TargetItemName
     {
         get
@@ -82,7 +82,7 @@ public partial class ChangeType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("TargetItemXPath", Order=2)]
     public virtual TargetItemXPathType TargetItemXPath
     {
         get
@@ -107,7 +107,7 @@ public partial class ChangeType : ExtensionBaseType
     /// <summary>
     /// The new value that the targeted item's content is set to.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("NewValue", Order=3)]
     public virtual DataTypes_SType NewValue
     {
         get

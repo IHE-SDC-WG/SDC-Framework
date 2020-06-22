@@ -29,7 +29,7 @@ public partial class DataSourceTypeRDF_Store : DataStoreType
     private DataSourceTypeRDF_StoreSPARQL _sPARQL;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("SPARQL", Order=0)]
     public virtual DataSourceTypeRDF_StoreSPARQL SPARQL
     {
         get

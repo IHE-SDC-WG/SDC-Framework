@@ -85,7 +85,7 @@ public partial class BasePackageType : ExtensionBaseType
     /// <summary>
     /// Admin contains information about a package, including a description of the package contents and purpose (PackageDescription), information about the registry that contains the package file (RegistryData), and information about the package file characteristics (TemplateFile).
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Admin", Order=0)]
     public virtual TemplateAdminType Admin
     {
         get

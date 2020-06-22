@@ -37,7 +37,7 @@ public partial class LinkType : ExtensionBaseType
     /// <summary>
     /// A description of the URI link, usually for display purposes.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("LinkText", Order=0)]
     public virtual RichTextType LinkText
     {
         get
@@ -62,7 +62,7 @@ public partial class LinkType : ExtensionBaseType
     /// <summary>
     /// Link to external information.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("LinkURI", Order=1)]
     public virtual anyURI_Stype LinkURI
     {
         get

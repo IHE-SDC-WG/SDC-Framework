@@ -541,7 +541,7 @@ namespace SDC.Schema
 
     public partial class SectionItemType : IChildItemsParent<SectionItemType>, IChildItemsMember<SectionItemType>
     {
-        public SectionItemType() { }
+        protected SectionItemType() { } //change back to protected
         public SectionItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
         {    }
 
@@ -667,7 +667,12 @@ namespace SDC.Schema
         [JsonIgnore]
         public ListFieldType ListField_Item
         {
-            get { return (ListFieldType)this.Item; }
+            get
+            {
+                if (Item.GetType() == typeof(ListFieldType))
+                    return (ListFieldType)this.Item;
+                else return null;
+            }
             set { this.Item = value; }
         }
 
@@ -678,7 +683,12 @@ namespace SDC.Schema
         [JsonIgnore]
         public ResponseFieldType ResponseField_Item
         {
-            get { return (ResponseFieldType)this.Item; }
+            get
+            {
+                if (Item.GetType() == typeof(ResponseFieldType))
+                    return (ResponseFieldType)this.Item;
+                else return null;
+            }
             set { this.Item = value; }
         }
 
@@ -747,7 +757,12 @@ namespace SDC.Schema
         [JsonIgnore]
         public ListType List
         {
-            get { return (ListType)this.Item; }
+            get
+            {
+                if (Item.GetType() == typeof(ListType))
+                    return (ListType)this.Item;
+                else return null;
+            }
             set { this.Item = value; }
         }
         /// <summary>
@@ -757,7 +772,12 @@ namespace SDC.Schema
         [JsonIgnore]
         public LookupEndPointType LookupEndpoint
         {
-            get { return (LookupEndPointType)this.Item; }
+            get
+            {
+                if (Item.GetType() == typeof(LookupEndPointType))
+                    return (LookupEndPointType)this.Item;
+                else return null;
+            }
             set { this.Item = value; }
         }
 
@@ -970,6 +990,7 @@ namespace SDC.Schema
                     //ParentNode = inParentNode;
                     TopNodeTemp.ParentNodes.Add(ObjectGUID, inParentNode);
                     inParentNode.IsLeafNode = false; //the parent node has a child node, so it can't be a leaf node
+
                     //Register IdentifiedExtensionType parent node
                     //BaseType par = ParentNode;
                     //while (par != null) //walk up the parent tree until we find the first IdentifiedExtensionType object
@@ -1105,7 +1126,7 @@ namespace SDC.Schema
                 // if (this.GetType() != typeof(FormDesignType)) //TODO: remove this reflection condition and test for errors
                 //{
                 //Debug.WriteLine(this.GetType().ToString());
-                TopNodeTemp.ParentNodes.TryGetValue(this.ObjectGUID, out BaseType outParentNode);
+                TopNode.ParentNodes.TryGetValue(this.ObjectGUID, out BaseType outParentNode);
                 return outParentNode;
                 //_ParentNode = outParentNode;
                 //}
@@ -1120,7 +1141,7 @@ namespace SDC.Schema
             //}
         }
         /// <summary>
-        /// Returns the ID property of the closest ancestor of type DisplayedType.  
+        /// Returns the ID property of the closest ancestor of type IdentifiedExtensionType.  
         /// For eCC, this is the Parent node's ID, which is derived from  the parent node's CTI_Ckey, a.k.a. ParentItemCkey.
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
@@ -1296,16 +1317,16 @@ namespace SDC.Schema
                     {
                         bt.IsLeafNode = true;
                         bt.RegisterParent(btPar);
-                        Debug.WriteLine($"The node with ObjectID: {bt.ObjectID} is leaving InitializeNodesFromSdcXml. Item type is {bt.GetType().Name}.  " +
-                                    $"Parent ObjectID is {bt?.ParentID}, ParentIETypeID: {bt?.ParentIETypeID}, ParentType: {btPar.GetType().Name}");
+                        //Debug.WriteLine($"The node with ObjectID: {bt.ObjectID} is leaving InitializeNodesFromSdcXml. Item type is {bt.GetType().Name}.  " +
+                        //            $"Parent ObjectID is {bt?.ParentID}, ParentIETypeID: {bt?.ParentIETypeID}, ParentType: {btPar.GetType().Name}");
                     }
                     else { throw new KeyNotFoundException("No parent object was returned rom the FormDesign tree"); }
                 }
                 else
                 {
                     bt.IsLeafNode = false;
-                    Debug.WriteLine($"The node with ObjectID: {bt.ObjectID} is leaving InitializeNodesFromSdcXml. Item type is {bt.GetType()}.  " +
-                                    $", No Parent object exists");
+                    //Debug.WriteLine($"The node with ObjectID: {bt.ObjectID} is leaving InitializeNodesFromSdcXml. Item type is {bt.GetType()}.  " +
+                    //                $", No Parent object exists");
                 }
 
                 iXmlNode++;
@@ -1337,7 +1358,7 @@ namespace SDC.Schema
         internal static ITopNode GetSdcObjectFromJson<T>(string sdcJson) where T : ITopNode
         {
             T obj = SdcSerializerJson<T>.DeserializeJson<T>(sdcJson);
-            InitParentNodesFromXml<T>(obj.GetXml(), obj);
+            //InitParentNodesFromXml<T>(obj.GetXml(), obj);
             return InitParentNodesFromXml<T>(obj.GetXml(), obj); ;
         }
         //!+MsgPack
@@ -3635,6 +3656,10 @@ namespace SDC.Schema
 
     #endregion
 
+    #endregion
+
+    #region Registry Summary Types
+    
     #endregion
 
 

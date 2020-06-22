@@ -267,7 +267,7 @@ public partial class DisplayedType : IdentifiedExtensionType
     /// Activate the DisplayedType item if the guard
     /// conditions are met.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("ActivateIf", Order=7)]
     public virtual PredGuardType ActivateIf
     {
         get
@@ -293,7 +293,7 @@ public partial class DisplayedType : IdentifiedExtensionType
     /// DeActivate the DisplayedType item if the guard
     /// conditions are met.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("DeActivateIf", Order=8)]
     public virtual PredGuardType DeActivateIf
     {
         get

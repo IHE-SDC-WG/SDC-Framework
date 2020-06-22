@@ -36,7 +36,7 @@ public partial class ItemMapType : ExtensionBaseType
     /// <summary>
     /// Target item in a FormDesignTemplate.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("TemplateTarget", Order=0)]
     public virtual TemplateTargetType TemplateTarget
     {
         get
@@ -61,7 +61,7 @@ public partial class ItemMapType : ExtensionBaseType
     /// <summary>
     /// The DataSource is an object that maps to a target item in a FormDesignTemplate.  DataSources objects can include terminology codes, local values, XML-based document entries, database records, RDF store triples, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("DataSource", Order=1)]
     public virtual DataSourceType DataSource
     {
         get

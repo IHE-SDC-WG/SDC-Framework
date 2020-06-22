@@ -89,7 +89,7 @@ public abstract partial class ListItemBaseType : DisplayedType
     /// directly associated with, and attached to, a selected answer
     /// choice.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("ListItemResponseField", Order=0)]
     public virtual ListItemResponseFieldType ListItemResponseField
     {
         get
@@ -155,7 +155,7 @@ public abstract partial class ListItemBaseType : DisplayedType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("SelectIf", Order=3)]
     public virtual PredGuardType SelectIf
     {
         get
@@ -177,7 +177,7 @@ public abstract partial class ListItemBaseType : DisplayedType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("DeselectIf", Order=4)]
     public virtual PredGuardType DeselectIf
     {
         get

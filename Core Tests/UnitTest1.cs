@@ -12,6 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using Newtonsoft.Json;
+using Microsoft.VisualBasic;
 //using SDC.Schema;
 
 namespace SDC_Tests
@@ -481,9 +482,19 @@ namespace SDC_Tests
             
         }
         [TestMethod]
-        public void GetReflectedElementName()
+        public void ReflectSdcElement()
         {
-            
+
+            var t = (ITopNode)FD;
+            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n=>n.Value).ToList();
+            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
+            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
+            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
+            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
+
+            var tpl = IHelpers.ReflectSdcElement(qList[0]);
+            Debug.Print(((QuestionItemType)qList[4]).title, tpl.itemElementName, tpl.itemPropertyOrder);
+
         }
 
         [TestMethod]
@@ -493,10 +504,176 @@ namespace SDC_Tests
         }
 
         [TestMethod]
-        public void GetReflectedListParent()
+        public void GetParentIEnumerable()
         {
-            
+            int index = -1;
+            List<BaseType> par;
+            var t = (ITopNode)FD;
+            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n => n.Value).ToList();
+            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
+            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
+            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
+            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
+
+            par = IHelpers.GetParentIEnumerable(qList[3], out index)?.ToList();
+            Debug.Print(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
+            Console.WriteLine(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par[index]?.name??"", "null"));
+            par = IHelpers.GetParentIEnumerable(sList[3], out index)?.ToList();
+            Debug.Print(SDCHelpers.NS(sList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
+            par = IHelpers.GetParentIEnumerable(aList[3], out index)?.ToList();
+            Debug.Print(SDCHelpers.NS(aList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
+            par = IHelpers.GetParentIEnumerable(cList[3], out index)?.ToList();
+            Debug.Print(SDCHelpers.NS(cList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
+            par = IHelpers.GetParentIEnumerable(pList[15], out index)?.ToList();
+            Debug.Print(SDCHelpers.NS(pList[15]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
+
+
+
+
         }
+        [TestMethod]
+        public void GetItemPropertyName()
+        {
+            var t = (ITopNode)FD;
+            int propertyIndex;
+            IEnumerable<BaseType> ieProperty;
+            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n => n.Value).ToList();
+            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
+            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
+            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
+            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
+
+            Debug.Print(IHelpers.GetPropertyName(qList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.GetPropertyName(sList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.GetPropertyName(aList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.GetPropertyName(cList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.GetPropertyName(pList[15], out ieProperty, out propertyIndex));
+
+        }
+
+        [TestMethod]
+        public void GetPropertyInfoMetadata()
+        { //given an SDC item, find the property that references it in the item.ParentNode class
+            var t = (ITopNode)FD;
+
+            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n => n.Value).ToList();
+            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
+            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
+            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
+            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
+
+
+            Debug.Print(IHelpers.GetPropertyInfo(qList[1]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(sList[1]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(aList[1]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(cList[1]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(pList[1]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(qList[10]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(sList[10]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(aList[10]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(cList[10]).ToString());
+            Debug.Print(IHelpers.GetPropertyInfo(pList[10]).ToString());
+
+
+        }
+        [TestMethod]
+        public void GetPropertyInfoMetadata_Complete()
+        {
+            Stopwatch.StartNew();
+            var a = Stopwatch.GetTimestamp();
+
+            foreach (var n in FD.Nodes)
+            {
+                IHelpers.GetPropertyInfo(n.Value); 
+                //Debug.Print(IHelpers.GetPropertyInfo(n.Value).ToString());
+            }
+            Debug.Print((a-Stopwatch.GetTimestamp()).ToString());
+        }
+        [TestMethod]
+        public void TreeComparer()
+        {
+            BaseType.ClearTopNode();
+            string path = Path.Combine(".", "Test files", "Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml");
+            var FDbad = FormDesignType.DeserializeFromXmlPath(path); //used to compare nodes in another tree
+            var adr = FDbad.Nodes.Values.ToArray(); //this creates shallow copies with do not retain ParentNode refs, etc.
+
+
+            var tc = new TreeComparer();
+            var n = FD.Nodes.Values.ToArray();//this creates shallow copies with do not retain ParentNode refs, etc.
+
+            Stopwatch.StartNew();
+            var a = Stopwatch.GetTimestamp();
+
+            Debug.Print(tc.Compare(n[0], n[1]).ToString());
+            Debug.Print(tc.Compare(n[0], n[2]).ToString());
+            Debug.Print(tc.Compare(n[0], n[3]).ToString());
+            Debug.Print(tc.Compare(n[0], n[10]).ToString());
+            Debug.Print(tc.Compare(n[0], n[20]).ToString());
+            Debug.Print(tc.Compare(n[0], n[30]).ToString());
+            Debug.Print(tc.Compare(n[0], n[50]).ToString());
+            Debug.Print("\r\n");
+            Debug.Print(tc.Compare(n[1], n[1]).ToString());
+            Debug.Print(tc.Compare(n[2], n[2]).ToString());
+            Debug.Print(tc.Compare(n[3], n[3]).ToString());
+            Debug.Print(tc.Compare(n[10], n[10]).ToString());
+            Debug.Print(tc.Compare(n[20], n[20]).ToString());
+            Debug.Print(tc.Compare(n[30], n[30]).ToString());
+            Debug.Print(tc.Compare(n[50], n[50]).ToString());
+            Debug.Print("\r\n expected results: -1, 1, -1, 1, -1, 1, -1 ");
+            Debug.Print(tc.Compare(n[1], n[2]).ToString());// -1
+            Debug.Print(tc.Compare(n[2], n[1]).ToString());// 1
+            Debug.Print(tc.Compare(n[33], n[34]).ToString());// -1
+            Debug.Print(tc.Compare(n[20], n[10]).ToString());// 1
+            Debug.Print(tc.Compare(n[199], n[201]).ToString());// -1
+            Debug.Print(tc.Compare(n[201], n[200]).ToString());// 1
+            Debug.Print(tc.Compare(n[29], n[32]).ToString());// -1
+            Debug.Print("\r\n expected results: -1, 1, -1, 1, -1, 1, -1 ");
+            Debug.Print(tc.Compare(n[299], n[301]).ToString());// -1
+            Debug.Print(tc.Compare(n[401], n[300]).ToString());// 1
+            Debug.Print(tc.Compare(n[39], n[42]).ToString());// -1
+            Debug.Print(tc.Compare(n[21], n[11]).ToString());// 1
+            Debug.Print(tc.Compare(n[11], n[12]).ToString());// -1
+            Debug.Print(tc.Compare(n[341], n[133]).ToString());// 1
+            Debug.Print(tc.Compare(n[101], n[120]).ToString());// -1
+
+
+            Debug.Print("\r\n");
+            Debug.Print(tc.Compare(n[2], n[0]).ToString());
+            Debug.Print(tc.Compare(n[4], n[0]).ToString());
+            Debug.Print(tc.Compare(n[6], n[0]).ToString());
+            Debug.Print(tc.Compare(n[20], n[0]).ToString());
+            Debug.Print(tc.Compare(n[40], n[0]).ToString());
+            Debug.Print(tc.Compare(n[60], n[0]).ToString());
+            Debug.Print(tc.Compare(n[100], n[0]).ToString());
+            Debug.Print("\r\n");
+
+            try { Debug.Print(tc.Compare(n[100], adr[0]).ToString()); } catch { Debug.Print("error caught");}
+            try{Debug.Print(tc.Compare(adr[0], n[100]).ToString()); } catch { Debug.Print("error caught"); }
+            try {Debug.Print(tc.Compare(n[10], adr[12]).ToString()); } catch { Debug.Print("error caught"); }
+            try {Debug.Print(tc.Compare(adr[100], adr[100]).ToString()); } catch { Debug.Print("error caught"); }
+            
+            
+            
+            
+            Debug.Print( ( (float)(Stopwatch.GetTimestamp() - a) / ((float)Stopwatch.Frequency)) .ToString());
+
+
+        }
+        [TestMethod]
+        public void ParentNodesFromXml()
+        {
+            BaseType.ClearTopNode();
+            string path = Path.Combine(".", "Test files", "Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml");
+            var FDbad = FormDesignType.DeserializeFromXmlPath(path); //used to compare nodes in another tree
+            var adr = FDbad.Nodes.Values.ToArray<BaseType>();
+
+            foreach (var n in adr)
+            {
+                Debug.Print(n.name + ", par: " + n.ParentNode?.name);
+            }
+
+        }
+
         [TestMethod]
         public void GetNextInList()
         {

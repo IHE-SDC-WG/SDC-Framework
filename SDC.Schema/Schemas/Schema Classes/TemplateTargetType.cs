@@ -31,7 +31,7 @@ public partial class TemplateTargetType : ExtensionBaseType
     private RichTextType _targetDisplayText;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("TargetItemID", Order=0)]
     public virtual anyURI_Stype TargetItemID
     {
         get
@@ -53,7 +53,7 @@ public partial class TemplateTargetType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("TargetDisplayText", Order=1)]
     public virtual RichTextType TargetDisplayText
     {
         get

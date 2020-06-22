@@ -44,7 +44,7 @@ public partial class InterfaceType : ExtensionBaseType
     private InterfaceTypeDocumentation _documentation;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Identifer", Order=0)]
     public virtual string_Stype Identifer
     {
         get
@@ -66,7 +66,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("InterfaceName", Order=1)]
     public virtual string_Stype InterfaceName
     {
         get
@@ -88,7 +88,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("Description", Order=2)]
     public virtual string_Stype Description
     {
         get
@@ -110,7 +110,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("URL", Order=3)]
     public virtual string_Stype URL
     {
         get
@@ -132,7 +132,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("Version", Order=4)]
     public virtual string_Stype Version
     {
         get
@@ -154,7 +154,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("Fields", Order=5)]
     public virtual InterfaceTypeFields Fields
     {
         get
@@ -176,7 +176,7 @@ public partial class InterfaceType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("Documentation", Order=6)]
     public virtual InterfaceTypeDocumentation Documentation
     {
         get

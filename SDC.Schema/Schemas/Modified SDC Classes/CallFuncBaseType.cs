@@ -121,7 +121,7 @@ public abstract partial class CallFuncBaseType : ExtensionBaseType
     /// <summary>
     /// Information about securly accessing the web service.  More detailed service patterns may be required.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("Security", Order=2)]
     public virtual RichTextType Security
     {
         get

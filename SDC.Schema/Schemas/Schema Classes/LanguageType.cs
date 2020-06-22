@@ -37,7 +37,7 @@ public partial class LanguageType : ExtensionBaseType
     /// <summary>
     /// The language used for text in SDC templates.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Language", Order=0)]
     public virtual string_Stype Language
     {
         get

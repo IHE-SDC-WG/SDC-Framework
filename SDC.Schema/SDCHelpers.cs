@@ -29,12 +29,18 @@ namespace SDC.Schema
             return newEnum;
         }
         
-        public static void NZ<T>(T nullTestObject, T ObjectToSet)
+        /// <summary>
+        /// Convert null string to ""
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="nullTestObject"></param>
+        /// <param name="ObjectToSet"></param>
+        public static string NS(string inString)
         {
-            if (nullTestObject == null) return;
-            if (nullTestObject.GetType() == typeof(string) && nullTestObject.ToString() == "") return;
-                ObjectToSet = nullTestObject;
+            if (inString == null) return "";
+                    return inString;
         }
+
 
         public static string XmlReorder (string Xml)
         {

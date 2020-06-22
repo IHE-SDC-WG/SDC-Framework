@@ -33,7 +33,7 @@ public partial class ActAddCodeType : ItemNameType
     private CodingType _code;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Code", Order=0)]
     public virtual CodingType Code
     {
         get

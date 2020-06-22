@@ -67,7 +67,7 @@ public partial class TemplateAdminType : ExtensionBaseType
     /// <summary>
     /// Information about the registry that contains the XML template, and registration status of the XML template. (The XML template may contain a package of sub-templates.  In this case, the the RegistryData refers primarily to the package, not the sub-templates.)
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("RegistryData", Order=1)]
     public virtual RegistryType RegistryData
     {
         get
@@ -92,7 +92,7 @@ public partial class TemplateAdminType : ExtensionBaseType
     /// <summary>
     /// Information about the  XML template's file characteristics (The XML template may contain a package of sub-templates.  In this case, the the RegistryData refers primarily to the entire package, not the sub-templates.)
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("TemplateFile", Order=2)]
     public virtual FileType TemplateFile
     {
         get

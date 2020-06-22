@@ -44,7 +44,7 @@ public partial class NameType : ExtensionBaseType
     private string_Stype _title;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("NamePrefix", Order=0)]
     public virtual string_Stype NamePrefix
     {
         get
@@ -88,7 +88,7 @@ public partial class NameType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("MiddleName", Order=2)]
     public virtual string_Stype MiddleName
     {
         get
@@ -132,7 +132,7 @@ public partial class NameType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("NameSuffix", Order=4)]
     public virtual string_Stype NameSuffix
     {
         get
@@ -179,7 +179,7 @@ public partial class NameType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("Title", Order=6)]
     public virtual string_Stype Title
     {
         get

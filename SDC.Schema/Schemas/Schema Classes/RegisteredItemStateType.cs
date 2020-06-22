@@ -46,7 +46,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
     private string_Stype _previousStatus;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Acceptability", Order=0)]
     public virtual AcceptabilityType Acceptability
     {
         get
@@ -68,7 +68,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("AdministrativeStatus", Order=1)]
     public virtual string_Stype AdministrativeStatus
     {
         get
@@ -90,7 +90,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("AdministrativeNote", Order=2)]
     public virtual string_Stype AdministrativeNote
     {
         get
@@ -112,7 +112,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("RegistrationStatus", Order=3)]
     public virtual string_Stype RegistrationStatus
     {
         get
@@ -134,7 +134,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("RegistrationStatusDate", Order=4)]
     public virtual date_Stype RegistrationStatusDate
     {
         get
@@ -156,7 +156,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("EffectiveDate", Order=5)]
     public virtual date_Stype EffectiveDate
     {
         get
@@ -178,7 +178,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("UntilDate", Order=6)]
     public virtual date_Stype UntilDate
     {
         get
@@ -200,7 +200,7 @@ public partial class RegisteredItemStateType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("PreviousStatus", Order=7)]
     public virtual string_Stype PreviousStatus
     {
         get

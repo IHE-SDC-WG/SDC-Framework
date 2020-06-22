@@ -66,7 +66,7 @@ public partial class RegisteredItemType : ExtensionBaseType
     /// <summary>
     /// Status of the Registered Item
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("State", Order=1)]
     public virtual RegisteredItemStateType State
     {
         get

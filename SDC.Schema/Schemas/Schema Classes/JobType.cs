@@ -59,7 +59,7 @@ public partial class JobType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("Organization", Order=1)]
     public virtual OrganizationType Organization
     {
         get
@@ -81,7 +81,7 @@ public partial class JobType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("StartDate", Order=2)]
     public virtual date_Stype StartDate
     {
         get
@@ -103,7 +103,7 @@ public partial class JobType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("StopDate", Order=3)]
     public virtual date_Stype StopDate
     {
         get
@@ -128,7 +128,7 @@ public partial class JobType : ExtensionBaseType
     /// <summary>
     /// Job Description
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("Description", Order=4)]
     public virtual string_Stype Description
     {
         get

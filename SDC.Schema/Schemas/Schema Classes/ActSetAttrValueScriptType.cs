@@ -37,7 +37,7 @@ public partial class ActSetAttrValueScriptType : ScriptCodeAnyType
     private ItemNameAttributeType _target;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Target", Order=0)]
     public virtual ItemNameAttributeType Target
     {
         get

@@ -79,7 +79,7 @@ public partial class CodingType : ExtensionBaseType
     /// here. This may be important if the code value will need to be
     /// manipulated mathematically.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("TypedValue", Order=1)]
     public virtual DataTypes_SType TypedValue
     {
         get
@@ -105,7 +105,7 @@ public partial class CodingType : ExtensionBaseType
     /// The human readable text that accompanies the assigned code and represents the code's precise meaning (semantics) or
     /// usage.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("CodeText", Order=2)]
     public virtual RichTextType CodeText
     {
         get
@@ -131,7 +131,7 @@ public partial class CodingType : ExtensionBaseType
     /// Degree of match between the mapped item and the assigned code - @codeMatchType holds an entry from an enumerated
     /// list of match types.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("CodeMatch", Order=3)]
     public virtual CodeMatchType CodeMatch
     {
         get
@@ -153,7 +153,7 @@ public partial class CodingType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("CodeSystem", Order=4)]
     public virtual CodeSystemType CodeSystem
     {
         get
@@ -178,7 +178,7 @@ public partial class CodingType : ExtensionBaseType
     /// <summary>
     /// NEW: Web resource that provides information about the code
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("CodeURI", Order=5)]
     public virtual anyURI_Stype CodeURI
     {
         get
@@ -200,7 +200,7 @@ public partial class CodingType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("Units", Order=6)]
     public virtual UnitsType Units
     {
         get

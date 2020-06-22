@@ -31,7 +31,7 @@ public partial class RuleSelectMatchingListItemsType : ExtensionBaseType
     private RuleListItemMatchTargetsType _listItemMatchTargets;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("MatchSource", Order=0)]
     public virtual ItemNameAttributeType MatchSource
     {
         get
@@ -53,7 +53,7 @@ public partial class RuleSelectMatchingListItemsType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("ListItemMatchTargets", Order=1)]
     public virtual RuleListItemMatchTargetsType ListItemMatchTargets
     {
         get

@@ -121,7 +121,7 @@ public partial class AddressType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("City", Order=3)]
     public virtual string_Stype City
     {
         get
@@ -146,7 +146,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// Other optional locale identifier.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("Jurisdiction", Order=4)]
     public virtual string_Stype Jurisdiction
     {
         get
@@ -171,7 +171,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// State, Province, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("State", Order=5)]
     public virtual string_Stype State
     {
         get
@@ -196,7 +196,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// Local postal code, e.g., zip code.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("PostalCode", Order=6)]
     public virtual string_Stype PostalCode
     {
         get
@@ -221,7 +221,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// **Need list of official country codes or text?
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("Country", Order=7)]
     public virtual string_Stype Country
     {
         get
@@ -246,7 +246,7 @@ public partial class AddressType : ExtensionBaseType
     /// <summary>
     /// When this address should be used
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("Usage", Order=8)]
     public virtual string_Stype Usage
     {
         get

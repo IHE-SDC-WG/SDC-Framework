@@ -33,7 +33,7 @@ public partial class InterfaceTypeFieldsField : ExtensionBaseType
     private string_Stype _action;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("Getter", Order=0)]
     public virtual string_Stype Getter
     {
         get
@@ -55,7 +55,7 @@ public partial class InterfaceTypeFieldsField : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("Setter", Order=1)]
     public virtual string_Stype Setter
     {
         get
@@ -77,7 +77,7 @@ public partial class InterfaceTypeFieldsField : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("Action", Order=2)]
     public virtual string_Stype Action
     {
         get

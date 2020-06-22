@@ -60,7 +60,7 @@ public partial class SubmissionRuleType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("RuleDescription", Order=1)]
     public virtual string_Stype RuleDescription
     {
         get

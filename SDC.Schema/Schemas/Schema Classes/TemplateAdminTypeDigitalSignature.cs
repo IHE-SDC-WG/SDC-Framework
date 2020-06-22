@@ -34,7 +34,7 @@ public partial class TemplateAdminTypeDigitalSignature : ExtensionBaseType
     private TemplateAdminTypeDigitalSignatureSignatureProperties _signatureProperties;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("PackageSignature", Order=0)]
     public virtual TemplateAdminTypeDigitalSignaturePackageSignature PackageSignature
     {
         get
@@ -56,7 +56,7 @@ public partial class TemplateAdminTypeDigitalSignature : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("SignatureProperties", Order=1)]
     public virtual TemplateAdminTypeDigitalSignatureSignatureProperties SignatureProperties
     {
         get

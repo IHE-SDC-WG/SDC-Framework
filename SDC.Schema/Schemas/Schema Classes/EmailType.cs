@@ -36,7 +36,7 @@ public partial class EmailType : ExtensionBaseType
     private string_Stype _usage;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("EmailAddress", Order=0)]
     public virtual EmailAddressType EmailAddress
     {
         get
@@ -61,7 +61,7 @@ public partial class EmailType : ExtensionBaseType
     /// <summary>
     /// Type of email, e.g., home, office, etc
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("EmailClass", Order=1)]
     public virtual string_Stype EmailClass
     {
         get
@@ -86,7 +86,7 @@ public partial class EmailType : ExtensionBaseType
     /// <summary>
     /// When this email should be used
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("Usage", Order=2)]
     public virtual string_Stype Usage
     {
         get

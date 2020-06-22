@@ -36,7 +36,7 @@ public partial class RegistryType : ExtensionBaseType
     private RegisteredItemType _registrationStatus;
     #endregion
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("OriginalRegistry", Order=0)]
     public virtual RegistrySummaryType OriginalRegistry
     {
         get
@@ -58,7 +58,7 @@ public partial class RegistryType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("CurrentRegistry", Order=1)]
     public virtual RegistrySummaryType CurrentRegistry
     {
         get
@@ -80,7 +80,7 @@ public partial class RegistryType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("RegistrationStatus", Order=2)]
     public virtual RegisteredItemType RegistrationStatus
     {
         get

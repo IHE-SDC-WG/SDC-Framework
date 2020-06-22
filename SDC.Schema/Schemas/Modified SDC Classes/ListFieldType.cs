@@ -84,7 +84,7 @@ public partial class ListFieldType : ExtensionBaseType
     /// has more than one column, the column text is separated by the
     /// colTextDelimiter.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("ListHeaderText", Order=0)]
     public virtual RichTextType ListHeaderText
     {
         get
@@ -115,7 +115,7 @@ public partial class ListFieldType : ExtensionBaseType
     /// optionally specify any exceptions in a dedicated CodeSystem column
     /// in the returned list data.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("DefaultCodeSystem", Order=1)]
     public virtual CodeSystemType DefaultCodeSystem
     {
         get

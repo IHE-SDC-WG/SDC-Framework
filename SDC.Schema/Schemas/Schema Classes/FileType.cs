@@ -83,7 +83,7 @@ public partial class FileType : ExtensionBaseType
     /// Internal/local File ID, not necessarily in the format
     /// of the FileURI used for all SDC FormDesign items.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=0)]
+    [System.Xml.Serialization.XmlElementAttribute("FileID", Order=0)]
     public virtual string_Stype FileID
     {
         get
@@ -105,7 +105,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=1)]
+    [System.Xml.Serialization.XmlElementAttribute("FileURI", Order=1)]
     public virtual anyURI_Stype FileURI
     {
         get
@@ -132,7 +132,7 @@ public partial class FileType : ExtensionBaseType
     /// contents. This may be the same as the internal Title of the
     /// file.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=2)]
+    [System.Xml.Serialization.XmlElementAttribute("DisplayName", Order=2)]
     public virtual string_Stype DisplayName
     {
         get
@@ -157,7 +157,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Official title of the file.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+    [System.Xml.Serialization.XmlElementAttribute("Title", Order=3)]
     public virtual string_Stype Title
     {
         get
@@ -182,7 +182,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// File version
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+    [System.Xml.Serialization.XmlElementAttribute("Version", Order=4)]
     public virtual VersionType Version
     {
         get
@@ -207,7 +207,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// The name of the file as saved on disk or other persistant storage.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+    [System.Xml.Serialization.XmlElementAttribute("FileName", Order=5)]
     public virtual string_Stype FileName
     {
         get
@@ -235,7 +235,7 @@ public partial class FileType : ExtensionBaseType
     /// after the last period in the file name, e.g., txt, docx,
     /// etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+    [System.Xml.Serialization.XmlElementAttribute("FileExtension", Order=6)]
     public virtual string_Stype FileExtension
     {
         get
@@ -260,7 +260,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// A short description of the class of file, such as "FormDesign XML"
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+    [System.Xml.Serialization.XmlElementAttribute("FileClass", Order=7)]
     public virtual string_Stype FileClass
     {
         get
@@ -282,7 +282,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+    [System.Xml.Serialization.XmlElementAttribute("FileSizeKB", Order=8)]
     public virtual positiveInteger_Stype FileSizeKB
     {
         get
@@ -330,7 +330,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+    [System.Xml.Serialization.XmlElementAttribute("Copyright", Order=10)]
     public virtual string_Stype Copyright
     {
         get
@@ -352,7 +352,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+    [System.Xml.Serialization.XmlElementAttribute("TermsofUse", Order=11)]
     public virtual string_Stype TermsofUse
     {
         get
@@ -377,7 +377,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Guidance for when this file should be used, and when it should not be used.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+    [System.Xml.Serialization.XmlElementAttribute("Usage", Order=12)]
     public virtual FileUsageType Usage
     {
         get
@@ -402,7 +402,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Various dates associated with the file release, versioning and usage.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+    [System.Xml.Serialization.XmlElementAttribute("Dates", Order=13)]
     public virtual FileDatesType Dates
     {
         get
@@ -429,7 +429,7 @@ public partial class FileType : ExtensionBaseType
     /// Specify the type of Contact in the @type attribute. Examples of
     /// @type include Curator, Author, and Authority.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+    [System.Xml.Serialization.XmlElementAttribute("Contacts", Order=14)]
     public virtual ContactsType Contacts
     {
         get
@@ -476,7 +476,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+    [System.Xml.Serialization.XmlElementAttribute("FileHash", Order=16)]
     public virtual FileHashType FileHash
     {
         get
@@ -523,7 +523,7 @@ public partial class FileType : ExtensionBaseType
     /// <summary>
     /// Link to any associated files, such as schemas, reference documents, manuals, etc.
     /// </summary>
-    [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+    [System.Xml.Serialization.XmlElementAttribute("AssociatedFiles", Order=18)]
     public virtual AssociatedFilesType AssociatedFiles
     {
         get
@@ -545,7 +545,7 @@ public partial class FileType : ExtensionBaseType
         }
     }
     
-    [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+    [System.Xml.Serialization.XmlElementAttribute("Provenance", Order=19)]
     public virtual ProvenanceType Provenance
     {
         get
