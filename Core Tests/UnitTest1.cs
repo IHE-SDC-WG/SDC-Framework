@@ -449,7 +449,19 @@ namespace SDC_Tests
         [TestMethod]
         public void MoveNext_ListSib()
         {
-            
+            int i = 0;
+            BaseType n = FD;
+            string title;
+            while(n!=null)
+            {
+                if (n is DisplayedType) title = ": title: " + (n as DisplayedType).title;
+                else if (n is PropertyType) title = ", " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
+                else title = "";
+
+                Debug.Print(i + ": " + n.ElementName + title);
+                n = IHelpers.NextItem(n);
+                i++;
+            }
         }
 
         [TestMethod]
@@ -492,7 +504,7 @@ namespace SDC_Tests
             var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
             var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
 
-            var tpl = IHelpers.ReflectSdcElement(qList[0]);
+            var tpl = IHelpers.X_ReflectSdcElement(qList[0]);
             Debug.Print(((QuestionItemType)qList[4]).title, tpl.itemElementName, tpl.itemPropertyOrder);
 
         }
@@ -515,16 +527,16 @@ namespace SDC_Tests
             var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
             var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
 
-            par = IHelpers.GetParentIEnumerable(qList[3], out index)?.ToList();
+            par = IHelpers.X_GetParentIEnumerable(qList[3], out index)?.ToList();
             Debug.Print(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
             Console.WriteLine(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par[index]?.name??"", "null"));
-            par = IHelpers.GetParentIEnumerable(sList[3], out index)?.ToList();
+            par = IHelpers.X_GetParentIEnumerable(sList[3], out index)?.ToList();
             Debug.Print(SDCHelpers.NS(sList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
-            par = IHelpers.GetParentIEnumerable(aList[3], out index)?.ToList();
+            par = IHelpers.X_GetParentIEnumerable(aList[3], out index)?.ToList();
             Debug.Print(SDCHelpers.NS(aList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
-            par = IHelpers.GetParentIEnumerable(cList[3], out index)?.ToList();
+            par = IHelpers.X_GetParentIEnumerable(cList[3], out index)?.ToList();
             Debug.Print(SDCHelpers.NS(cList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
-            par = IHelpers.GetParentIEnumerable(pList[15], out index)?.ToList();
+            par = IHelpers.X_GetParentIEnumerable(pList[15], out index)?.ToList();
             Debug.Print(SDCHelpers.NS(pList[15]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
 
 
@@ -543,11 +555,11 @@ namespace SDC_Tests
             var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
             var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
 
-            Debug.Print(IHelpers.GetPropertyName(qList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.GetPropertyName(sList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.GetPropertyName(aList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.GetPropertyName(cList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.GetPropertyName(pList[15], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.X_GetPropertyName(qList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.X_GetPropertyName(sList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.X_GetPropertyName(aList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.X_GetPropertyName(cList[3], out ieProperty, out propertyIndex));
+            Debug.Print(IHelpers.X_GetPropertyName(pList[15], out ieProperty, out propertyIndex));
 
         }
 

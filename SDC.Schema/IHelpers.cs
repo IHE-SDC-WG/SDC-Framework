@@ -3,6 +3,7 @@ using System;
 using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -22,7 +24,16 @@ namespace SDC.Schema
 {
     public struct PropertyInfoMetadata
     {
-        public PropertyInfoMetadata(PropertyInfo propertyInfo, string propName, int itemIndex, IEnumerable<BaseType> ieItems, int xmlOrder, int maxXmlOrder, string xmlElementName)
+        public PropertyInfoMetadata(
+            PropertyInfo propertyInfo,
+            string propName,
+            int itemIndex,
+            IEnumerable<BaseType> ieItems,
+            int xmlOrder,
+            int maxXmlOrder,
+            string xmlElementName
+            )
+
         {
             PropertyInfo = propertyInfo;
             this.propName = propName;
@@ -41,8 +52,6 @@ namespace SDC.Schema
         public int xmlOrder { get; }
         public int maxXmlOrder { get; }
         public string xmlElementName { get; }
-
-        private string NULL { get => "null"; }
 
         public override string  ToString()
         {
@@ -260,7 +269,7 @@ xmlElementName: {xmlElementName}
             BaseType par = null;
             XmlElementAttribute att = null;
             BaseType newNode = null;
-            var meta = ReflectSdcElement(item);//meta is a tuple
+            var meta = X_ReflectSdcElement(item);//meta is a tuple
 
             if (meta.parentListIndex > -1 && meta.parentListIndex < meta.parentList.Count() - 1)
             {
@@ -280,7 +289,7 @@ xmlElementName: {xmlElementName}
                 foreach (PropertyInfo pi in piSet)
                 {
                     att = null;
-                    att = pi.GetCustomAttributes<XmlElementAttribute>().Where(a => a.Order == newOrder).First();
+                    att = pi.GetCustomAttributes<XmlElementAttribute>().Where(a => a.Order == newOrder).Single();
                     if (att != null)
                     {
                         newNode = (BaseType)pi.GetValue(par);
@@ -295,43 +304,98 @@ xmlElementName: {xmlElementName}
         }
         public static BaseType NextItem(BaseType item)
         {
-            int newIndex = -1;
-            int newOrder = -1;
-            BaseType par = null;
-            XmlElementAttribute att = null;
-            BaseType newNode = null;
-            var meta = ReflectSdcElement(item);//meta is a tuple
+            int lowestOrder = 1000;  //Order in XmlElementAttribute, for finding the  next property to return; start with a huge value.
+            if (item is null) return null;
+            BaseType par = item.ParentNode;
+            bool doDescendants = true;
+            if(par is null) par = item; //We have the top node here
 
-            if (meta.parentListIndex > -1 && meta.parentListIndex < meta.parentList.Count() - 2)
+            while (par != null)
             {
-                newIndex = meta.parentListIndex + 1;
-                return meta.parentList.ToList()[newIndex];
-            }
+                BaseType nextNode = null;
 
-            if (meta.itemPropertyOrder < 0) throw new Exception("Could not reflect a Next node.  Invalid Property Order < 0");
-
-            if (meta.itemPropertyOrder > -1 && meta.itemPropertyOrder < GetMaxOrderFromXmlElementAttributes(item))
-            {
-                newOrder = meta.itemPropertyOrder + 1;
-                par = item.ParentNode;
-                if (par is null) return null; //we are at the last node
-                var piSet = par.GetType().GetProperties();
-
-                foreach (PropertyInfo pi in piSet)
+                if (doDescendants)
                 {
-                    att = null;
-                    att = pi.GetCustomAttributes<XmlElementAttribute>().Where(a => a.Order == newOrder).First();
-                    if (att != null)
+                    //!Does item have any children of its own?  IF yes, find the first non-null property in the XML element order
+                    foreach (var p in item.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
                     {
-                        newNode = (BaseType)pi.GetValue(par);
-                        if (newNode != null) return newNode;
+                        XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
+                            .FirstOrDefault(a =>
+                            a.Order < lowestOrder &&
+                            p.GetValue(item) != null);
+
+                        if (att != null)
+                        {//assign nextNode whenever we find a lower Order in an XmlElementAttribute                                
+                            object temp = p.GetValue(item);
+                            if (!(temp is Enum))
+                            {
+                                if (temp is IEnumerable && ObjectAtIndex(temp as IEnumerable, 0) != null)
+                                {
+                                    lowestOrder = att.Order;
+                                    nextNode = ObjectAtIndex(temp as IEnumerable, 0) as BaseType;
+                                }
+                                if (temp is BaseType)
+                                {
+                                    lowestOrder = att.Order;
+                                    nextNode = temp as BaseType;
+                                }
+                            }
+                        }
+                    }
+                    if (nextNode != null) return nextNode;
+                }
+                //!No child items contained the next node, so let's look at other properties inside the parent object
+                if (par != null)
+                {
+                    var piMeta = GetPropertyInfo(item);
+                    //!Is next item is contained inside the same IEnumerable parent?
+                    if (piMeta.itemIndex > -1 &&
+                        piMeta.itemIndex < piMeta.ieItems.Count() - 1)
+                    {
+                        return ObjectAtIndex(piMeta.ieItems, piMeta.itemIndex + 1) as BaseType;
+                    }
+                    //!Maybe the next item is part of a parent property that follows our item
+                    //Find the property with an XmlElementAttribute having an Order > piMeta.xmlOrder
+                    if (piMeta.xmlOrder > -2 && piMeta.xmlOrder < piMeta.maxXmlOrder)
+                    {
+                        foreach (var p in par.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                        {
+                            XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
+                                .FirstOrDefault(a =>
+                                a.Order > piMeta.xmlOrder &&
+                                a.Order < lowestOrder &&
+                                p.GetValue(par) != null);
+
+                            if (att != null)
+                            {//assign nextNode whenever we find a lower Order in an XmlElementAttribute                                
+                                object temp = p.GetValue(par);
+                                if (!(temp is Enum))
+                                {
+                                    if (temp is IEnumerable && ObjectAtIndex(temp as IEnumerable, 0) != null)
+                                    {
+                                        lowestOrder = att.Order;
+                                        nextNode = ObjectAtIndex(temp as IEnumerable, 0) as BaseType;
+                                    }
+                                    if (temp is BaseType)
+                                    {
+                                        lowestOrder = att.Order;
+                                        nextNode = temp as BaseType;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            // We have to move up parent levels recursively to find the first non-null property that follows the parent object            
-            return NextItem(par);
 
-            throw new Exception("Could not reflect a Next node");
+                if (nextNode != null) return nextNode;
+                //Debug.Print("\r\n item: " + item.name + ", par: " + par.name + ", new par: " + par.ParentNode.name);
+
+                item = par;
+                par = par.ParentNode;
+                doDescendants = false; //this should prevent infinite loops 
+            }
+            return null;
+
         }
         internal static int GetMaxOrderFromXmlElementAttributes(BaseType item)
         {
@@ -350,20 +414,6 @@ xmlElementName: {xmlElementName}
             }
             return maxOrder;
 
-        }
-        internal static XmlChoiceIdentifierAttribute GetXmlChoiceIdentifierAttribute(BaseType item)
-        {
-            var xci = (XmlChoiceIdentifierAttribute)Attribute.GetCustomAttribute(
-                GetPropertyInfo(item, out string _, out int _, out IEnumerable<BaseType> _, out int _, out int _, out string _),
-                typeof(XmlChoiceIdentifierAttribute));
-            return xci;
-        }
-        internal static XmlElementAttribute[] GetXmlElementAttributes(BaseType item)
-        {
-            XmlElementAttribute[] xea = (XmlElementAttribute[])Attribute.GetCustomAttributes(
-                GetPropertyInfo(item, out string _, out int _, out IEnumerable<BaseType> _, out int _, out int _, out string _),
-                typeof(XmlElementAttribute));
-            return xea;
         }
 
         public static PropertyInfoMetadata GetPropertyInfo(BaseType item)
@@ -392,16 +442,32 @@ xmlElementName: {xmlElementName}
         /// ieItems: if the property is IEnumerable<BaseType>, the IEnumerable property object is returned as an out parameter, otherwise it is null
         /// itemIndex: the index of "item" in "ieItems" is returned as an out parameter, otherwise it is -1
         /// </returns>
-        public static PropertyInfo GetPropertyInfo(BaseType item, out string propName, out int itemIndex, out IEnumerable<BaseType> ieItems, out int xmlOrder, out int maxXmlOrder, out string xmlElementName)
+        private static PropertyInfo GetPropertyInfo(
+            BaseType item, 
+            out string propName, 
+            out int itemIndex, 
+            out IEnumerable<BaseType> ieItems, 
+            out int xmlOrder, 
+            out int maxXmlOrder, 
+            out string xmlElementName)
         {
-            xmlOrder = -1;
+            xmlOrder = -2;
             maxXmlOrder = -1;
             propName = null;
             xmlElementName = null;
             itemIndex = -1;
             ieItems = null;
+            if (item is null) return null;
             var par = item.ParentNode;
-            if (par is null) return null;
+            if (par is null)
+            {
+                par = item;  //we are at the top node
+                var t = item.GetType();
+                var pi = t.GetProperties();
+                xmlElementName = t.GetCustomAttribute<XmlRootAttribute>()?.ElementName;
+                maxXmlOrder = GetMaxOrderFromXmlElementAttributes(item);
+                xmlOrder = -1; //-1 is a special case indicating root node
+            }
 
             maxXmlOrder = GetMaxOrderFromXmlElementAttributes(par);
 
@@ -466,6 +532,7 @@ xmlElementName: {xmlElementName}
             return null;
 
 
+            //!+---------------------Local Methods------------------------------
 
             string GetElementName(PropertyInfo pi, out int xmlOrder, int itemIndex = -1)
             {
@@ -480,12 +547,6 @@ xmlElementName: {xmlElementName}
                 //Debug.Print("item.GetType(): " + item.GetType().Name);
 
                 var dtAtts = (XmlElementAttribute[])Attribute.GetCustomAttributes(pi, typeof(XmlElementAttribute));
-                    //.Where(a =>
-                    //{
-                    //    //Debug.Print("Att Type: " + a.Type);
-                    //    return a.Type == item.GetType();
-                    //}                    
-                    //);
 
                 if (dtAtts != null && dtAtts.Count() > 0)
                     xmlOrder = dtAtts.ToArray()[0].Order;
@@ -543,222 +604,54 @@ xmlElementName: {xmlElementName}
             }
 
         }
-        public static IEnumerable<BaseType> GetParentIEnumerable(BaseType item, out int itemIndex)
+        internal static bool IsGenericList(object o)
         {
-            var par = item.ParentNode;
-            itemIndex = -1;
-            IEnumerable<BaseType> ieItems = null;
-            IEnumerable<BaseType> tempIEitems = null;
+            if (o == null) return false;
+            return o is IList &&
+                o.GetType().IsGenericType &&
+                o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
+        }
+        internal static List<T> GetStatedListParent<T>(T item)
+            where T : BaseType
+        {   //get the list object that points to the item node
+            //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
+            //Work out how to return a list of the exact type <T>.
 
-            if (par != null)
+            var pn = item.ParentNode;
+            if (pn is null) return null;
+
+            switch (item)
             {
-                var ieProps = par.GetType().GetProperties()
-                    .Where(n => n.GetValue(par) is IEnumerable<BaseType>);
+                case ExtensionType et:
+                    return (pn as ExtensionBaseType).Extension as List<T>;
+                case CommentType ct:
+                    return (pn as ExtensionBaseType).Comment as List<T>;
+                case PropertyType pt:
+                    return (pn as ExtensionBaseType).Property as List<T>;
+                case EventType ev:
+                    return GetStatedEventParent(ev).Cast<T>().ToList();
+                case SectionItemType s:
+                case ListItemType li:
+                case QuestionItemType q:
+                    return (pn as ChildItemsType).Items as List<T>;
+                case BlobType bt:
+                    return (pn as DisplayedType).BlobContent as List<T>;
+                case CodingType ct:
+                    return (pn as DisplayedType).CodedValue as List<T>;
+                case ContactType ctt:
+                    return (pn as DisplayedType).Contact as List<T>;
+                case LinkType lt:
+                    return (pn as DisplayedType).Link as List<T>;
+                case "xx":
+                    return (pn as DisplayedType).BlobContent as List<T>;
 
-                foreach (var propInfo in ieProps)
-                {
-                    if (propInfo != null)
-                    {
-                        ieItems = (IEnumerable<BaseType>)propInfo.GetValue(par, null); //Reflect each list to see if our item parameter lives in it
-                        itemIndex = IndexOf(ieItems, item); //search for item
-                    }
-                    //if (itemIndex > -1) return ieItems; //we found item 
-
-                    if (itemIndex > -1) //we found item inside property iePI
-                    {
-                        var xmlAtts = Attribute.GetCustomAttributes(propInfo, typeof(XmlElementAttribute));
-                        if (xmlAtts.Count() > 0)
-                            return ieItems;  //returns the property name of the IEnumerable parent of item
-                        else tempIEitems = ieItems;  //save in case we can't find a better match in ieItems
-                    }
-                }
-                if (tempIEitems != null) return tempIEitems;  //even though tempIEitems has no XmlElementAttribute, it still contains our item
+                default:
+                    throw new ArgumentException("Unknown input item:" + item.ElementName ?? "\"\"");
             }
+
             return null;
-
         }
-        /// <summary>
-        /// Returns name of the property in the parent object that contains the supplied item parameter.
-        /// Does not use XMLElementAttribute to retrieve the element name
-        /// </summary>
-        public static string GetPropertyName(BaseType item)//change to private after testing?
-        { return GetPropertyName(item, out IEnumerable<BaseType> _, out int _); }
-        /// <summary>
-        /// Returns name of the property in the parent object that contains the supplied item parameter.
-        /// Does not use XMLElementAttribute to retrieve the element name
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns>
-        /// <paramref name="IEnumerableProperty">If the host property supports IEnumerable, it will be returned as an out parameter</paramref>
-        /// <paramref name="index">If the host property supports IEnumerable, the item index will be returned as an out parameter</paramref>
-        /// </returns>
-        public static string GetPropertyName(BaseType item, out IEnumerable<BaseType> IEnumerableProperty, out int index) //change to private after testing?
-        {
-            //Gets the non-attribute property name directly from the property.  
-            //This will be used as the serialized element name if the element name is not specified inn an attribute.
-            index = -1;
-            IEnumerableProperty = null;
-
-            var par = item.ParentNode;            
-
-            if (par != null && !(par is IEnumerable))  //this only works properly if the parent is not a list or array - we do not have IEnumerable parent classes definedd in SDC
-            {
-                IEnumerable<PropertyInfo> piSet = par.GetType().GetProperties()?.Where(
-                    pi => ReferenceEquals(pi.GetValue(par), item));
-                if (piSet != null && piSet.Count() == 1)
-                {
-                    return piSet.ToArray()[0].Name;
-                }
-                else if(piSet != null && piSet.Count() == 2) //check for a custom property0 wrapping an inner property1 - use the inner property, if we can tell the difference.
-                {
-                    var piaSet = piSet.ToArray();
-                    var prop0 = piaSet[0].GetValue(par);
-                    var prop1 = piaSet[1].GetValue(par);
-
-                    if (ReferenceEquals(prop0, prop1))
-                    {
-                        //The true inner property will have XmlElementAttributes on it 
-                        //piaSet[1] is more likely to be the inner property, so we try it first.
-                        var a1 = Attribute.GetCustomAttributes(piaSet[1], typeof(XmlElementAttribute));
-                        if (a1?.Count() > 0) return piaSet[1].Name;
-
-                        var a0 = Attribute.GetCustomAttributes(piaSet[0], typeof(XmlElementAttribute));
-                        if (a0?.Count() > 0) return piaSet[0].Name;
-                        
-                        return piaSet[1].Name; //the second member is more likely to be the inner IEnumerable if neither prop0 or prop1 has XmlElementAttribute 
-                    }
-                }
-            }
-
-            //We did not find the item in the stated non-IEnumerable properties, so let's look in par's IEnumerables (Lists and Arrays)
-            //If we find item in an IEnumerable property, (and that IEnumerable should have at least one XmlAttribute - as an optional check), 
-            //we can get the IEnumerable property's name and apply it to all IEnumerable member objects
-            var ieProps = par.GetType().GetProperties()?.Where(pi => pi.GetValue(par) is IEnumerable);
-            IEnumerable ieItems = null;
-            int itemIndex = -1;
-            PropertyInfo tempPropInfo = null;
-            foreach (var propInfo in ieProps)
-            {
-                if (propInfo != null)
-                {
-                    ieItems = (IEnumerable)propInfo.GetValue(par, null); //Reflect each IEnumerable object to see if our item parameter lives in it
-                    itemIndex = IndexOf(ieItems, item); //search for item
-                }
-                if (itemIndex > -1) //we found item inside property iePI
-                {
-                    var xmlAtts = Attribute.GetCustomAttributes(propInfo, typeof(XmlElementAttribute));
-                    IEnumerableProperty = ieItems as IEnumerable<BaseType>;
-                    index = itemIndex;
-                    if (xmlAtts.Count() > 0)                        
-                        return propInfo.Name;  //returns the property name of the IEnumerable parent of item
-                    else tempPropInfo = propInfo;  //save in case we can't find a better match in ieItems
-                }
-            }
-            if (tempPropInfo != null) return tempPropInfo.Name;  //even though pi has no XmlElementAttribute, it still contains our item
-            
-
-
-            throw new Exception("Could not reflect property name for item parameter");
-        }
-        public static (IEnumerable<BaseType> parentList, int parentListIndex, string itemElementName, int itemPropertyOrder) ReflectSdcElement(BaseType item)
-        {
-            //return parent list object, index in list, ElementName, Property order
-            //create a class (SdcItemTreeMetadata) to hold the return value
-
-            string itemElementName = "";
-            int itemOrder = -1;
-            var par = item.ParentNode;
-            int itemIndex = -1;
-            IEnumerable<BaseType> lst = GetParentIEnumerable(item, out itemIndex);
-
-
-            XmlChoiceIdentifierAttribute itemXci = GetXmlChoiceIdentifierAttribute(item);
-            XmlElementAttribute[] xea = GetXmlElementAttributes(item);
-
-            //Can we get the property Order quickly from an item XmlElementAttribute?
-            if (xea != null && xea.Count() > 0 && xea[0] != null) itemOrder = xea[0].Order;  //all the XmlElementAttributes share the same Order.
-
-            //Simple, common case: we are not in a list (list items don't have their own XmlElementAttribute), and we have a single attribute to describe our ElementName and property order (XML Element order).
-            if (itemXci is null && xea != null) //Since itemXci is null, there is no enum to check for the Element Name.
-            {
-                XmlElementAttribute[] n = null;
-                if (xea.Count() == 1) 
-                    n = xea;  //if there's only one XmlElementAttribute in xea, let's use it
-                else 
-                    n = xea.Where(n => n.DataType == item.GetType().Name).ToArray();  //For this to work, there should be only a single match to the property type.
-
-                if (n?.Count() == 1)
-                //There is exactly one type match, directly on our item, or else there is only one XmlElementAttribute on item.  
-                //This implies that we cannot be in a list, since list members do not have their own XmlElementAttributes.  Is this strictly true? Or only true for ElementName?
-                {
-                    itemElementName = n[0].ElementName;
-                    itemOrder = n[0].Order;
-                    if (string.IsNullOrEmpty(itemElementName)) itemElementName = GetPropertyName(item, out IEnumerable<BaseType> IEnumerableProperty, out int indexInProperty); //the XmlElementAttribute did not give us an ElementName,, so we have to reflect the ElementName from the item property itself.
-                    return (lst, itemIndex, itemElementName, itemOrder);
-                }
-            }
-            /*The simple method did not work because:
-             * there are zero or multiple matches to XmlElementAttribute.DataType or
-             * XmlElementAttribute.DataType has no value or
-             * item is contained in a list or array, and thus there are no XmlElementAttribute directly on item
-             */
-
-            if (lst == null && itemXci != null) //We are NOT in a List
-            {
-                // We are NOT in a List, but we need to check the XmlChoiceIdentifierAttribute (itemXci) for correct ElementName
-                var piEnum = par.GetType().GetProperty(itemXci.MemberName);  //get a PropertyInfo for the XmlChoiceIdentifier property that describes an Enum with the Element Names enumerated
-                if (piEnum is null)
-                    throw new TypeAccessException("Could not reflect Enum from XmlChoiceIdentifierAttribute");
-                var myEnum = piEnum.GetValue(par, null) as Enum; //Note: NOT an Enum array
-                if (myEnum is null || !(myEnum.GetType().IsSubclassOf(typeof(Enum))))
-                    throw new TypeAccessException("Could not obtain Enum property by reflection of XmlChoiceIdentifierAttribute");
-                itemElementName = myEnum.ToString();
-                if (string.IsNullOrEmpty(itemElementName)) itemElementName = item.ElementName;
-                return (null, -1, itemElementName, itemOrder);
-
-            }
-            else if(lst!= null) //we ARE in a list on the parent object
-            {
-                //Look for XmlChoiceIdentifierAttribute on the parent list - 
-                XmlChoiceIdentifierAttribute lstXci = Attribute.GetCustomAttribute(lst.GetType(), typeof(XmlChoiceIdentifierAttribute)) as XmlChoiceIdentifierAttribute;
-
-                if (lstXci is null)
-                {//Try to find a matching XmlElementAttribute on the parent list, first based on a Data Type match
-                    var xmlAtts = lst.GetType().GetCustomAttributes(typeof(XmlElementAttribute)).Where(n =>
-                         {
-                             string dt = (n as XmlElementAttribute)?.DataType;
-                             if(dt != null) return dt == item.GetType().Name;
-                             return false;                         
-                         }) as XmlElementAttribute[];
-
-                    if (xmlAtts != null && xmlAtts.Count() == 1)
-                    {
-                        itemElementName = xmlAtts[0].ElementName;
-                        if (string.IsNullOrEmpty(itemElementName)) itemElementName = item.ElementName;
-                        return (lst, itemIndex, itemElementName, xmlAtts[0].Order);
-                    }
-                }
-                //Data Type match with XmlElementAttribute did not work
-                else //let's look at the Enum array referenced by XmlChoiceIdentifierAttribute on the parent list
-                {
-                    var piEnum = par.GetType().GetProperty(lstXci.MemberName);  //get a PropertyInfo for the XmlChoiceIdentifier property that describes an Enum with the Element Names enumerated
-                    if (piEnum is null)
-                        throw new TypeAccessException("Could not reflect Enum from XmlChoiceIdentifierAttribute");
-                    var myEnumArray = piEnum.GetValue(par, null) as Enum[]; //Note: this is an Enum Array
-                    if (itemIndex < 0 || itemIndex > myEnumArray.Length - 1)
-                        throw new TypeAccessException("Could not locate property by reflection of XmlChoiceIdentifierAttribute because item's list index is out of range: " + itemIndex.ToString());
-                    var myEnum = myEnumArray[itemIndex];  //should return an Enum from a list or array of enums
-                    if (myEnum is null || !(myEnum.GetType().IsSubclassOf(typeof(Enum))))
-                        throw new TypeAccessException("Could not obtain Enum property by reflection of XmlChoiceIdentifierAttribute");
-                    itemElementName = myEnum.ToString();
-                    if (string.IsNullOrEmpty(itemElementName)) itemElementName = item.ElementName;
-                    return (lst, itemIndex, itemElementName, itemOrder);
-                }
-            }
-
-            throw new TypeAccessException("Could not reflect anything from the item Parameter");
-        }
-         internal static List<BaseType> GetStatedListParent(BaseType item, string elementName)
+        private static List<BaseType> GetStatedListParent(BaseType item, string elementName)
         {   //get the list object that points to the item node
             //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
             //Work out how to return a list of the exact type <T>.
@@ -829,47 +722,7 @@ xmlElementName: {xmlElementName}
 
             return null;
         }
-        internal static List<T> GetStatedListParent<T>(T item)
-            where T : BaseType
-        {   //get the list object that points to the item node
-            //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
-            //Work out how to return a list of the exact type <T>.
-
-            var pn = item.ParentNode;
-            if (pn is null) return null;
-
-            switch (item)
-            {
-                case ExtensionType et:
-                    return (pn as ExtensionBaseType).Extension as List<T>;
-                case CommentType ct:
-                    return (pn as ExtensionBaseType).Comment as List<T>;
-                case PropertyType pt:
-                    return (pn as ExtensionBaseType).Property as List<T>;
-                case EventType ev:
-                    return GetStatedEventParent(ev).Cast<T>().ToList();
-                case SectionItemType s:
-                case ListItemType li:
-                case QuestionItemType q:
-                    return (pn as ChildItemsType).Items as List<T>;
-                case BlobType bt:
-                    return (pn as DisplayedType).BlobContent as List<T>;
-                case CodingType ct:
-                    return (pn as DisplayedType).CodedValue as List<T>;
-                case ContactType ctt:
-                    return (pn as DisplayedType).Contact as List<T>;
-                case LinkType lt:
-                    return (pn as DisplayedType).Link as List<T>;
-                case "xx":
-                    return (pn as DisplayedType).BlobContent as List<T>;
-
-                default:
-                    throw new ArgumentException("Unknown input item:" + item.ElementName ?? "\"\"");
-            }
-
-            return null;
-        }
-        internal static List<T> GetStatedEventParent<T>(T item)
+        private static List<T> GetStatedEventParent<T>(T item)
             where T : EventType
         {
             var elementName = item.ElementName;
@@ -936,16 +789,8 @@ xmlElementName: {xmlElementName}
             }
             return null;
         }
-        internal static bool IsGenericList(object o)
-        {
-            if (o == null) return false;
-            return o is IList &&
-                o.GetType().IsGenericType &&
-                o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
-        }
-        #endregion
 
-        internal static bool IsItemChangeAllowedI<S, T>(S source, T target)
+        public static bool IsItemChangeAllowedI<S, T>(S source, T target)
             where S : notnull, IdentifiedExtensionType
             where T : notnull, IdentifiedExtensionType
         {
@@ -983,6 +828,240 @@ xmlElementName: {xmlElementName}
             }
             return false;
         }
+        #endregion
+
+        #region Retired
+        
+        internal static XmlChoiceIdentifierAttribute X_GetXmlChoiceIdentifierAttribute(BaseType item)
+        {
+            var xci = (XmlChoiceIdentifierAttribute)Attribute.GetCustomAttribute(
+                GetPropertyInfo(item, out string _, out int _, out IEnumerable<BaseType> _, out int _, out int _, out string _),
+                typeof(XmlChoiceIdentifierAttribute));
+            return xci;
+        }
+        internal static XmlElementAttribute[] X_GetXmlElementAttributes(BaseType item)
+        {
+            XmlElementAttribute[] xea = (XmlElementAttribute[])Attribute.GetCustomAttributes(
+                GetPropertyInfo(item, out string _, out int _, out IEnumerable<BaseType> _, out int _, out int _, out string _),
+                typeof(XmlElementAttribute));
+            return xea;
+        }
+        public static IEnumerable<BaseType> X_GetParentIEnumerable(BaseType item, out int itemIndex)
+        {
+            var par = item.ParentNode;
+            itemIndex = -1;
+            IEnumerable<BaseType> ieItems = null;
+            IEnumerable<BaseType> tempIEitems = null;
+
+            if (par != null)
+            {
+                var ieProps = par.GetType().GetProperties()
+                    .Where(n => n.GetValue(par) is IEnumerable<BaseType>);
+
+                foreach (var propInfo in ieProps)
+                {
+                    if (propInfo != null)
+                    {
+                        ieItems = (IEnumerable<BaseType>)propInfo.GetValue(par, null); //Reflect each list to see if our item parameter lives in it
+                        itemIndex = IndexOf(ieItems, item); //search for item
+                    }
+                    //if (itemIndex > -1) return ieItems; //we found item 
+
+                    if (itemIndex > -1) //we found item inside property iePI
+                    {
+                        var xmlAtts = Attribute.GetCustomAttributes(propInfo, typeof(XmlElementAttribute));
+                        if (xmlAtts.Count() > 0)
+                            return ieItems;  //returns the property name of the IEnumerable parent of item
+                        else tempIEitems = ieItems;  //save in case we can't find a better match in ieItems
+                    }
+                }
+                if (tempIEitems != null) return tempIEitems;  //even though tempIEitems has no XmlElementAttribute, it still contains our item
+            }
+            return null;
+
+        }
+        public static (IEnumerable<BaseType> parentList, int parentListIndex, string itemElementName, int itemPropertyOrder) X_ReflectSdcElement(BaseType item)
+        {
+            //return parent list object, index in list, ElementName, Property order
+            //create a class (SdcItemTreeMetadata) to hold the return value
+
+            string itemElementName = "";
+            int itemOrder = -1;
+            var par = item.ParentNode;
+            int itemIndex = -1;
+            IEnumerable<BaseType> lst = X_GetParentIEnumerable(item, out itemIndex);
+
+
+            XmlChoiceIdentifierAttribute itemXci = X_GetXmlChoiceIdentifierAttribute(item);
+            XmlElementAttribute[] xea = X_GetXmlElementAttributes(item);
+
+            //Can we get the property Order quickly from an item XmlElementAttribute?
+            if (xea != null && xea.Count() > 0 && xea[0] != null) itemOrder = xea[0].Order;  //all the XmlElementAttributes share the same Order.
+
+            //Simple, common case: we are not in a list (list items don't have their own XmlElementAttribute), and we have a single attribute to describe our ElementName and property order (XML Element order).
+            if (itemXci is null && xea != null) //Since itemXci is null, there is no enum to check for the Element Name.
+            {
+                XmlElementAttribute[] n = null;
+                if (xea.Count() == 1) 
+                    n = xea;  //if there's only one XmlElementAttribute in xea, let's use it
+                else 
+                    n = xea.Where(n => n.DataType == item.GetType().Name).ToArray();  //For this to work, there should be only a single match to the property type.
+
+                if (n?.Count() == 1)
+                //There is exactly one type match, directly on our item, or else there is only one XmlElementAttribute on item.  
+                //This implies that we cannot be in a list, since list members do not have their own XmlElementAttributes.  Is this strictly true? Or only true for ElementName?
+                {
+                    itemElementName = n[0].ElementName;
+                    itemOrder = n[0].Order;
+                    if (string.IsNullOrEmpty(itemElementName)) itemElementName = X_GetPropertyName(item, out IEnumerable<BaseType> IEnumerableProperty, out int indexInProperty); //the XmlElementAttribute did not give us an ElementName,, so we have to reflect the ElementName from the item property itself.
+                    return (lst, itemIndex, itemElementName, itemOrder);
+                }
+            }
+            /*The simple method did not work because:
+             * there are zero or multiple matches to XmlElementAttribute.DataType or
+             * XmlElementAttribute.DataType has no value or
+             * item is contained in a list or array, and thus there are no XmlElementAttribute directly on item
+             */
+
+            if (lst == null && itemXci != null) //We are NOT in a List
+            {
+                // We are NOT in a List, but we need to check the XmlChoiceIdentifierAttribute (itemXci) for correct ElementName
+                var piEnum = par.GetType().GetProperty(itemXci.MemberName);  //get a PropertyInfo for the XmlChoiceIdentifier property that describes an Enum with the Element Names enumerated
+                if (piEnum is null)
+                    throw new TypeAccessException("Could not reflect Enum from XmlChoiceIdentifierAttribute");
+                var myEnum = piEnum.GetValue(par, null) as Enum; //Note: NOT an Enum array
+                if (myEnum is null || !(myEnum.GetType().IsSubclassOf(typeof(Enum))))
+                    throw new TypeAccessException("Could not obtain Enum property by reflection of XmlChoiceIdentifierAttribute");
+                itemElementName = myEnum.ToString();
+                if (string.IsNullOrEmpty(itemElementName)) itemElementName = item.ElementName;
+                return (null, -1, itemElementName, itemOrder);
+
+            }
+            else if(lst!= null) //we ARE in a list on the parent object
+            {
+                //Look for XmlChoiceIdentifierAttribute on the parent list - 
+                XmlChoiceIdentifierAttribute lstXci = Attribute.GetCustomAttribute(lst.GetType(), typeof(XmlChoiceIdentifierAttribute)) as XmlChoiceIdentifierAttribute;
+
+                if (lstXci is null)
+                {//Try to find a matching XmlElementAttribute on the parent list, first based on a Data Type match
+                    var xmlAtts = lst.GetType().GetCustomAttributes(typeof(XmlElementAttribute)).Where(n =>
+                         {
+                             string dt = (n as XmlElementAttribute)?.DataType;
+                             if(dt != null) return dt == item.GetType().Name;
+                             return false;                         
+                         }) as XmlElementAttribute[];
+
+                    if (xmlAtts != null && xmlAtts.Count() == 1)
+                    {
+                        itemElementName = xmlAtts[0].ElementName;
+                        if (string.IsNullOrEmpty(itemElementName)) itemElementName = item.ElementName;
+                        return (lst, itemIndex, itemElementName, xmlAtts[0].Order);
+                    }
+                }
+                //Data Type match with XmlElementAttribute did not work
+                else //let's look at the Enum array referenced by XmlChoiceIdentifierAttribute on the parent list
+                {
+                    var piEnum = par.GetType().GetProperty(lstXci.MemberName);  //get a PropertyInfo for the XmlChoiceIdentifier property that describes an Enum with the Element Names enumerated
+                    if (piEnum is null)
+                        throw new TypeAccessException("Could not reflect Enum from XmlChoiceIdentifierAttribute");
+                    var myEnumArray = piEnum.GetValue(par, null) as Enum[]; //Note: this is an Enum Array
+                    if (itemIndex < 0 || itemIndex > myEnumArray.Length - 1)
+                        throw new TypeAccessException("Could not locate property by reflection of XmlChoiceIdentifierAttribute because item's list index is out of range: " + itemIndex.ToString());
+                    var myEnum = myEnumArray[itemIndex];  //should return an Enum from a list or array of enums
+                    if (myEnum is null || !(myEnum.GetType().IsSubclassOf(typeof(Enum))))
+                        throw new TypeAccessException("Could not obtain Enum property by reflection of XmlChoiceIdentifierAttribute");
+                    itemElementName = myEnum.ToString();
+                    if (string.IsNullOrEmpty(itemElementName)) itemElementName = item.ElementName;
+                    return (lst, itemIndex, itemElementName, itemOrder);
+                }
+            }
+
+            throw new TypeAccessException("Could not reflect anything from the item Parameter");
+        }
+        /// <summary>
+        /// Returns name of the property in the parent object that contains the supplied item parameter.
+        /// Does not use XMLElementAttribute to retrieve the element name
+        /// </summary>
+        public static string X_GetPropertyName(BaseType item)//change to private after testing?
+        { return X_GetPropertyName(item, out IEnumerable<BaseType> _, out int _); }
+        /// <summary>
+        /// Returns name of the property in the parent object that contains the supplied item parameter.
+        /// Does not use XMLElementAttribute to retrieve the element name
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns>
+        /// <paramref name="IEnumerableProperty">If the host property supports IEnumerable, it will be returned as an out parameter</paramref>
+        /// <paramref name="index">If the host property supports IEnumerable, the item index will be returned as an out parameter</paramref>
+        /// </returns>
+        public static string X_GetPropertyName(BaseType item, out IEnumerable<BaseType> IEnumerableProperty, out int index) //change to private after testing?
+        {
+            //Gets the non-attribute property name directly from the property.  
+            //This will be used as the serialized element name if the element name is not specified inn an attribute.
+            index = -1;
+            IEnumerableProperty = null;
+
+            var par = item.ParentNode;            
+
+            if (par != null && !(par is IEnumerable))  //this only works properly if the parent is not a list or array - we do not have IEnumerable parent classes definedd in SDC
+            {
+                IEnumerable<PropertyInfo> piSet = par.GetType().GetProperties()?.Where(
+                    pi => ReferenceEquals(pi.GetValue(par), item));
+                if (piSet != null && piSet.Count() == 1)
+                {
+                    return piSet.ToArray()[0].Name;
+                }
+                else if(piSet != null && piSet.Count() == 2) //check for a custom property0 wrapping an inner property1 - use the inner property, if we can tell the difference.
+                {
+                    var piaSet = piSet.ToArray();
+                    var prop0 = piaSet[0].GetValue(par);
+                    var prop1 = piaSet[1].GetValue(par);
+
+                    if (ReferenceEquals(prop0, prop1))
+                    {
+                        //The true inner property will have XmlElementAttributes on it 
+                        //piaSet[1] is more likely to be the inner property, so we try it first.
+                        var a1 = Attribute.GetCustomAttributes(piaSet[1], typeof(XmlElementAttribute));
+                        if (a1?.Count() > 0) return piaSet[1].Name;
+
+                        var a0 = Attribute.GetCustomAttributes(piaSet[0], typeof(XmlElementAttribute));
+                        if (a0?.Count() > 0) return piaSet[0].Name;
+                        
+                        return piaSet[1].Name; //the second member is more likely to be the inner IEnumerable if neither prop0 or prop1 has XmlElementAttribute 
+                    }
+                }
+            }
+
+            //We did not find the item in the stated non-IEnumerable properties, so let's look in par's IEnumerables (Lists and Arrays)
+            //If we find item in an IEnumerable property, (and that IEnumerable should have at least one XmlAttribute - as an optional check), 
+            //we can get the IEnumerable property's name and apply it to all IEnumerable member objects
+            var ieProps = par.GetType().GetProperties()?.Where(pi => pi.GetValue(par) is IEnumerable);
+            IEnumerable ieItems = null;
+            int itemIndex = -1;
+            PropertyInfo tempPropInfo = null;
+            foreach (var propInfo in ieProps)
+            {
+                if (propInfo != null)
+                {
+                    ieItems = (IEnumerable)propInfo.GetValue(par, null); //Reflect each IEnumerable object to see if our item parameter lives in it
+                    itemIndex = IndexOf(ieItems, item); //search for item
+                }
+                if (itemIndex > -1) //we found item inside property iePI
+                {
+                    var xmlAtts = Attribute.GetCustomAttributes(propInfo, typeof(XmlElementAttribute));
+                    IEnumerableProperty = ieItems as IEnumerable<BaseType>;
+                    index = itemIndex;
+                    if (xmlAtts.Count() > 0)                        
+                        return propInfo.Name;  //returns the property name of the IEnumerable parent of item
+                    else tempPropInfo = propInfo;  //save in case we can't find a better match in ieItems
+                }
+            }
+            if (tempPropInfo != null) return tempPropInfo.Name;  //even though pi has no XmlElementAttribute, it still contains our item
+            
+
+
+            throw new Exception("Could not reflect property name for item parameter");
+        }
+        #endregion
 
         #region Helpers
         internal static string CreateName(BaseType bt)
