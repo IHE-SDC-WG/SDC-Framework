@@ -133,8 +133,8 @@ xmlElementName: {xmlElementName}
             BaseType ancNodeB = ancSetB[indexB - 1]; //first child of common ancester node on nodeB branch; this is still an ancester of NodeB, or NodeB itself
 
             //Retrieve customized Property Metadata for the class properties that hold our nodes.
-            var piAncNodeA = IHelpers.GetPropertyInfo(ancNodeA);
-            var piAncNodeB = IHelpers.GetPropertyInfo(ancNodeB);
+            var piAncNodeA = IHelpers.GetPropertyInfo(ancNodeA, false);
+            var piAncNodeB = IHelpers.GetPropertyInfo(ancNodeB, false);
 
             //Let's see if both items come from the same IEnumerable (ieItems) in ANC, and then see which one has the lower itemIndex
             if (piAncNodeA.ieItems != null && piAncNodeB.ieItems!=null &&
@@ -264,138 +264,140 @@ xmlElementName: {xmlElementName}
         #region SDC Helpers
         public static BaseType PreviousItem(BaseType item)
         {
-            int newIndex = -1;
-            int newOrder = -1;
-            BaseType par = null;
-            XmlElementAttribute att = null;
-            BaseType newNode = null;
-            var meta = X_ReflectSdcElement(item);//meta is a tuple
-
-            if (meta.parentListIndex > -1 && meta.parentListIndex < meta.parentList.Count() - 1)
-            {
-                newIndex = meta.parentListIndex - 1;
-                return meta.parentList.ToList()[newIndex];
-            }
-
-            if (meta.itemPropertyOrder < 0) throw new Exception("Could not reflect a Next node.  Invalid Property Order < 0");
-
-            if (meta.itemPropertyOrder > -1 && meta.itemPropertyOrder < GetMaxOrderFromXmlElementAttributes(item))
-            {
-                newOrder = meta.itemPropertyOrder - 1;
-                par = item.ParentNode;
-                if (par is null) return null; //we are at the last node
-                var piSet = par.GetType().GetProperties();
-
-                foreach (PropertyInfo pi in piSet)
-                {
-                    att = null;
-                    att = pi.GetCustomAttributes<XmlElementAttribute>().Where(a => a.Order == newOrder).Single();
-                    if (att != null)
-                    {
-                        newNode = (BaseType)pi.GetValue(par);
-                        if (newNode != null) return newNode;
-                    }
-                }
-            }
-            // We have to move up parent levels recursively to find the first non-null property that follows the parent object            
-            return PreviousItem(par);
-
-            throw new Exception("Could not reflect a Next node");
-        }
-        public static BaseType NextItem(BaseType item)
-        {
-            int lowestOrder = 1000;  //Order in XmlElementAttribute, for finding the  next property to return; start with a huge value.
+            int xmlOrder = -1;
             if (item is null) return null;
             BaseType par = item.ParentNode;
+            BaseType prevNode = null;
+            bool doDescendants = true;
+            if (par is null) par = item; //We have the top node here
+
+            while (true)
+            {
+                prevNode = null;
+                xmlOrder = -1;
+
+                //!Does item have any children of its own?  If yes, find the first non-null property in the XML element order
+                if (doDescendants) if (PrevNode(item) != null) return prevNode;
+
+                //!No child items contained the next node, so let's look at other properties inside the parent object
+                var piMeta = GetPropertyInfo(item, true);
+                xmlOrder = piMeta.xmlOrder;
+
+                //!Is next item is contained inside the same IEnumerable parent?
+                if (piMeta.itemIndex > 0)
+                    return ObjectAtIndex(piMeta.ieItems, piMeta.itemIndex - 1) as BaseType;
+
+                //!Is next item part of a parent property that follows our item?
+                if (PrevNode(par) != null) return prevNode;
+
+                //!We did not found a next item, so let's move up one parent level in this while loop and check the properties under the parent.
+                //We keep climbing upwards in the tree until we find a parent with a next item, or we hit the top ancester node and return null.
+                if (par is null) return item;
+                item = par;
+                par = item.ParentNode;
+                doDescendants = false; //this will prevent infinite loops by preventing a useless search through the new parent's direct descendants - we already searched these.
+            }
+            //return null;
+            //!+--------------Local Function--------------------
+            BaseType PrevNode(BaseType targetNode)
+            {
+                foreach (var p in targetNode.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    int highestOrder = 10000;  //Order in XmlElementAttribute, for finding the  next property to return; start with a huge value.
+                    XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
+                        .FirstOrDefault(a =>
+                        a.Order < xmlOrder &&
+                        a.Order > highestOrder &&
+                        p.GetValue(targetNode) != null);
+
+                    if (att != null)
+                    {//assign nextNode whenever we find a higher Order in an XmlElementAttribute                                
+                        object temp = p.GetValue(targetNode);
+                        if (!(temp is Enum))
+                        {
+                            var ie = temp as IList<BaseType>;
+                            if (ie !=null && ie[ie.Count()-1] != null)
+                            { //If we find an IEnumerable property, get its last member.
+                                highestOrder = att.Order;
+                                prevNode = ie[ie.Count() - 1];
+                            }
+                            if (temp is BaseType)
+                            {
+                                highestOrder = att.Order;
+                                prevNode = temp as BaseType;
+                            }
+                        }
+                    }
+                }
+                return prevNode;
+            }
+        }
+        public static BaseType NextNode(BaseType item)
+        {
+            int xmlOrder = -1;
+            if (item is null) return null;
+            BaseType par = item.ParentNode;
+            BaseType nextNode = null;
             bool doDescendants = true;
             if(par is null) par = item; //We have the top node here
 
             while (par != null)
             {
-                BaseType nextNode = null;
+                nextNode = null;
+                xmlOrder = -1;
+                //!Does item have any children of its own?  If yes, find the first non-null property in the XML element order
+                if (doDescendants) if (NextKid(item) != null) return nextNode;                    
 
-                if (doDescendants)
-                {
-                    //!Does item have any children of its own?  IF yes, find the first non-null property in the XML element order
-                    foreach (var p in item.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                    {
-                        XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
-                            .FirstOrDefault(a =>
-                            a.Order < lowestOrder &&
-                            p.GetValue(item) != null);
-
-                        if (att != null)
-                        {//assign nextNode whenever we find a lower Order in an XmlElementAttribute                                
-                            object temp = p.GetValue(item);
-                            if (!(temp is Enum))
-                            {
-                                if (temp is IEnumerable && ObjectAtIndex(temp as IEnumerable, 0) != null)
-                                {
-                                    lowestOrder = att.Order;
-                                    nextNode = ObjectAtIndex(temp as IEnumerable, 0) as BaseType;
-                                }
-                                if (temp is BaseType)
-                                {
-                                    lowestOrder = att.Order;
-                                    nextNode = temp as BaseType;
-                                }
-                            }
-                        }
-                    }
-                    if (nextNode != null) return nextNode;
-                }
                 //!No child items contained the next node, so let's look at other properties inside the parent object
-                if (par != null)
-                {
-                    var piMeta = GetPropertyInfo(item);
-                    //!Is next item is contained inside the same IEnumerable parent?
-                    if (piMeta.itemIndex > -1 &&
-                        piMeta.itemIndex < piMeta.ieItems.Count() - 1)
-                    {
-                        return ObjectAtIndex(piMeta.ieItems, piMeta.itemIndex + 1) as BaseType;
-                    }
-                    //!Maybe the next item is part of a parent property that follows our item
-                    //Find the property with an XmlElementAttribute having an Order > piMeta.xmlOrder
-                    if (piMeta.xmlOrder > -2 && piMeta.xmlOrder < piMeta.maxXmlOrder)
-                    {
-                        foreach (var p in par.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                        {
-                            XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
-                                .FirstOrDefault(a =>
-                                a.Order > piMeta.xmlOrder &&
-                                a.Order < lowestOrder &&
-                                p.GetValue(par) != null);
+                var piMeta = GetPropertyInfo(item, true);
+                xmlOrder = piMeta.xmlOrder;
 
-                            if (att != null)
-                            {//assign nextNode whenever we find a lower Order in an XmlElementAttribute                                
-                                object temp = p.GetValue(par);
-                                if (!(temp is Enum))
-                                {
-                                    if (temp is IEnumerable && ObjectAtIndex(temp as IEnumerable, 0) != null)
-                                    {
-                                        lowestOrder = att.Order;
-                                        nextNode = ObjectAtIndex(temp as IEnumerable, 0) as BaseType;
-                                    }
-                                    if (temp is BaseType)
-                                    {
-                                        lowestOrder = att.Order;
-                                        nextNode = temp as BaseType;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                //!Is next item is contained inside the same IEnumerable parent?
+                if (piMeta.itemIndex > -1 && piMeta.itemIndex < piMeta.ieItems.Count() - 1)
+                    return ObjectAtIndex(piMeta.ieItems, piMeta.itemIndex + 1) as BaseType;
 
-                if (nextNode != null) return nextNode;
-                //Debug.Print("\r\n item: " + item.name + ", par: " + par.name + ", new par: " + par.ParentNode.name);
+                //!Is next item part of a parent property that follows our item?
+                if (NextKid(par) != null) return nextNode;
 
+                //!We did not found a next item, so let's move up one parent level in this while loop and check the properties under the parent.
+                //We keep climbing upwards in the tree until we find a parent with a next item, or we hit the top ancester node and return null.
                 item = par;
-                par = par.ParentNode;
-                doDescendants = false; //this should prevent infinite loops 
+                par = item.ParentNode;
+                doDescendants = false; //this will prevent infinite loops by preventing a useless search through the new parent's direct descendants - we already searched these.
             }
             return null;
+            //!+--------------Local Function--------------------
+            BaseType NextKid(BaseType targetNode)
+            {
+                int lowestOrder = 10000;  //Order in XmlElementAttribute, for finding the  next property to return; start with a huge value.
+                foreach (var p in targetNode.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
+                        .FirstOrDefault(a =>
+                        a.Order > xmlOrder &&
+                        a.Order < lowestOrder &&
+                        p.GetValue(targetNode) != null);
 
+                    if (att != null)
+                    {//assign nextNode whenever we find a lower Order in an XmlElementAttribute                                
+                        object temp = p.GetValue(targetNode);
+                        if (!(temp is Enum))
+                        {
+                            if (temp is IEnumerable && ObjectAtIndex(temp as IEnumerable, 0) != null)
+                            { //If we find an IEnumerable property, get it's first member.
+                                lowestOrder = att.Order;
+                                nextNode = ObjectAtIndex(temp as IEnumerable, 0) as BaseType;
+                            }
+                            if (temp is BaseType)
+                            {
+                                lowestOrder = att.Order;
+                                nextNode = temp as BaseType;
+                            }
+                        }
+                    }
+                }
+                return nextNode;
+            }
         }
         internal static int GetMaxOrderFromXmlElementAttributes(BaseType item)
         {
@@ -416,7 +418,7 @@ xmlElementName: {xmlElementName}
 
         }
 
-        public static PropertyInfoMetadata GetPropertyInfo(BaseType item)
+        public static PropertyInfoMetadata GetPropertyInfo(BaseType item, bool getNames = true)
         {
             var pi = GetPropertyInfo(
                 item, 
@@ -425,7 +427,8 @@ xmlElementName: {xmlElementName}
                 out IEnumerable<BaseType> ieItems, 
                 out int xmlOrder, 
                 out int maxXmlOrder,
-                out string xmlElementName);
+                out string xmlElementName,
+                getNames);
 
             return new PropertyInfoMetadata(pi, propName, itemIndex, ieItems, xmlOrder, maxXmlOrder, xmlElementName);
 
@@ -437,6 +440,7 @@ xmlElementName: {xmlElementName}
         /// If a wrapper property was created in an SDC parrtial class, only the inner property (i.e., the one with XML attributes) is returned
         /// </summarout i
         /// <param name="item"></param>
+        /// <param name="getNames">if true, element names will be determined</param>
         /// <returns>
         /// propName: name of the property is returned as an out parameter
         /// ieItems: if the property is IEnumerable<BaseType>, the IEnumerable property object is returned as an out parameter, otherwise it is null
@@ -449,7 +453,8 @@ xmlElementName: {xmlElementName}
             out IEnumerable<BaseType> ieItems, 
             out int xmlOrder, 
             out int maxXmlOrder, 
-            out string xmlElementName)
+            out string xmlElementName,
+            bool getNames = true)
         {
             xmlOrder = -2;
             maxXmlOrder = -1;
@@ -483,7 +488,7 @@ xmlElementName: {xmlElementName}
             IEnumerable<PropertyInfo> piSet = par.GetType().GetProperties()?
                 .Where(pi => ReferenceEquals(pi.GetValue(par), item));
 
-            if (piSet != null && piSet.Count() >0)
+            if (piSet != null && piSet.Count() > 0)
             {
                 foreach (PropertyInfo propInfo in piSet)
                 {
@@ -531,7 +536,6 @@ xmlElementName: {xmlElementName}
 
             return null;
 
-
             //!+---------------------Local Methods------------------------------
 
             string GetElementName(PropertyInfo pi, out int xmlOrder, int itemIndex = -1)
@@ -551,25 +555,29 @@ xmlElementName: {xmlElementName}
                 if (dtAtts != null && dtAtts.Count() > 0)
                     xmlOrder = dtAtts.ToArray()[0].Order;
 
-                string elementName = ElementNameFromEnum(item, ItemChoiceEnum(pi), itemIndex);
-                if (elementName != null) 
-                    return elementName;
-
-                //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
-                if (dtAtts.Count() == 1)
+                if (getNames)
                 {
-                    return dtAtts.ToArray()[0].ElementName;
-                }
+                    string elementName = ElementNameFromEnum(item, ItemChoiceEnum(pi), itemIndex);
+                    if (elementName != null)
+                        return elementName;
 
-                dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
-                if (dtAtts.Count() == 1)
-                {
-                    //return ElementName based on data type match in the XMLAttribute
-                    return dtAtts.ToArray()[0].ElementName;
-                }
 
-                //There was no ElementName to extract from an XmlElementAttribute, so we get it directly from the propName.
-                return pi.Name;
+                    //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
+                    if (dtAtts.Count() == 1)
+                    {
+                        return dtAtts.ToArray()[0].ElementName;
+                    }
+
+                    dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
+                    if (dtAtts.Count() == 1)
+                    {
+                        //return ElementName based on data type match in the XMLAttribute
+                        return dtAtts.ToArray()[0].ElementName;
+                    }
+                    //There was no ElementName to extract from an XmlElementAttribute, so we get it directly from the propName.
+                    return pi.Name;
+                }
+                return "";
             }
 
             string ItemChoiceEnumName(PropertyInfo pi)

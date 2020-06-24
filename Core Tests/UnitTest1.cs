@@ -447,70 +447,36 @@ namespace SDC_Tests
             }
         }
         [TestMethod]
-        public void MoveNext_ListSib()
+        public void MoveNext()
         {
+            Stopwatch.StartNew();
+            var a = (float)Stopwatch.GetTimestamp();
+
             int i = 0;
             BaseType n = FD;
-            string title;
+            string content;
             while(n!=null)
             {
-                if (n is DisplayedType) title = ": title: " + (n as DisplayedType).title;
-                else if (n is PropertyType) title = ", " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
-                else title = "";
+                if (n is DisplayedType) content = ": title: " + (n as DisplayedType).title;
+                else if (n is PropertyType) content = ", " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
+                else content = "";
 
-                Debug.Print(i + ": " + n.ElementName + title);
-                n = IHelpers.NextItem(n);
+                Debug.Print(i + ": " + n.ElementName + content);
+                n = IHelpers.NextNode(n);
                 i++;
             }
+            Debug.Print(
+                ((Stopwatch.GetTimestamp() - a )/ Stopwatch.Frequency)
+                .ToString());
         }
 
         [TestMethod]
-        public void MovePrev_ListSib()
-        {
-
-        }
-        [TestMethod]
-        public void MoveNext_SameClass()
-        {
-
-        }
-        [TestMethod]
-        public void MoveNext_NextClass()
-        {
-
-        }
-        public void MovePrev_SameClass()
-        {
-
-        }
-        [TestMethod]
-        public void MovePrev_PrevClass()
+        public void MovePrev()
         {
 
         }
         [TestMethod]
         public void IsList()
-        {
-            
-        }
-        [TestMethod]
-        public void ReflectSdcElement()
-        {
-
-            var t = (ITopNode)FD;
-            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n=>n.Value).ToList();
-            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
-            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
-            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
-            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
-
-            var tpl = IHelpers.X_ReflectSdcElement(qList[0]);
-            Debug.Print(((QuestionItemType)qList[4]).title, tpl.itemElementName, tpl.itemPropertyOrder);
-
-        }
-
-        [TestMethod]
-        public void GetNamedItem()
         {
             
         }
@@ -543,8 +509,29 @@ namespace SDC_Tests
 
 
         }
+
         [TestMethod]
-        public void GetItemPropertyName()
+        public void GetNamedItem()
+        {
+            
+        }
+        [TestMethod]
+        public void X_ReflectSdcElement()
+        {
+
+            var t = (ITopNode)FD;
+            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n=>n.Value).ToList();
+            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
+            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
+            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
+            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
+
+            var tpl = IHelpers.X_ReflectSdcElement(qList[0]);
+            Debug.Print(((QuestionItemType)qList[4]).title, tpl.itemElementName, tpl.itemPropertyOrder);
+
+        }
+        [TestMethod]
+        public void X_GetItemPropertyName()
         {
             var t = (ITopNode)FD;
             int propertyIndex;
@@ -620,9 +607,9 @@ namespace SDC_Tests
             Debug.Print(tc.Compare(n[0], n[2]).ToString());
             Debug.Print(tc.Compare(n[0], n[3]).ToString());
             Debug.Print(tc.Compare(n[0], n[10]).ToString());
-            Debug.Print(tc.Compare(n[0], n[20]).ToString());
-            Debug.Print(tc.Compare(n[0], n[30]).ToString());
-            Debug.Print(tc.Compare(n[0], n[50]).ToString());
+            Debug.Print(tc.Compare(n[0], n[3]).ToString());
+            Debug.Print(tc.Compare(n[0], n[8]).ToString());
+            Debug.Print(tc.Compare(n[1], n[8]).ToString());
             Debug.Print("\r\n");
             Debug.Print(tc.Compare(n[1], n[1]).ToString());
             Debug.Print(tc.Compare(n[2], n[2]).ToString());
@@ -650,10 +637,10 @@ namespace SDC_Tests
 
 
             Debug.Print("\r\n");
-            Debug.Print(tc.Compare(n[2], n[0]).ToString());
+            Debug.Print(tc.Compare(n[2], n[1]).ToString());
             Debug.Print(tc.Compare(n[4], n[0]).ToString());
-            Debug.Print(tc.Compare(n[6], n[0]).ToString());
-            Debug.Print(tc.Compare(n[20], n[0]).ToString());
+            Debug.Print(tc.Compare(n[6], n[4]).ToString());
+            Debug.Print(tc.Compare(n[20], n[2]).ToString());
             Debug.Print(tc.Compare(n[40], n[0]).ToString());
             Debug.Print(tc.Compare(n[60], n[0]).ToString());
             Debug.Print(tc.Compare(n[100], n[0]).ToString());
@@ -670,6 +657,15 @@ namespace SDC_Tests
             Debug.Print( ( (float)(Stopwatch.GetTimestamp() - a) / ((float)Stopwatch.Frequency)) .ToString());
 
 
+            //Seconds per comparison: @ 0.0006 sec/comparison
+            a = Stopwatch.GetTimestamp();
+            for (int i = 0; i < 100; i++)
+            {
+                tc.Compare(n[299], n[301]);
+                tc.Compare(n[2101], n[120]);
+            }
+            Debug.Print(((float)(Stopwatch.GetTimestamp() - a) / ((float)Stopwatch.Frequency) / 200).ToString());
+
         }
         [TestMethod]
         public void ParentNodesFromXml()
@@ -684,27 +680,6 @@ namespace SDC_Tests
                 Debug.Print(n.name + ", par: " + n.ParentNode?.name);
             }
 
-        }
-
-        [TestMethod]
-        public void GetNextInList()
-        {
-            
-        }
-        [TestMethod]
-        public void GetPreviousInList()
-        {
-            
-        }
-        [TestMethod]
-        public void GetNextSib()
-        {
-            
-        }
-        [TestMethod]
-        public void GetPrevSib()
-        {
-            
         }
 
         [TestMethod]
