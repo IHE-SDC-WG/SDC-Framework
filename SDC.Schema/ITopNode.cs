@@ -29,12 +29,20 @@ namespace SDC.Schema
         Dictionary<Guid, BaseType> Nodes { get; }
 
         /// <summary>
-        /// Dictionary.  Given a NodeID, return the *parent* node's object reference
+        /// Dictionary.  Given a Node ObjectGUID, return the *parent* node's object reference
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-
         Dictionary<Guid, BaseType> ParentNodes { get; }
+
+        /// <summary>
+        /// Dictionary.  Given a NodeID ObjectGUID, return a list of the child nodes object reference
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        Dictionary<Guid, List<BaseType>> ChildNodes { get; }
+
+
         ///// <summary>
         ///// Dictionary.  Given a NodeID, return the *previous* node's object reference
         ///// </summary>

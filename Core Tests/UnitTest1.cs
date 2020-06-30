@@ -34,7 +34,7 @@ namespace SDC_Tests
             //if (!File.Exists(path)) path = @"/Test files/Demog CCO Lung Surgery.xml";
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
             DemogFormDesignType FD = DemogFormDesignType.DeserializeFromXmlPath(path);
-            var myXML = FD.GetXml(); 
+            var myXML = FD.GetXml();
             Debug.Print(myXML);
             //Debug.Print(FD.GetJson());
             var doc = new XmlDocument();
@@ -111,36 +111,36 @@ namespace SDC_Tests
             string path = Path.Combine(".", "Test files", "Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml");
             //string path = @".\Test files\Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml";
             string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
-            
+
             var FD = FormDesignType.DeserializeFromXmlPath(path);
             //SDC.Schema.FormDesignType FD = SDC.Schema.FormDesignType.DeserializeSdcFromFile(sdcFile);
             string myXML;
             //myXML =  SdcSerializer<FormDesignType>.Serialize(FD);
 
             //Test adding and reading FD object model
-                var Q = (QuestionItemType)FD.Nodes.Values.Where(
-                    t => t.GetType() == typeof(QuestionItemType)).Where(
-                    q => ((QuestionItemType)q).ID == "58218.100004300").FirstOrDefault();
+            var Q = (QuestionItemType)FD.Nodes.Values.Where(
+                t => t.GetType() == typeof(QuestionItemType)).Where(
+                q => ((QuestionItemType)q).ID == "58218.100004300").FirstOrDefault();
 
-                var DI = Q.AddChildDisplayedItem("DDDDD");//should add to end of the <List>
-                DI.name = DI.ID; 
-                DI.title = DI.ID;
+            var DI = Q.AddChildDisplayedItem("DDDDD");//should add to end of the <List>
+            DI.name = DI.ID;
+            DI.title = DI.ID;
 
-                var P = Q.AddProperty(); P.name = "PPPPP"; P.propName = "PPPPP";
-                var S = Q.AddChildSection("SSSSS", 0); S.name = "SSSSS";
+            var P = Q.AddProperty(); P.name = "PPPPP"; P.propName = "PPPPP";
+            var S = Q.AddChildSection("SSSSS", 0); S.name = "SSSSS";
             //Q.Move(new SectionItemType(), -1); Q.AddComment(); Q.Remove();
             //var li = new ListItemType(Q.ListField_Item.List,"abc" ); var b = li.SelectIf.returnVal; var rv = li.OnSelect[0].returnVal;
-            
-                DisplayedType DI1 = (DisplayedType)FD.Nodes.Values.Where(n => n.name == DI.ID)?.First();
-                DisplayedType DI2 = (DisplayedType)Q.ChildItemsNode.Items[0];
-                QuestionItemType Q1 = (QuestionItemType)DI2.ParentNode.ParentNode;
+
+            DisplayedType DI1 = (DisplayedType)FD.Nodes.Values.Where(n => n.name == DI.ID)?.First();
+            DisplayedType DI2 = (DisplayedType)Q.ChildItemsNode.Items[0];
+            QuestionItemType Q1 = (QuestionItemType)DI2.ParentNode.ParentNode;
             myXML = SDCHelpers.XmlReorder(FD.GetXml());
             myXML = SDCHelpers.XmlFormat(myXML);
             var S1 = Q.AddOnEnter().Actions.AddActInject().Item = new SectionItemType(   //Need to add AddActionsNode to numerous classes via IHasActionsNode
-                parentNode: Q, 
-                id:"myid", 
-                elementName:"", 
-                elementPrefix:"s");
+                parentNode: Q,
+                id: "myid",
+                elementName: "",
+                elementPrefix: "s");
 
             Debug.Print(myXML);
             FD.Clear();
@@ -153,12 +153,12 @@ namespace SDC_Tests
         [TestMethod]
         public void SdcToJson()
         {
-            
+
         }
         [TestMethod]
         public void JsonToXML()
         {
-            
+
         }
 
 
@@ -166,7 +166,7 @@ namespace SDC_Tests
     [TestClass]
     public class FormDesignBuilder
     {
-        
+
         public FormDesignBuilder()
         {
 
@@ -175,32 +175,32 @@ namespace SDC_Tests
         [TestMethod]
         public void AddRemoveHeader()
         {
-            
+
         }
         [TestMethod]
         public void AddRemoveFooter()
         {
-            
+
         }
         [TestMethod]
         public void AddQuestions()
         {
-            
+
         }
         [TestMethod]
         public void AddListItemToQuestionList()
         {
-            
+
         }
         [TestMethod]
         public void AddListItemOnListItem()
         {
-            
+
         }
         [TestMethod]
         public void AdListItemOnDisplayedItem()
         {
-            
+
         }
         [TestMethod]
         public void AddDisplayedItemToQuestionList()
@@ -220,7 +220,7 @@ namespace SDC_Tests
         [TestMethod]
         public void AddDisplayedItemAsChild()
         {
-            
+
         }
         [TestMethod]
         public void AddQuestionAsChild()
@@ -232,16 +232,16 @@ namespace SDC_Tests
         {
 
         }
-        
+
         [TestMethod]
         public void AddProperties()
         {
-            
+
         }
         [TestMethod]
         public void AddComments()
         {
-            
+
         }
     }
 
@@ -304,18 +304,18 @@ namespace SDC_Tests
             get => idrXml;
             set => idrXml = value;
         }
-        
+
         public string FormDesignWithHtmlXml
         {
             get => formDesignWithHtmlXml;
             set => formDesignWithHtmlXml = value;
         }
-        
+
 
         [TestMethod]
         public void RoundtripFormDesign()
         {
-            
+
         }
         [TestMethod]
         public void RoundtripDemogFormDesign()
@@ -376,12 +376,12 @@ namespace SDC_Tests
         [TestMethod]
         public void ValidateJsonFormDesign()
         {
-            
+
         }
         [TestMethod]
         public void ValidateXmlFormDesign()
         {
-            
+
         }
 
         [TestMethod]
@@ -417,13 +417,13 @@ namespace SDC_Tests
     {
         FormDesignType fd;
         private TestContext testContextInstance;
-        
+
         public FormDesignType FD
         {
             get => fd;
             set => fd = value;
         }
-        
+
         public NavigationTests()
         {
             BaseType.ClearTopNode();
@@ -455,30 +455,86 @@ namespace SDC_Tests
             int i = 0;
             BaseType n = FD;
             string content;
-            while(n!=null)
+            while (n != null)
             {
                 if (n is DisplayedType) content = ": title: " + (n as DisplayedType).title;
-                else if (n is PropertyType) content = ", " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
+                else if (n is PropertyType) content = ": " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
                 else content = "";
 
-                Debug.Print(i + ": " + n.ElementName + content);
-                n = IHelpers.NextNode(n);
+                Debug.Print(n.ObjectID.ToString().PadLeft(4) + ": " + i.ToString().PadLeft(4) + ": " + (n.name??"").PadRight(20) + ": " + (n.ElementName??"").PadRight(25) + content);
+                if (i == 201)
+                {
+                    var a1 = 1;
+                }
+                n = IHelpers.NextElement(n);
                 i++;
             }
             Debug.Print(
-                ((Stopwatch.GetTimestamp() - a )/ Stopwatch.Frequency)
+                ((Stopwatch.GetTimestamp() - a) / Stopwatch.Frequency)
                 .ToString());
         }
+        [TestMethod]
+        public void MoveNext2()
+        {
+            Stopwatch.StartNew();
+            var a = (float)Stopwatch.GetTimestamp();
 
+            int i = 0;
+            BaseType n = FD;
+            string content;
+            while (n != null)
+            {
+                if (n is DisplayedType) content = ": title: " + (n as DisplayedType).title;
+                else if (n is PropertyType) content = ": " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
+                else content = "";
+
+                Debug.Print(n.ObjectID.ToString().PadLeft(4) + ": " + i.ToString().PadLeft(4) + ": " + (n.name ?? "").PadRight(20) + ": " + (n.ElementName ?? "").PadRight(25) + content);
+                if (n.name == "Q_Tum_Site_44135")
+                {
+                    var a1 = 1;
+                }
+                n = IHelpers.NextElement2(n);
+                i++;
+            }
+            Debug.Print(
+                ((Stopwatch.GetTimestamp() - a) / Stopwatch.Frequency)
+                .ToString());
+        }
         [TestMethod]
         public void MovePrev()
         {
 
+
+            
+            BaseType n = IHelpers.GetLastDescendant(FD);
+            int i = FD.Nodes.Count()-1;
+            string content;
+
+            Stopwatch.StartNew();
+            var a = (float)Stopwatch.GetTimestamp();
+
+            while (n != null)
+            {
+                if (n is DisplayedType) content = ": title: " + (n as DisplayedType).title;
+                else if (n is PropertyType) content = ": " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
+                else content = "";
+
+                Debug.Print(n.ObjectID.ToString().PadLeft(4) + ": " + i.ToString().PadLeft(4) + ": " + (n.name ?? "").PadRight(20) + ": " + (n.ElementName ?? "").PadRight(25) + content);
+                if (n.ObjectID == 2382)
+                {
+                    var a1 = 1;
+                }
+                n = IHelpers.PrevElement(n);
+                i--;
+            }
+            Debug.Print(
+                ((Stopwatch.GetTimestamp() - a) / Stopwatch.Frequency)
+                .ToString());
         }
         [TestMethod]
         public void IsList()
         {
-            
+
         }
 
         [TestMethod]
@@ -494,14 +550,14 @@ namespace SDC_Tests
             var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
 
             par = IHelpers.X_GetParentIEnumerable(qList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
-            Console.WriteLine(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par[index]?.name??"", "null"));
+            Debug.Print(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
+            Console.WriteLine(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par[index]?.name ?? "", "null"));
             par = IHelpers.X_GetParentIEnumerable(sList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(sList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
+            Debug.Print(SDCHelpers.NS(sList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
             par = IHelpers.X_GetParentIEnumerable(aList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(aList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
+            Debug.Print(SDCHelpers.NS(aList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
             par = IHelpers.X_GetParentIEnumerable(cList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(cList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name??"", "null"));
+            Debug.Print(SDCHelpers.NS(cList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
             par = IHelpers.X_GetParentIEnumerable(pList[15], out index)?.ToList();
             Debug.Print(SDCHelpers.NS(pList[15]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
 
@@ -513,14 +569,14 @@ namespace SDC_Tests
         [TestMethod]
         public void GetNamedItem()
         {
-            
+
         }
         [TestMethod]
         public void X_ReflectSdcElement()
         {
 
             var t = (ITopNode)FD;
-            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n=>n.Value).ToList();
+            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n => n.Value).ToList();
             var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
             var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
             var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
@@ -583,10 +639,10 @@ namespace SDC_Tests
 
             foreach (var n in FD.Nodes)
             {
-                IHelpers.GetPropertyInfo(n.Value); 
+                IHelpers.GetPropertyInfo(n.Value);
                 //Debug.Print(IHelpers.GetPropertyInfo(n.Value).ToString());
             }
-            Debug.Print((a-Stopwatch.GetTimestamp()).ToString());
+            Debug.Print((a - Stopwatch.GetTimestamp()).ToString());
         }
         [TestMethod]
         public void TreeComparer()
@@ -646,15 +702,15 @@ namespace SDC_Tests
             Debug.Print(tc.Compare(n[100], n[0]).ToString());
             Debug.Print("\r\n");
 
-            try { Debug.Print(tc.Compare(n[100], adr[0]).ToString()); } catch { Debug.Print("error caught");}
-            try{Debug.Print(tc.Compare(adr[0], n[100]).ToString()); } catch { Debug.Print("error caught"); }
-            try {Debug.Print(tc.Compare(n[10], adr[12]).ToString()); } catch { Debug.Print("error caught"); }
-            try {Debug.Print(tc.Compare(adr[100], adr[100]).ToString()); } catch { Debug.Print("error caught"); }
-            
-            
-            
-            
-            Debug.Print( ( (float)(Stopwatch.GetTimestamp() - a) / ((float)Stopwatch.Frequency)) .ToString());
+            try { Debug.Print(tc.Compare(n[100], adr[0]).ToString()); } catch { Debug.Print("error caught"); }
+            try { Debug.Print(tc.Compare(adr[0], n[100]).ToString()); } catch { Debug.Print("error caught"); }
+            try { Debug.Print(tc.Compare(n[10], adr[12]).ToString()); } catch { Debug.Print("error caught"); }
+            try { Debug.Print(tc.Compare(adr[100], adr[100]).ToString()); } catch { Debug.Print("error caught"); }
+
+
+
+
+            Debug.Print(((float)(Stopwatch.GetTimestamp() - a) / ((float)Stopwatch.Frequency)).ToString());
 
 
             //Seconds per comparison: @ 0.0006 sec/comparison
@@ -685,13 +741,13 @@ namespace SDC_Tests
         [TestMethod]
         public void GetEventParent()
         {
-            
+
         }
 
         [TestMethod]
         public void IsItemChangeAllowed()
         {
-            
+
         }
 
 
@@ -699,7 +755,7 @@ namespace SDC_Tests
 
     [TestClass]
     public class MiscTests
-    {   
+    {
         private TestContext testContextInstance;
         public MiscTests()
         {
@@ -740,7 +796,7 @@ namespace SDC_Tests
         [TestMethod]
         public void Test()
         {
-            
+
         }
 
     }

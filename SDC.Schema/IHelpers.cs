@@ -1,4 +1,5 @@
-﻿using MsgPack.Serialization.CollectionSerializers;
+﻿using MessagePack.Formatters;
+using MsgPack.Serialization.CollectionSerializers;
 using System;
 using System.Buffers;
 using System.Collections;
@@ -7,6 +8,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
@@ -81,7 +83,7 @@ xmlElementName: {xmlElementName}
             //if (nodeA.ParentNode is null && nodeB.ParentNode != null) return -1; //nodeA is the top node
             //if (nodeB.ParentNode is null && nodeA.ParentNode != null) return 1;  //nodeB is the top node
 
-            //create ascending ancestor set for nodeA branch, with nodeA as the first element in the ancester set, i.e., ancSetA[0] == nodeA
+            //create ascending ancestor ("anc") set ("ancSet") for nodeA branch, with nodeA as the first element in the ancester set, i.e., ancSetA[0] == nodeA
             BaseType prevPar = null;
             int count = nodeA.TopNode.Nodes.Count();
             var ancSetA = new BaseType[count];
@@ -138,7 +140,7 @@ xmlElementName: {xmlElementName}
 
             //Let's see if both items come from the same IEnumerable (ieItems) in ANC, and then see which one has the lower itemIndex
             if (piAncNodeA.ieItems != null && piAncNodeB.ieItems!=null &&
-                piAncNodeA.ieItems == piAncNodeA.ieItems &&
+                piAncNodeA.ieItems == piAncNodeB.ieItems &&
                 piAncNodeA.itemIndex > -1 && piAncNodeB.itemIndex > -1)
             {
                 if (piAncNodeA.itemIndex == piAncNodeB.itemIndex) 
@@ -150,12 +152,9 @@ xmlElementName: {xmlElementName}
             //Let's see if we can read the xmlOrder from the XmlElementAttributes on the two PropertyInfo objects
             //If both xmlOrder results are the same, then one of the nodes (ancNodeA or ancNodeB) is probably a subclass of the other (the base class). 
             //In XML Schemas, it appears that base class (Schema base type) xml elements always come before subclass elements.
-            if (piAncNodeB.xmlOrder == piAncNodeA.xmlOrder)
-            {
-                if (ancNodeB.GetType().IsSubclassOf(ancNodeA.GetType())) return -1; //base class xml orders come before subclasses; ancNodeA is the base type here
-                if (ancNodeA.GetType().IsSubclassOf(ancNodeB.GetType())) return 1;  //base class xml orders come before subclasses; ancNodeB is the base type here
-                throw new Exception("Unknown error - the compared nodes share a common ParentNode and the same xmlOrder");
-            }
+
+            if (piAncNodeA.PropertyInfo.DeclaringType.IsSubclassOf(piAncNodeB.PropertyInfo.DeclaringType)) return 1; //base class xml orders come before subclasses; ancNodeA is the base type here
+            if (piAncNodeB.PropertyInfo.DeclaringType.IsSubclassOf(piAncNodeA.PropertyInfo.DeclaringType)) return -1;  //base class xml orders come before subclasses; ancNodeB is the base type here
 
             //Determine the comparison based on the xmlOrder in the XmlElementAttributes
             if (piAncNodeA.xmlOrder < piAncNodeB.xmlOrder) return -1;
@@ -262,77 +261,46 @@ xmlElementName: {xmlElementName}
         #endregion
 
         #region SDC Helpers
-        public static BaseType PreviousItem(BaseType item)
+        public static BaseType PrevElement(BaseType item)
         {
-            int xmlOrder = -1;
             if (item is null) return null;
             BaseType par = item.ParentNode;
-            BaseType prevNode = null;
-            bool doDescendants = true;
-            if (par is null) par = item; //We have the top node here
+            if (par is null) return null; //We have the top node here
 
-            while (true)
+            var prevSib = IHelpers.GetPrevSib(item);
+            if (prevSib != null && prevSib != item)
             {
-                prevNode = null;
-                xmlOrder = -1;
-
-                //!Does item have any children of its own?  If yes, find the first non-null property in the XML element order
-                if (doDescendants) if (PrevNode(item) != null) return prevNode;
-
-                //!No child items contained the next node, so let's look at other properties inside the parent object
-                var piMeta = GetPropertyInfo(item, true);
-                xmlOrder = piMeta.xmlOrder;
-
-                //!Is next item is contained inside the same IEnumerable parent?
-                if (piMeta.itemIndex > 0)
-                    return ObjectAtIndex(piMeta.ieItems, piMeta.itemIndex - 1) as BaseType;
-
-                //!Is next item part of a parent property that follows our item?
-                if (PrevNode(par) != null) return prevNode;
-
-                //!We did not found a next item, so let's move up one parent level in this while loop and check the properties under the parent.
-                //We keep climbing upwards in the tree until we find a parent with a next item, or we hit the top ancester node and return null.
-                if (par is null) return item;
-                item = par;
-                par = item.ParentNode;
-                doDescendants = false; //this will prevent infinite loops by preventing a useless search through the new parent's direct descendants - we already searched these.
+                var lastDesc1 = GetLastDescendant(prevSib);
+                if (lastDesc1 != null && lastDesc1 != item) return lastDesc1;
             }
-            //return null;
-            //!+--------------Local Function--------------------
-            BaseType PrevNode(BaseType targetNode)
-            {
-                foreach (var p in targetNode.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                {
-                    int highestOrder = 10000;  //Order in XmlElementAttribute, for finding the  next property to return; start with a huge value.
-                    XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
-                        .FirstOrDefault(a =>
-                        a.Order < xmlOrder &&
-                        a.Order > highestOrder &&
-                        p.GetValue(targetNode) != null);
 
-                    if (att != null)
-                    {//assign nextNode whenever we find a higher Order in an XmlElementAttribute                                
-                        object temp = p.GetValue(targetNode);
-                        if (!(temp is Enum))
-                        {
-                            var ie = temp as IList<BaseType>;
-                            if (ie !=null && ie[ie.Count()-1] != null)
-                            { //If we find an IEnumerable property, get its last member.
-                                highestOrder = att.Order;
-                                prevNode = ie[ie.Count() - 1];
-                            }
-                            if (temp is BaseType)
-                            {
-                                highestOrder = att.Order;
-                                prevNode = temp as BaseType;
-                            }
-                        }
-                    }
-                }
-                return prevNode;
-            }
+            var lastDesc = GetLastDescendant(par, item);// move up on node and drill down to bottom of tree until we hit item, then back to prevNode
+            if (lastDesc != null && lastDesc != item) return lastDesc;
+
+
+            return par; //par has no descendants, so just return par          
         }
-        public static BaseType NextNode(BaseType item)
+
+        public static BaseType NextElement2(BaseType item)
+        {
+            if (item is null) return null;
+
+            var firstKid = GetFirstKid(item);
+            if (firstKid != null) return firstKid;
+
+            var n = item;
+            do
+            {                
+                var nextSib = GetNextSib(n);
+                if (nextSib != null) return nextSib;
+
+                n = n.ParentNode;
+            } while (n != null);
+
+            return null;
+        }
+
+        public static BaseType NextElement(BaseType item)
         {
             int xmlOrder = -1;
             if (item is null) return null;
@@ -345,21 +313,24 @@ xmlElementName: {xmlElementName}
             {
                 nextNode = null;
                 xmlOrder = -1;
-                //!Does item have any children of its own?  If yes, find the first non-null property in the XML element order
-                if (doDescendants) if (NextKid(item) != null) return nextNode;                    
 
-                //!No child items contained the next node, so let's look at other properties inside the parent object
+                //Does item have any children of its own?  If yes, find the first non-null property in the XML element order
+                if (doDescendants) if (GetNextNode(item) != null) 
+                        return nextNode;                    
+
+                //No child items contained the next node, so let's look at other properties inside the parent object
                 var piMeta = GetPropertyInfo(item, true);
                 xmlOrder = piMeta.xmlOrder;
 
-                //!Is next item is contained inside the same IEnumerable parent?
+                //Is next item is contained inside the same IEnumerable parent?
                 if (piMeta.itemIndex > -1 && piMeta.itemIndex < piMeta.ieItems.Count() - 1)
                     return ObjectAtIndex(piMeta.ieItems, piMeta.itemIndex + 1) as BaseType;
 
-                //!Is next item part of a parent property that follows our item?
-                if (NextKid(par) != null) return nextNode;
+                //Is next item part of a parent property that follows our item?
+                if (GetNextNode(par, item) != null) 
+                    return nextNode;
 
-                //!We did not found a next item, so let's move up one parent level in this while loop and check the properties under the parent.
+                //We did not found a next item, so let's move up one parent level in this while loop and check the properties under the parent.
                 //We keep climbing upwards in the tree until we find a parent with a next item, or we hit the top ancester node and return null.
                 item = par;
                 par = item.ParentNode;
@@ -367,38 +338,170 @@ xmlElementName: {xmlElementName}
             }
             return null;
             //!+--------------Local Function--------------------
-            BaseType NextKid(BaseType targetNode)
+            BaseType GetNextNode(BaseType targetNode, BaseType startAfterNode = null)
             {
                 int lowestOrder = 10000;  //Order in XmlElementAttribute, for finding the  next property to return; start with a huge value.
-                foreach (var p in targetNode.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                {
-                    XmlElementAttribute att = p.GetCustomAttributes<XmlElementAttribute>()
-                        .FirstOrDefault(a =>
-                        a.Order > xmlOrder &&
-                        a.Order < lowestOrder &&
-                        p.GetValue(targetNode) != null);
+                IEnumerable<PropertyInfo> piIE = null;
+                Type startType = null;
 
-                    if (att != null)
-                    {//assign nextNode whenever we find a lower Order in an XmlElementAttribute                                
-                        object temp = p.GetValue(targetNode);
-                        if (!(temp is Enum))
+                //the following 2 flags improve effciency by delaying objct tree assessment until startAfterNode has been passed
+                bool startAfterNodeWasHit = false;
+                if (startAfterNode is null)
+                { //the following flag improves effciency by delaying objct tree assessment until startAfterNode has been passed
+                    startAfterNodeWasHit = true;
+                }
+                else startType = startAfterNode.GetType();
+
+                //Create a LIFO stack of the targetNode inheritance hierarchy.  The stack's top level type will always be BaseType
+                //For most non-datatype SDC objects, it could be a bit more efficient to use ExtensionBaseType - we can test this another time
+                Type t = targetNode.GetType();
+                var s = new Stack<Type>();
+                s.Push(t);
+                
+                do
+                {//build the stack of inherited types
+                    t = t.BaseType;
+                    if (t.IsSubclassOf(typeof(BaseType))) s.Push(t);
+                    else break; //quit when we hit a non-BaseType type
+                } while (true);
+
+                //starting with the least-derived inherited type (BaseType), look for any non-null properties of targetNode
+                while (s.Count() > 0)
+                {
+                    lowestOrder = 10000;
+                    piIE = s.Pop().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                    piIE = piIE.Where(p =>
+                    {
+                        var atts = (XmlElementAttribute[])p.GetCustomAttributes<XmlElementAttribute>();
+                        if (atts.Count() == 0) return false;
+                        XmlElementAttribute a = atts[0];
+                        object o = null;
+                        if (a.Order < lowestOrder)
                         {
-                            if (temp is IEnumerable && ObjectAtIndex(temp as IEnumerable, 0) != null)
-                            { //If we find an IEnumerable property, get it's first member.
-                                lowestOrder = att.Order;
-                                nextNode = ObjectAtIndex(temp as IEnumerable, 0) as BaseType;
-                            }
-                            if (temp is BaseType)
+                            if (startAfterNodeWasHit)
                             {
-                                lowestOrder = att.Order;
-                                nextNode = temp as BaseType;
+                                o = p.GetValue(targetNode);
+
+                                if (o is null) return false;
+                                if (o is BaseType)
+                                {
+                                    lowestOrder = a.Order;
+                                    nextNode = o as BaseType;
+                                    return true;
+                                }
+                                if (o is IEnumerable<BaseType> && (o as IEnumerable<BaseType>).Count() > 0)
+                                {
+                                    lowestOrder = a.Order;
+                                    nextNode = (o as IList)[0] as BaseType;
+                                    return true;
+                                }
+                            }
+
+                            if (!startAfterNodeWasHit)
+                            {
+                                o = p.GetValue(targetNode);
+
+                                if (o is IEnumerable<BaseType> &&
+                                    (o as IEnumerable<BaseType>).Count() > 0
+                                    && IndexOf(o as IEnumerable<BaseType>, startAfterNode) > -1)
+                                    startAfterNodeWasHit = true; //start looking for nextNode now
+                                if (!startAfterNodeWasHit && ReferenceEquals(o, startAfterNode))
+                                    startAfterNodeWasHit = true; //start looking for nextNode now
                             }
                         }
-                    }
+                        return false;
+                    });
+
+                    var piIeOrdered = piIE?.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().FirstOrDefault()?.Order); //sort pi list by XmlElementAttribute.Order
+                    PropertyInfo piFirst = GetObjectFromIEnumerableIndex(piIeOrdered, 0) as PropertyInfo; //Get the property whose XmlElementAttribute has the smallest order
+
+                    if (nextNode != null) return nextNode;
                 }
-                return nextNode;
+                return null;
             }
         }
+
+
+
+        public static BaseType GetLastSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+            item.TopNode.ChildNodes.TryGetValue(par.ObjectGUID, out List<BaseType> sibs);
+            sibs?.Sort(new TreeComparer());
+            return sibs?[sibs.Count() - 1];
+        }
+        public static BaseType GetFirstSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+            item.TopNode.ChildNodes.TryGetValue(par.ObjectGUID, out List<BaseType> sibs);
+            sibs?.Sort(new TreeComparer());
+            return sibs?[0];
+        }
+        public static BaseType GetNextSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+            var sibs = item.TopNode.ChildNodes[par.ObjectGUID];
+            if (sibs is null) throw new Exception("Sibs were not found in TopNode.ChildNodes");
+            sibs?.Sort(new TreeComparer());
+            var index = sibs.IndexOf(item);
+            if (index == sibs.Count() - 1) return null; //item is the last item
+            return sibs?[index + 1];
+        }
+        public static BaseType GetPrevSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+            item.TopNode.ChildNodes.TryGetValue(par.ObjectGUID, out List<BaseType> sibs);
+            if (sibs is null) throw new Exception("Sibs were not found in TopNode.ChildNodes");
+            sibs?.Sort(new TreeComparer());
+            var index = sibs.IndexOf(item);
+            if (index == 0) return null; //item is the first item
+            return sibs?[index - 1];
+        }
+
+        public static BaseType GetLastKid(BaseType item)
+        {
+            item.TopNode.ChildNodes.TryGetValue(item.ObjectGUID, out List<BaseType> kids);
+            kids?.Sort(new TreeComparer());
+            return kids?[kids.Count() - 1];
+        }
+        public static BaseType GetFirstKid(BaseType item)
+        {
+            item.TopNode.ChildNodes.TryGetValue(item.ObjectGUID, out List<BaseType> kids);
+            kids?.Sort(new TreeComparer());
+            return kids?[0];
+        }
+        public static BaseType GetLastDescendant(BaseType item, BaseType stopNode = null)
+        {
+            BaseType last = null;
+            var n = item;
+            var tc = new TreeComparer();
+            while (n != null)
+            {
+                item.TopNode.ChildNodes.TryGetValue(n.ObjectGUID, out List<BaseType> kids);
+                kids?.Sort(tc);
+                if (kids == null) break;
+                //option to abort search just before stopNode: check for stopNode in sibling list.
+                if (stopNode != null)
+                {
+                    var snIndex = kids.IndexOf(stopNode);
+                    if (snIndex > 0) return kids[snIndex - 1];
+                    if (snIndex == 0) return last;
+                }
+
+                n = kids[kids.Count()-1];
+                if (n != null) last = n;
+            }
+            return last;
+        }
+
+
+
+
+
         internal static int GetMaxOrderFromXmlElementAttributes(BaseType item)
         {
             var props = item.GetType().GetProperties();
