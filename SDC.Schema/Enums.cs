@@ -73,14 +73,56 @@ namespace SDC.Schema
 
     }
 
-
     public enum RuleEnum
     { 
     
     }
-    public enum ActionEnum
-    { 
-    
+    public enum ActionsEnum
+    {
+        Action, //ActActionType
+        SelectMatchingListItems,//RuleSelectMatchingListItemsType
+        AddCode, //ActAddCodeType
+        Inject, //ActInjectType
+        ShowURL, //CallFuncActionType
+        Save, //ActSaveResponsesType
+        SendReport, //ActSendReportType
+        SendMessage, //ActSendMessageType
+        SetAttributeValue, //ActSetAttributeType
+        SetAttributeValueScript, //ActSetAttrValueScriptType
+        SetBoolAttributeValueCode, //ActSetBoolAttributeValueCode
+        ShowForm, //ActShowFormType
+        ShowMessage, //ActShowMessageType
+        ShowReport, //ActShowReportType
+        PreviewReport, //ActPreviewReportType
+        ValidateForm, //ActValidateFormType
+        RunCode, //ScriptCodeAnyType
+        CallFunction, //CallFuncActionType
+        ConditionalGroupAction //PredActionType
+
+    }
+    public enum EventActionEnum  //EventActions, PredActionTypeMember
+    {       
+        AttributeEvalActionType,
+        ScriptBoolFuncActionType,
+        CallFuncBoolActionType,
+        MultiSelectionsActionType,
+        SelectionSetsActionType,
+        SelectionTestActionType,
+        PredActionType,
+        RuleSelectMatchingListItemsType,
+        Actions,
+        Else              
+    }
+    public enum PredGuardEnum //EventActions, PredActionTypeMember
+    {
+        AttributeEvalActionType,
+        ScriptBoolFuncActionType,
+        CallFuncBoolActionType,
+        MultiSelectionsActionType,
+        SelectionSetsActionType,
+        SelectionTestActionType,
+        PredActionType,
+        RuleSelectMatchingListItemsType
     }
     public enum MediaTypeEnum
     {
@@ -99,13 +141,10 @@ namespace SDC.Schema
     {
 
     }
-
     public enum StyleClassEnum
     {
 
     }
-
-
     [Flags]
     public enum HelperTypesEnum //TODO: Clean this up
     {
@@ -127,7 +166,6 @@ namespace SDC.Schema
         Dicom = 0x1000,
         BlobGroup = Image | Video | Blob | Dicom,
     }
-
     [Flags]
     public enum QuestionEnum
     {
@@ -141,7 +179,55 @@ namespace SDC.Schema
         QuestionLookupMultiple = ItemTypeEnum.QuestionLookupMultiple,
         QuestionGroup = ItemTypeEnum.QuestionGroup //generic Q
     }
+    public enum QuestionListMemberEnum //items that can be dropped on a Question node (Question/ListField/List
+    {
+        DisplayedItem, //0..*
+        ListItem, //0..*
 
+        Comment, //0..*
+        Extension, //0..*
+        Property //0..*
+    }
+    public enum ListItemMemberEnum
+    {
+        //Includes DisplayedType members
+        ListItemResponseField,
+        OnSelect,  //0..*
+        OnDeselect, //0..*
+        SelectIf, //0..*
+        DeselectIf
+    }
+    public enum ListFieldMemberEnum
+    {
+        ListHeaderText,
+        DefaultCodeSystem,
+        List, //List and LookupEndpoint are mutually exclusive
+        LookupEndpoint,
+        IlegalItemParings, //0..*
+        IllegalCoSelectedListItems, //0..*
+        AfterChange, //0..*
+        OnEvent //0..*
+    }
+    public enum ListItemResponseFieldMembers
+    {
+        Response,
+        CallSetValue,  //Call SetValue and SetValue are mutually exclusive
+        SetValue,
+        TextAfterResponse,
+        ResponseUnits,
+        AfterChange, //0..*
+        OnEvent  //0..*
+
+    }
+    public enum DataTypesEnum //for both DEType and SType
+    {
+        TBD
+    }
+
+    public enum DataTypesPreferredEnum //for both DEType and SType
+    {
+        TBD
+    }
     [Flags]
     public enum SectionEnum
     {
@@ -151,7 +237,6 @@ namespace SDC.Schema
         Section = ItemTypeEnum.Section,
         SectionGroup = ItemTypeEnum.SectionGroup
     }
-
     public enum SdcTypesEnum  //!++needs refreshing
     {
         AcceptabilityType,
@@ -343,16 +428,16 @@ namespace SDC.Schema
         DataElementType,
         MappingType
     }
-
     public enum SdcMovableTypesEnum
     {
+        
         DisplayedType,
         SectionItemType,
         ButtonActionType,
         InjectFormType,
         QuestionItemType,
         ListItemType,
-        ResponseFieldType,
+        ResponseFieldType, //not sure about this
         CommentType,
         ExtensionType,
         PropertyType,
@@ -363,15 +448,14 @@ namespace SDC.Schema
         ContactType,
         PersonType,
         OrganizationType,
-        EventType,
-        OnEventType,
-        PredGuardType
+        EventType, //not usually movable unless multiple copies of same event
+        OnEventType, //not usually movable unless multiple copies of same event
+        PredGuardType //probably need to remove this
 
     }
 
-    public enum ChildItemsTargetEnum //items that can be dropped on an IParent node (derived from ChildItems)
-    {
-         
+    public enum ChildItemsMemberEnum //items that can be dropped on an IParent node (derived from ChildItems)
+    {         
         Section,
         Question,
         DisplayedItem, 
@@ -382,43 +466,54 @@ namespace SDC.Schema
         Extension,
         Property
     }
-    public enum QuestionTargetEnum //items that can be dropped on a Question node
-    {
-        DisplayedItem,
-        ListItem,
 
-        Comment,
-        Extension,
-        Property
-    }
-
-    public enum EbtDerivedTargetEnum  //For any node type that derives from ExtensionBaseType
+    public enum EbtDerivedMemberEnum  //For any node type that derives from ExtensionBaseType
     {
         Comment,
         Extension,
         Property
     }
-    public enum PropertyTargetEnum  //items that can be dropped on a Property node
+    public enum PropertyMemberEnum  //items that can be dropped on a Property node
     {
         Comment,
         Extension,
-        Property
+        Property,
+        TypedValue //DataTypes_SType
     }
-    public enum DisplayedItemTargetEnum  //items that can be dropped on a DisplayedItem node
+    public enum DisplayedItemMemberEnum  //items that can be dropped on a DisplayedItem node
     {
-        Link,
-        BlobContent,
-        Contact, 
-        CodedValue, 
-        OnEnter, 
-        OnExit,
-        OnEvent,
+        Link, //0..*
+        BlobContent, //0..*
+        Contact, //0..*
+        CodedValue, //0..* 
+        OnEnter, //0..* 
+        OnExit, //0..*
+        OnEvent, //0..*
         ActivateIf,
         DeActivateIf,
-        Comment,
-        Extension,
-        Property
+
+        Comment, //0..*
+        Extension, //0..*
+        Property //0..*
     }
 
+    public enum DisplayedItemChangeEnum
+    {
+        Question,
+        Section,
+        ListItem,
+        Button,
+    }
+    public enum SectionChangeEnum
+    {
+        Question,
+        ListItem
+    }
+
+    public enum ListItemChangeEnum
+    {
+        DisplayedItem,
+        ListItem
+    }
 
 }

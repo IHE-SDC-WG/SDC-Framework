@@ -93,6 +93,18 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public BaseType ParentNode { get; }
+
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public IdentifiedExtensionType ParentIETypeNode {get;}
+        /// <summary>
+        /// Returns the ID property of the closest ancestor of type IdentifiedExtensionType.  
+        /// For eCC, this is the Parent node's ID, which is derived from  the parent node's CTI_Ckey, a.k.a. ParentItemCkey.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public string ParentIETypeID { get;}
+
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ITopNode TopNode { get; }

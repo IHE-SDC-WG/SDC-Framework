@@ -2,8 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -26,7 +30,7 @@ namespace SDC.Schema
         public void Clear()
         {
             //reset and clean up some items that might hold references to this object, keeping it alive
-            ClearTopNode();
+            ResetSdcImport();
             Nodes = null;
             ParentNodes = null;
             //IdentExtNodes = null;
@@ -46,19 +50,6 @@ namespace SDC.Schema
         { }
         #endregion
 
-        public bool EditBegin()
-        {
-            if (BaseType.TopNodeTemp == null)
-            {
-                BaseType.TopNodeTemp = this;
-                return true;
-            }
-            else return false;
-        }
-        public void EditFinish()
-        {
-            BaseType.ClearTopNode();
-        }
         #region IFormDesign
         public SectionItemType AddBody()
         { return (this as IFormDesign).AddBodyI(); }
@@ -91,14 +82,20 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
-        //[System.Xml.Serialization.XmlIgnore]
-        //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
+        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
+        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
+        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
+        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
+
 
         #region Serialization
         public static FormDesignType DeserializeFromXmlPath(string sdcPath)
@@ -238,28 +235,19 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
-
-        //[System.Xml.Serialization.XmlIgnore]
-        //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; }
-        public bool EditBegin()
-        {
-            if (BaseType.TopNodeTemp == null)
-            {
-                BaseType.TopNodeTemp = this;
-                return true;
-            }
-            else return false;
-        }
-        public void EditFinish()
-        {
-            BaseType.ClearTopNode();
-        }
+        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
+        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
+        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
+        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
         #region Serialization
         public static DataElementType DeserializeFromXmlPath(string sdcPath)
             => (DataElementType)GetSdcObjectFromXmlPath<DataElementType>(sdcPath);
@@ -313,29 +301,19 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
-
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
-        public bool EditBegin()
-        {
-            if (BaseType.TopNodeTemp == null)
-            {
-                BaseType.TopNodeTemp = this;
-                return true;
-            }
-            else return false;
-        }
-        public void EditFinish()
-        {
-            BaseType.ClearTopNode();
-        }
+        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
+        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
+        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
+        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
         #region Serialization
         public static RetrieveFormPackageType DeserializeFromXmlPath(string sdcPath)
             => (RetrieveFormPackageType)GetSdcObjectFromXmlPath<RetrieveFormPackageType>(sdcPath);
@@ -387,29 +365,19 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
-
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
-        public bool EditBegin()
-        {
-            if (BaseType.TopNodeTemp == null)
-            {
-                BaseType.TopNodeTemp = this;
-                return true;
-            }
-            else return false;
-        }
-        public void EditFinish()
-        {
-            BaseType.ClearTopNode();
-        }
+        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
+        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
+        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
+        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
         #region Serialization
         public static PackageListType DeserializeFromXmlPath(string sdcPath)
             => (PackageListType)GetSdcObjectFromXmlPath<PackageListType>(sdcPath);
@@ -437,7 +405,7 @@ namespace SDC.Schema
         #endregion
 
     }
-    public partial class MappingType : ITopNode
+    public partial class MappingType : ITopNode, IMoveRemove
     {
         #region ITopNode
         [System.Xml.Serialization.XmlIgnore]
@@ -455,29 +423,20 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<String, IdentifiedExtensionType> IdentExtNodes { get; private set; } = new Dictionary<String, IdentifiedExtensionType>();
-
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<int, BaseType> PreviousNodes { get; private set; } = new Dictionary<int, BaseType>();
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
-        public bool EditBegin()
-        {
-            if (BaseType.TopNodeTemp == null)
-            {
-                BaseType.TopNodeTemp = this;
-                return true;
-            }
-            else return false;
-        }
-        public void EditFinish()
-        {
-            BaseType.ClearTopNode();
-        }
+        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
+        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
+        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
+        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
+
         #region Serialization
         public static MappingType DeserializeFromXmlPath(string sdcPath)
             => (MappingType)GetSdcObjectFromXmlPath<MappingType>(sdcPath);
@@ -938,7 +897,7 @@ namespace SDC.Schema
     #endregion
 
     #region Base Types
-    public partial class BaseType : IBaseType
+    public partial class BaseType : IBaseType, IMoveRemove
     {
 
         #region  Local Members
@@ -980,59 +939,223 @@ namespace SDC.Schema
             {
                 if (topNodeTemp is null)
                 { topNodeTemp = value; }
-                else { throw new Exception("TopNode has already been assigned.  A call to ClearTopNode() is required before this object can be set;"); }
+                else { throw new Exception("TopNode has already been assigned.  A call to ResetSdcImport() is required before this object can be set for importing a new SDC template;"); }
             }
         }
-        /// <summary>
-        /// Resets TopNode and IETresetCounter.  This allows the creation of a new SDC tree for unit testing
-        /// </summary>
-        public static void ClearTopNode()
-        {
-            topNodeTemp = null;
-            IETresetCounter = 0;
-        }
-
         private void RegisterParent<T>(T inParentNode) where T : BaseType
         {
             try
             {
                 if (inParentNode != null)
                 {   //Register parent node
-                    //ParentNode = inParentNode;
-                    TopNodeTemp.ParentNodes.Add(ObjectGUID, inParentNode);
+                    TopNode.ParentNodes.Add(ObjectGUID, inParentNode);
 
                     List<BaseType> kids;
-                    TopNodeTemp.ChildNodes.TryGetValue(inParentNode.ObjectGUID, out kids);
+                    TopNode.ChildNodes.TryGetValue(inParentNode.ObjectGUID, out kids);
                     if (kids is null)
                     {
                         kids = new List<BaseType>();
-                        TopNodeTemp.ChildNodes.Add(inParentNode.ObjectGUID, kids);
+                        TopNode.ChildNodes.Add(inParentNode.ObjectGUID, kids);
                     }
                     kids.Add(this);
 
                     inParentNode.IsLeafNode = false; //the parent node has a child node, so it can't be a leaf node
-
-                    //Register IdentifiedExtensionType parent node
-                    //BaseType par = ParentNode;
-                    //while (par != null) //walk up the parent tree until we find the first IdentifiedExtensionType object
-                    //{
-                    //    if (par.GetType().IsSubclassOf(typeof(IdentifiedExtensionType)))
-                    //    {
-                    //        ParentIETypeNode = par as IdentifiedExtensionType;
-                    //        return;
-                    //    }
-                    //    par = par.ParentNode;
-                    //}
                 }
             }
             catch (Exception ex)
             { Debug.WriteLine(ex.Message + "/n  ObjectID:" + this.ObjectID.ToString()); }
         }
 
+        private void UnRegisterParent()
+        {
+            var par = this.ParentNode;
+            try
+            {
+                bool success = false;
+                if (par != null)
+                {
+                    success = TopNode.ParentNodes.Remove(this.ObjectGUID);
+                    if (!success) throw new Exception($"Could not remove object from ParentNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
+
+                    success = TopNode.ChildNodes[par.ObjectGUID].Remove(this); //Returns a List<BaseType> and removes "item" from that list
+                    if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
+
+                    success = TopNode.ChildNodes[this.ObjectGUID].Remove(this);
+                    if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
+
+                    if(TopNode.ChildNodes[par.ObjectGUID] is null || par.TopNode.ChildNodes[par.ObjectGUID].Count() == 0)
+                    par.IsLeafNode = true; //the parent node has no child nodes, so it is a leaf node
+                }
+            }
+            catch (Exception ex)
+            { Debug.WriteLine(ex.Message + "/n  ObjectID:" + this.ObjectID.ToString()); }
+        } //!not tested
+        private void UnRegisterThis()
+        {
+            bool success = TopNode.Nodes.Remove(this.ObjectGUID);
+            if (!success) throw new Exception($"Could not remove object from Nodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
+            UnRegisterParent();
+        } //!not tested
 
         #endregion
 
-        #region Public Members
+        #region IMoveRemove //not tested
+        private static void MoveInDictionaries(BaseType item, BaseType targetParent = null)
+        {
+            //Remove from ParentNodes and ChildNodes as needed
+            item.UnRegisterParent();
+
+            //Re-register item node under new parent
+            item.RegisterParent(targetParent);
+        }       
+        public virtual bool MoveAllowed (object targetProperty, BaseType targetParent, out List<string> errList, int newListIndex = -1)
+        {
+            //make sure that item and ebtTarget are not null and are part of the same tree
+
+            bool willSucceed = false;
+            errList = new List<string>();
+            if (targetProperty is null) 
+            { 
+                errList.Add("The targetProperty node is null"); 
+                return false; 
+            }
+            if (targetParent is null)
+            {
+                errList.Add("The targetParent node is null");
+                return false;
+            }
+            if (TopNode.Nodes[targetParent.ObjectGUID] is null)
+            {
+                errList.Add("The targetParent node is null");
+                return false;
+            }
+
+            var targetPropertyType = targetProperty.GetType();
+            var thisType = this.GetType();
+
+            if (targetPropertyType is IList<BaseType>)
+            {
+                willSucceed = true;
+            }
+            else if(!(targetProperty is BaseType) && !(targetProperty is IList<BaseType>))
+            {
+                errList.Add("The target node's Type must be of Type BaseType or IList<BaseType>"); 
+                return false; 
+            }
+            else if (!targetPropertyType.IsAssignableFrom(thisType))
+            { 
+                errList.Add($"The targetProperty's Type({targetPropertyType.Name}) is not assignable from the moving node's Type ({thisType.Name})"); 
+                return false; 
+            }
+
+            //targetProperty must have at least one XmlElementAttribute, and that attribute must have a DataType that matches "this"
+            //or else it must have exactly one XmlElementAttribute where the DataType is null or empty string
+            var atts = targetPropertyType.GetCustomAttributes<XmlElementAttribute>().Where(a => a.DataType == thisType.Name);
+
+            if ((atts != null && atts.Count() > 0))
+                willSucceed = true;
+            else
+            {// test for one XmlElementAttribute where the DataType is null/empty_string
+                atts = targetPropertyType.GetCustomAttributes<XmlElementAttribute>().Where(a => string.IsNullOrEmpty(a.DataType));
+                if (atts != null && atts.Count() == 1)
+                    willSucceed = true;
+                else
+                {
+                    errList.Add("targetProperty is not decorated with an XmlElementAttribute with a Name or DataType appropriate for accepting \"this\" object");
+                    return false;
+                }
+            }
+
+            //Get the allowed ElementName(s) for ebtPropertyTarget
+            //If any ElementName is present on an attribute, it must match the Element name on "this".
+            var names = targetPropertyType.GetCustomAttributes<XmlElementAttribute>().Where(a => !string.IsNullOrEmpty(a.ElementName)).Select(n => n.ElementName);
+            if (names != null && names.Count() > 0)
+            {
+                if (names.Contains(this.ElementName) ||
+                    names.Contains(ISdcUtil.GetPropertyInfo(this).xmlElementName))
+
+                    willSucceed = true;
+                else
+                {
+                    errList.Add(
+$"The target node requires a specific ElementName from the moving node. \r\n" +
+$"The current Element Name is: {ElementName}. \r\n" +
+$"The allowable ElementName(s) are: {nameList()}");
+                    return false;
+                }
+            }
+
+            return willSucceed;
+
+
+            string nameList()
+            {
+                string nl = "";
+                foreach (string n in names)
+                {
+                    if (nl.Length > 0) nl += ", ";
+                    nl += n;
+                }
+                return nl;
+            }
+
+        }
+        public bool Remove()
+        {
+            var par = this.ParentNode;
+
+            //!check recursively for descendants and remove them recursively from all dictionaries
+            //!this will remove the entire tree branch, ending with this object
+            foreach (var childNode in par.TopNode.ChildNodes[ObjectGUID])
+                childNode.Remove();
+
+            if (par != null)
+            {
+                //reflect the parent property that represents the "this" object, then set the property to null
+                var prop = par.GetType().GetProperties().Where(p => p.GetValue(par) == this).FirstOrDefault();
+                if (prop != null)
+                {
+                    if (prop is IList<BaseType>)
+                        (prop as IList<BaseType>)?.Remove(this);
+                    else prop.SetValue(par, null);
+
+                    UnRegisterThis();
+
+                    return true;
+                }
+            }
+            return false;
+        }
+        public virtual bool Move(object targetProperty, BaseType targetParent, out List<string> errList, int newListIndex = -1)
+        {
+            if (MoveAllowed(targetProperty, targetParent, out errList, newListIndex))
+            {
+
+                if (targetProperty is BaseType)
+                {
+                    MoveInDictionaries(this, (targetProperty as BaseType));
+                    targetProperty = this;
+                    return true;
+                }
+                if (targetProperty is IEnumerable<BaseType>)
+                {
+                    IList<BaseType> propList = targetProperty as IList<BaseType>;
+                    MoveInDictionaries(this, targetParent);
+                    if (newListIndex < 0 || newListIndex >= propList.Count) propList.Add(this);
+                    else propList.Insert(newListIndex, this);
+
+                    return true;
+                }
+                return false;
+            }
+            else return false;
+
+        }
+
+        #endregion
+
+        #region Public Members (IBaseType)
+
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool AutoNameFlag { get; set; } = false;
@@ -1126,13 +1249,7 @@ namespace SDC.Schema
                 else return -1;
             }
         }
-        ///// <summary>
-        ///// Returns the ID property of the closest ancestor of type DisplayedType.  
-        ///// For eCC, this is the Parent node's ID, which is derived from  the parent node's CTI_Ckey, a.k.a. ParentItemCkey.
-        ///// </summary>
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public IdentifiedExtensionType ParentIETypeObject { get; private set; }
+
         /// <summary>
         /// Retrieve the BaseType object that is the immediate parent of the current object in the object tree
         /// </summary>
@@ -1161,10 +1278,7 @@ namespace SDC.Schema
             //    _ParentNode = value;
             //}
         }
-        /// <summary>
-        /// Returns the ID property of the closest ancestor of type IdentifiedExtensionType.  
-        /// For eCC, this is the Parent node's ID, which is derived from  the parent node's CTI_Ckey, a.k.a. ParentItemCkey.
-        /// </summary>
+
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public IdentifiedExtensionType ParentIETypeNode
@@ -1185,11 +1299,14 @@ namespace SDC.Schema
                 return null;
             }
         }
+        /// <summary>
+        /// Returns the ID property of the closest ancestor of type IdentifiedExtensionType.  
+        /// For eCC, this is the Parent node's ID, which is derived from  the parent node's CTI_Ckey, a.k.a. ParentItemCkey.
+        /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public string ParentIETypeID
         { get => ParentIETypeNode?.ID; }
-
 
         public void SetNames(string elementName = "", string elementPrefix = "", string baseName = "")
         {
@@ -1208,6 +1325,14 @@ namespace SDC.Schema
 
                 Debug.WriteLine($"Type: {this.GetType()} ElementName: {ElementName} Prefix:{ElementPrefix} name: {name}");
             }
+        }
+        /// <summary>
+        /// Resets TopNode and IETresetCounter.  This allows the creation of a new SDC tree for unit testing
+        /// </summary>
+        public static void ResetSdcImport() //This really should be only on the TopNode object (e.g., FormDesign)
+        {
+            topNodeTemp = null;
+            IETresetCounter = 0;
         }
 
         #endregion
@@ -1262,7 +1387,7 @@ namespace SDC.Schema
             if (TopNodeTemp is null && this is ITopNode)
             {
                 TopNodeTemp = (ITopNode)this;
-                sdcTopType = SDCHelpers.ConvertStringToEnum<SdcTopNodeTypesEnum>(GetType().Name);
+                sdcTopType = ISdcUtil.ConvertStringToEnum<SdcTopNodeTypesEnum>(GetType().Name);
                 //if (sdcTreeBuilder == null) sdcTreeBuilder = new SDCTreeBuilder();  //we create SDCTreeBuilder only in the top node
             }
             else if (TopNodeTemp != null)
@@ -1274,7 +1399,7 @@ namespace SDC.Schema
             else throw new InvalidOperationException("TopObjectTemp was null and the top object did not implement ITopNode.");
             TopNode = TopNodeTemp;
             ObjectID = TopNode.MaxObjectID++;
-            TopNode.Nodes.Add(ObjectGUID, this);
+            TopNode.Nodes.Add(ObjectGUID, this); //Register This Node
             //TopObject.Nodes.TryGetValue(ObjectID - 1, out BaseType prevNode);
             //if (prevNode != null) TopObject.PreviousNodes.Add(ObjectID, prevNode);
 
@@ -1314,7 +1439,6 @@ namespace SDC.Schema
 
                 //Set the correct Element Name, in case we have errors in the SDC object tree logic
                 bt.ElementName = e.LocalName;
-
 
                 //Create  dictionary to track the matched indexes of the XML and FD node collections
                 dX_obj[iXmlNode] = bt.ObjectGUID;
@@ -1414,7 +1538,6 @@ namespace SDC.Schema
         public ExtensionType AddExtension(int insertPosition = -1) { return eb.AddExtensionI(insertPosition); }
         #endregion
 
-
         //public ExtensionBaseType AddExtensionBaseType() { return sdcTreeBuilder.AddExtensionBaseTypeItems(this); }
     }
 
@@ -1425,8 +1548,8 @@ namespace SDC.Schema
         protected ExtensionType() { }
         public ExtensionType(BaseType parentNode) : base(parentNode) { }
         #region IExtensionBaseTypeMember
-        public bool Remove() => Iebtm.Remove();
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
+        //public bool Remove() => Iebtm.Remove();
+        //public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
         #endregion
 
     }
@@ -1450,8 +1573,8 @@ namespace SDC.Schema
         }
 
         #region IExtensionBaseTypeMember
-        public bool Remove() => Iebtm.Remove();
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
+        //public bool Remove() => Iebtm.Remove();
+        //public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
         #endregion
 
     }
@@ -1466,8 +1589,8 @@ namespace SDC.Schema
         }
 
         #region IExtensionBaseTypeMember
-        public bool Remove() => Iebtm.Remove();
-        public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
+        //public bool Remove() => Iebtm.Remove();
+        //public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
         #endregion
 
     }
@@ -1475,13 +1598,6 @@ namespace SDC.Schema
 
     public partial class IdentifiedExtensionType
     {
-
-        ///// <summary>
-        ///// Given an Item Node's URI, returns the Item's object reference as IdentifiedExtensionType.
-        ///// </summary>
-        //[NonSerialized]
-        //public static Dictionary<String, IdentifiedExtensionType> IdentExtNodes = new Dictionary<String, IdentifiedExtensionType>();
-
         protected IdentifiedExtensionType() { }
         protected IdentifiedExtensionType(BaseType parentNode, string id = "") : base(parentNode)
         {
@@ -1489,35 +1605,8 @@ namespace SDC.Schema
                 this.ID = id;
             else if (this.ObjectGUID != null)
                 this.ID = this.ObjectGUID.ToString();
-            //AddToIdentExtNodes(id);
         }
 
-        //private void AddToIdentExtNodes(string id = "")
-        //{
-
-        //    if (string.IsNullOrWhiteSpace(this.ID))
-        //    {
-        //        if (!string.IsNullOrWhiteSpace(id))
-        //            this.ID = id;
-        //        else if (this.ObjectGUID != null)
-        //            this.ID = this.ObjectGUID.ToString();
-        //    }
-
-        //    if (!string.IsNullOrWhiteSpace(this.ID))
-        //    {
-        //        try
-        //        {
-        //            TopNode.IdentExtNodes.Add(this.ID, this);
-        //            Debug.WriteLine($"The node with ObjectID: {this.ObjectID} and ID: {this.ID} WAS added to the IdentExtNodes dictionary. Item type is {this.GetType()}");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Debug.WriteLine($"Error: {ex.Message}. The node with ObjectID: {this.ObjectID} and ID: {this.ID} was NOT added to the IdentExtNodes dictionary.  Item type is {this.GetType()}");
-        //        }
-        //    }
-        //    else
-        //    { Debug.WriteLine($"The node with ObjectID: {this.ObjectID} and ID: {this.ID} was NOT added to the IdentExtNodes dictionary.  Item type is {this.GetType()}"); }
-        //}
 
         public static explicit operator IdentifiedExtensionType(KeyValuePair<int, BaseType> v)
         {
@@ -1553,24 +1642,12 @@ namespace SDC.Schema
             get { return this.Items; }
             set { this.Items = value; }
         }
-        public int RemoveNode(IdentifiedExtensionType Node)
+
+        bool Remove(int NodeIndex)
         {
-            int i = 0; //list index
-            foreach (var li in ChildItemsList)
-            {
-                if (li.ObjectGUID == Node.ObjectGUID)
-                {
-                    ChildItemsList.RemoveAt(i);
-                    return i;
-                }
-                i++;
-            }
-            return -1;
-        }
-        public int RemoveNode(int index)
-        {
-            ChildItemsList.RemoveAt(index);
-            return index;
+            var node = ChildItemsList[NodeIndex];
+            if (node != null) return node.Remove();
+            return false;
 
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
+using System.Net.Mail;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -85,7 +86,7 @@ namespace SDC.Schema
     /// This interface is require to support generic classes that must handle the creation ofthe 
     /// ChildItems element, which holds List of type IdentifiedItemType
     /// </summary>
-    public interface IChildItemsParent<T>:IHelpers, IQuestionBuilder //implemented by items that can have a ChildItems node.
+    public interface IChildItemsParent<T>:ISdcUtil, IQuestionBuilder //implemented by items that can have a ChildItems node.
         where T:BaseType, IChildItemsParent<T>
     { 
         ChildItemsType ChildItemsNode { get; set; }
@@ -137,8 +138,7 @@ namespace SDC.Schema
             }
 
             return qNew;
-        }
-        DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
+        }        DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
         internal DisplayedType AddChildDisplayedItemI(string id, int insertPosition = -1)
         {
             var childItems = AddChildItemsNodeI(this as T);
@@ -217,7 +217,7 @@ namespace SDC.Schema
         //QL AddChildQL(string id = "", int insertPosition = -1);
 
     }
-    public interface IChildItemsMember<Tchild> : IHelpers, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
+    public interface IChildItemsMember<Tchild> : ISdcUtil, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
             where Tchild : IdentifiedExtensionType, IChildItemsMember<Tchild>
     {
         bool Remove(Tchild source)
@@ -348,7 +348,7 @@ namespace SDC.Schema
             var count = targetList.Count;
             if (newListIndex < 0 || newListIndex > count) newListIndex = count; //add to end  of list
 
-            var indexSource = sourceList.IndexOf(source);  //save the original source index in case we need to replace the source node back to it's origin
+            var indexSource = sourceList.IndexOf(source);  //save the original source index in case we need to replace the source node back to its origin
             bool b = sourceList.Remove(source); if (!b) return false;
             targetList.Insert(newListIndex, source);
             if (targetList[newListIndex] == source) //check for success
@@ -548,7 +548,7 @@ namespace SDC.Schema
 
 
     }
-    public interface IQuestionListMember: IHelpers, IQuestionBuilder //decorates LI/LIR and DI
+    public interface IQuestionListMember: ISdcUtil, IQuestionBuilder //decorates LI/LIR and DI
     {
         //for DI, make sure parent is a ListType object
         bool Remove(bool removeDecendants = false);
@@ -625,7 +625,7 @@ namespace SDC.Schema
             return false;
 
         }
-        bool MoveInListI(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType)
+        bool MoveInListI(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType); need to address Nodes dictionary updates
         {
             //this function allows dropping items inside a QS o QM list to rearrange the list
             //prevent illegal operationss
@@ -844,33 +844,16 @@ namespace SDC.Schema
     /// Move and Remove methods for Comment, Extension and Property
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IMoveRemove
+    public interface IMoveRemove  //Used on BaseType only; IExtensionBaseTypeMember has some custom methods but they do not handle Node dictionaries or is-move-allowed testing
     {
-        bool Remove();
-        bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1);
+        public bool Remove();
+        public bool Move(object targetProperty, BaseType targetParent, out List<string> errList, int newListIndex = -1);
+        public bool MoveAllowed(object targetProperty, BaseType targetParent, out List<string> errList, int newListIndex = -1);
+
+
     }
-    public interface IExtensionBaseTypeMember: IMoveRemove, IHelpers //Used on Extension, Property, Comment
+    public interface IExtensionBaseTypeMember: ISdcUtil //Used on Extension, Property, Comment
     {
-        new bool Remove()
-        {
-            switch (this)
-            {
-                case PropertyType prop:
-                    var p = GetStatedListParent(prop);
-                    if (IsGenericList(p)) { p.Remove(prop); return true; }
-                    return false;
-                case CommentType cmt:
-                    var pct = GetStatedListParent(cmt);
-                    if (IsGenericList(pct)) { pct.Remove(cmt); return true; }
-                    return false;
-                case ExtensionType et:
-                    var pet = GetStatedListParent(et);
-                    if (IsGenericList(pet)) { pet.Remove(et); return true; }
-                    return false;
-                default: return false;
-            }
-        }
-        new bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => throw new NotImplementedException();
         bool MoveI(ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
         {
             if (extension == null) return false;
@@ -1091,7 +1074,7 @@ namespace SDC.Schema
 
 
     }
-    public interface IEvent : IHasActionElseGroup, IHelpers  //Used for events (PredActionType)
+    public interface IEvent : IHasActionElseGroup, ISdcUtil  //Used for events (PredActionType)
     {
         PredEvalAttribValuesType AddAttributeVal()
         {
@@ -1178,7 +1161,7 @@ namespace SDC.Schema
     {
         
     }
-    public interface IHasElseNode: IHelpers
+    public interface IHasElseNode: ISdcUtil
     {
         PredActionType AddElseNode()
         {
@@ -1211,7 +1194,7 @@ namespace SDC.Schema
         }
 
     }
-    public interface IAction : IHelpers
+    public interface IAction : ISdcUtil
     {
         public ActActionType AddActAction(int insertPosition = -1)
         {

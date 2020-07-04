@@ -27,7 +27,7 @@ namespace SDC_Tests
         [TestMethod]
         public void DeserializeDemogFormDesignFromPath()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             //string path = @".\Test files\Demog CCO Lung Surgery.xml";
 
             string path = Path.Combine(".", "Test files", "Demog CCO Lung Surgery.xml");
@@ -48,7 +48,7 @@ namespace SDC_Tests
         [TestMethod]
         public void DeserializePkgFromPath()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             //string path = @".\Test files\..Sample SDCPackage.xml";
             string path = Path.Combine(".", "Test files", "..Sample SDCPackage.xml");
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
@@ -79,7 +79,7 @@ namespace SDC_Tests
         [TestMethod]
         public void DeserializeDEFromPath()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             //string path = @".\Test files\DE sample.xml";
             string path = Path.Combine(".", "Test files", "DE sample.xml");
             //string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
@@ -92,7 +92,7 @@ namespace SDC_Tests
         }
         public void DeserializeDEFromXml()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             //string path = @".\Test files\DE sample.xml";
             string path = Path.Combine(".", "Test files", "DE sample.xml");
             string sdcFile = File.ReadAllText(path, System.Text.Encoding.UTF8);
@@ -105,7 +105,7 @@ namespace SDC_Tests
         [TestMethod]
         public void DeserializeFormDesignFromPath()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             //string path = @".\Test files\CCO Lung Surgery.xml";
             //string path = @".\Test files\Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml";
             string path = Path.Combine(".", "Test files", "Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml");
@@ -134,13 +134,13 @@ namespace SDC_Tests
             DisplayedType DI1 = (DisplayedType)FD.Nodes.Values.Where(n => n.name == DI.ID)?.First();
             DisplayedType DI2 = (DisplayedType)Q.ChildItemsNode.Items[0];
             QuestionItemType Q1 = (QuestionItemType)DI2.ParentNode.ParentNode;
-            myXML = SDCHelpers.XmlReorder(FD.GetXml());
-            myXML = SDCHelpers.XmlFormat(myXML);
-            var S1 = Q.AddOnEnter().Actions.AddActInject().Item = new SectionItemType(   //Need to add AddActionsNode to numerous classes via IHasActionsNode
-                parentNode: Q,
-                id: "myid",
-                elementName: "",
-                elementPrefix: "s");
+            myXML = ISdcUtil.XmlReorder(FD.GetXml());
+            myXML = ISdcUtil.XmlFormat(myXML);
+            //var S1 = Q.AddOnEnter().Actions.AddActInject().Item = new SectionItemType(   //Need to add AddActionsNode to numerous classes via IHasActionsNode
+            //    parentNode: Q,
+            //    id: "myid",
+            //    elementName: "",
+            //    elementPrefix: "s");
 
             Debug.Print(myXML);
             FD.Clear();
@@ -426,7 +426,7 @@ namespace SDC_Tests
 
         public NavigationTests()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             string path = Path.Combine(".", "Test files", "Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml");
             fd = FormDesignType.DeserializeFromXmlPath(path);
         }
@@ -466,7 +466,7 @@ namespace SDC_Tests
                 {
                     var a1 = 1;
                 }
-                n = IHelpers.NextElement(n);
+                n = ISdcUtil.NextElement(n);
                 i++;
             }
             Debug.Print(
@@ -493,7 +493,7 @@ namespace SDC_Tests
                 {
                     var a1 = 1;
                 }
-                n = IHelpers.NextElement2(n);
+                n = ISdcUtil.NextElement2(n);
                 i++;
             }
             Debug.Print(
@@ -506,7 +506,7 @@ namespace SDC_Tests
 
 
             
-            BaseType n = IHelpers.GetLastDescendant(FD);
+            BaseType n = ISdcUtil.GetLastDescendant(FD);
             int i = FD.Nodes.Count()-1;
             string content;
 
@@ -524,7 +524,7 @@ namespace SDC_Tests
                 {
                     var a1 = 1;
                 }
-                n = IHelpers.PrevElement(n);
+                n = ISdcUtil.PrevElement(n);
                 i--;
             }
             Debug.Print(
@@ -538,71 +538,8 @@ namespace SDC_Tests
         }
 
         [TestMethod]
-        public void GetParentIEnumerable()
-        {
-            int index = -1;
-            List<BaseType> par;
-            var t = (ITopNode)FD;
-            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n => n.Value).ToList();
-            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
-            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
-            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
-            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
-
-            par = IHelpers.X_GetParentIEnumerable(qList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
-            Console.WriteLine(SDCHelpers.NS(qList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par[index]?.name ?? "", "null"));
-            par = IHelpers.X_GetParentIEnumerable(sList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(sList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
-            par = IHelpers.X_GetParentIEnumerable(aList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(aList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
-            par = IHelpers.X_GetParentIEnumerable(cList[3], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(cList[3]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
-            par = IHelpers.X_GetParentIEnumerable(pList[15], out index)?.ToList();
-            Debug.Print(SDCHelpers.NS(pList[15]?.name) + ", Par: " + Interaction.IIf((index > -1), par?[index]?.name ?? "", "null"));
-
-
-
-
-        }
-
-        [TestMethod]
         public void GetNamedItem()
         {
-
-        }
-        [TestMethod]
-        public void X_ReflectSdcElement()
-        {
-
-            var t = (ITopNode)FD;
-            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n => n.Value).ToList();
-            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
-            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
-            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
-            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
-
-            var tpl = IHelpers.X_ReflectSdcElement(qList[0]);
-            Debug.Print(((QuestionItemType)qList[4]).title, tpl.itemElementName, tpl.itemPropertyOrder);
-
-        }
-        [TestMethod]
-        public void X_GetItemPropertyName()
-        {
-            var t = (ITopNode)FD;
-            int propertyIndex;
-            IEnumerable<BaseType> ieProperty;
-            var qList = t.Nodes.Where(n => n.Value is QuestionItemType).Select(n => n.Value).ToList();
-            var sList = t.Nodes.Where(n => n.Value is SectionItemType).Select(n => n.Value).ToList();
-            var aList = t.Nodes.Where(n => n.Value is ListItemType).Select(n => n.Value).ToList();
-            var cList = t.Nodes.Where(n => n.Value is ChildItemsType).Select(n => n.Value).ToList();
-            var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
-
-            Debug.Print(IHelpers.X_GetPropertyName(qList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.X_GetPropertyName(sList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.X_GetPropertyName(aList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.X_GetPropertyName(cList[3], out ieProperty, out propertyIndex));
-            Debug.Print(IHelpers.X_GetPropertyName(pList[15], out ieProperty, out propertyIndex));
 
         }
 
@@ -618,16 +555,16 @@ namespace SDC_Tests
             var pList = t.Nodes.Where(n => n.Value is PropertyType).Select(n => n.Value).ToList();
 
 
-            Debug.Print(IHelpers.GetPropertyInfo(qList[1]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(sList[1]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(aList[1]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(cList[1]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(pList[1]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(qList[10]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(sList[10]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(aList[10]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(cList[10]).ToString());
-            Debug.Print(IHelpers.GetPropertyInfo(pList[10]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(qList[1]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(sList[1]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(aList[1]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(cList[1]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(pList[1]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(qList[10]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(sList[10]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(aList[10]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(cList[10]).ToString());
+            Debug.Print(ISdcUtil.GetPropertyInfo(pList[10]).ToString());
 
 
         }
@@ -639,15 +576,15 @@ namespace SDC_Tests
 
             foreach (var n in FD.Nodes)
             {
-                IHelpers.GetPropertyInfo(n.Value);
-                //Debug.Print(IHelpers.GetPropertyInfo(n.Value).ToString());
+                ISdcUtil.GetPropertyInfo(n.Value);
+                //Debug.Print(ISdcUtil.GetPropertyInfo(n.Value).ToString());
             }
             Debug.Print((a - Stopwatch.GetTimestamp()).ToString());
         }
         [TestMethod]
         public void TreeComparer()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             string path = Path.Combine(".", "Test files", "Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml");
             var FDbad = FormDesignType.DeserializeFromXmlPath(path); //used to compare nodes in another tree
             var adr = FDbad.Nodes.Values.ToArray(); //this creates shallow copies with do not retain ParentNode refs, etc.
@@ -726,7 +663,7 @@ namespace SDC_Tests
         [TestMethod]
         public void ParentNodesFromXml()
         {
-            BaseType.ClearTopNode();
+            BaseType.ResetSdcImport();
             string path = Path.Combine(".", "Test files", "Adrenal.Bx.Res.129_3.004.001.REL_sdcFDF_test.xml");
             var FDbad = FormDesignType.DeserializeFromXmlPath(path); //used to compare nodes in another tree
             var adr = FDbad.Nodes.Values.ToArray<BaseType>();

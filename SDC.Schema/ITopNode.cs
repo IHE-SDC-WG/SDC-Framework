@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+using System.Runtime.InteropServices.ComTypes;
 using System.Xml;
 using System.Xml.Schema;
-using Newtonsoft.Json;
 
 //using SDC;
 namespace SDC.Schema
@@ -19,7 +18,7 @@ namespace SDC.Schema
     /// Used by FormDesignType, DemogFormDesignType, DataElementType, RetrieveFormPackageType, and PackageListType
     /// The interface provides a common way to fill the above object trees using a single set of shared code.
     /// It also provdes a set of consistent, type-specific, public utilities for working with SDC objects
-    public interface ITopNode: IBaseType
+    public interface ITopNode : IBaseType
     {
         /// <summary>
         /// Dictionary.  Given an Node ID (int), returns the node's object reference.
@@ -41,18 +40,19 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         Dictionary<Guid, List<BaseType>> ChildNodes { get; }
-
-
-        ///// <summary>
-        ///// Dictionary.  Given a NodeID, return the *previous* node's object reference
-        ///// </summary>
-        //[System.Xml.Serialization.XmlIgnore]
-        //Dictionary<int, BaseType> PreviousNodes { get; }
-        ///// <summary>
-        ///// Given an Item Node's URI, returns the Item's object reference as IdentifiedExtensionType.
-        ///// </summary>
-        //Dictionary<String, IdentifiedExtensionType> IdentExtNodes{ get; }
-
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        List<BaseType> SortedNodesList { 
+            get {
+                var snl = new List<BaseType>(Nodes.Count());
+                snl.Sort(new TreeComparer());
+                return snl;
+            }
+        }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        ObservableCollection<BaseType> SortedNodesObsCol
+        { get => new ObservableCollection<BaseType>(SortedNodesList); }
 
         /// <summary>
         /// Returns SDC XML from the SDC object tree.  THe XML top node is determined by the top-level object tree node:
@@ -99,9 +99,9 @@ namespace SDC.Schema
         static string ValidateSdcXml(string xml, string sdcSchemaUri = null)
         {
             try
-            {                
+            {
                 var sdcSchemas = new XmlSchemaSet();
-                if (sdcSchemaUri is null) 
+                if (sdcSchemaUri is null)
                 {
                     sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCRetrieveForm.xsd"));
 
@@ -169,22 +169,20 @@ namespace SDC.Schema
         [JsonIgnore]
         int GetMaxObjectID { get; }
         [JsonIgnore]
-        internal int MaxObjectID{get; set;}
+        internal int MaxObjectID { get; set; }
         /// <summary>
         /// Automatically create and assign element names to all SDC elements
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         bool GlobalAutoNameFlag { get; set; }
-        bool EditBegin();
-        void EditFinish();
-        IdentifiedExtensionType GetNodeFromID(string id) => 
+        public void TreeLoadReset() => BaseType.ResetSdcImport();
+        IdentifiedExtensionType NodeFromID(string id) =>
             (IdentifiedExtensionType)Nodes.Values
             .Where(v => v.GetType() == typeof(IdentifiedExtensionType))
-            .Where(iet => ((IdentifiedExtensionType)iet).ID == id).First();
-        BaseType GetNodeFromName(string name) => 
-            Nodes.Values.Where(n => n.name == name).First();
-        BaseType GetNodeFromObjectID(int objectID)
+            .Where(iet => ((IdentifiedExtensionType)iet).ID == id).FirstOrDefault();
+        BaseType NodeFromName(string name) => Nodes.Values.Where(n => n.name == name).FirstOrDefault();
+        BaseType NodeFromObjectGUID(int objectGUID)
         {
             Nodes.TryGetValue(ObjectGUID, out BaseType n);
             return n;
@@ -194,7 +192,7 @@ namespace SDC.Schema
         //Tenum ConvertStringToEnum<Tenum>(string inputString) where Tenum : struct;
         ITopNode ReorderNodes()
         {
-            var xml = SDCHelpers.XmlReorder(this.GetXml());
+            var xml = ISdcUtil.XmlReorder(this.GetXml());
             ITopNode topNode;
             switch (this)
             {
@@ -256,9 +254,9 @@ namespace SDC.Schema
         }
 
         bool CanRemoveNode(string id)
-            {  //check LockedItem table in SSP
-                return true;  //need real look code here
-            }
+        {  //check LockedItem table in SSP
+            return true;  //need real look code here
+        }
 
         bool IsDirectDescendantIET(IdentifiedExtensionType nodeIET, BaseType ChildNode)
         {
@@ -271,8 +269,8 @@ namespace SDC.Schema
 
         bool IsDescendant(BaseType topNode, BaseType ChildNode)
         {
-            while (ParentNode !=null) if (ParentNode == topNode) return true;
-                
+            while (ParentNode != null) if (ParentNode == topNode) return true;
+
             return false;
         }
 
@@ -298,13 +296,13 @@ namespace SDC.Schema
             }
         }
 
-        Dictionary<int, BaseType> Descendants (BaseType topNode)
+        Dictionary<int, BaseType> Descendants(BaseType topNode)
         {
             var curNode = this;
             var d = new Dictionary<int, BaseType>();
             getKids((BaseType)this);
 
-            void getKids (BaseType node)
+            void getKids(BaseType node)
             {
                 //For each child, get all their children recursively, then add to dictionary
                 var vals = (Dictionary<int, BaseType>)Nodes.Values.Where(n => n.ParentID == curNode.ParentID);
@@ -318,7 +316,7 @@ namespace SDC.Schema
             return d;
 
         }
-        
+
         #region GetItems
 
         IdentifiedExtensionType GetItem(string id)
@@ -440,6 +438,7 @@ namespace SDC.Schema
             rf = (ResponseFieldType)Nodes.Values.Where(
                 t => t.GetType() == typeof(ResponseFieldType)).Where(
                     t => ((ResponseFieldType)t).name == name).First();
+            //rf.Response.Item.GetType().GetProperty("val").ToString();
             return rf;
         }
         //BaseType GetResponseValByQuestionID(string id)
@@ -505,9 +504,10 @@ namespace SDC.Schema
                     t => ((CodingType)t).name == name).First();
             return c;
         }
+
         #endregion
 
-#endregion
+        #endregion
 
 
     }
