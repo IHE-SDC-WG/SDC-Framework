@@ -581,8 +581,8 @@ xmlElementName: {xmlElementName}
             //We want the inner property, because its PropertyInfo object contains the XmlElementAttributes we need.
             //Outer wrapper PropertyInfo objects do NOT have XmlElementAttributes.
 
-            IEnumerable<PropertyInfo> piSet = par.GetType().GetProperties()?
-                .Where(pi => ReferenceEquals(pi.GetValue(par), item));
+///////////////////////////////////////////////////////////////
+            IList<PropertyInfo> piSet = par.GetType().GetProperties()?.Where(pi => ReferenceEquals(pi.GetValue(par), item))?.ToList();
 
             if (piSet != null && piSet.Count() > 0)
             {
@@ -597,7 +597,7 @@ xmlElementName: {xmlElementName}
                         return propInfo;
                     }
                 }
-            }            
+            }
 
             //Look in generic arrays and Lists of the par properties, and match to item reference
 

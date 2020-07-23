@@ -42,16 +42,24 @@ namespace SDC.Schema
         Dictionary<Guid, List<BaseType>> ChildNodes { get; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        List<BaseType> SortedNodesList { 
+        List<BaseType> SortedNodesList { get; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        internal List<BaseType> SortedNodesListI { 
             get {
                 var snl = new List<BaseType>(Nodes.Count());
                 snl.Sort(new TreeComparer());
                 return snl;
             }
         }
+
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        ObservableCollection<BaseType> SortedNodesObsCol
+        ObservableCollection<BaseType> SortedNodesObsCol { get; }
+
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        ObservableCollection<BaseType> SortedNodesObsColI
         { get => new ObservableCollection<BaseType>(SortedNodesList); }
 
         /// <summary>
@@ -176,7 +184,12 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         bool GlobalAutoNameFlag { get; set; }
-        public void TreeLoadReset() => BaseType.ResetSdcImport();
+
+
+
+
+
+        void TreeLoadReset() => BaseType.ResetSdcImport();
         IdentifiedExtensionType NodeFromID(string id) =>
             (IdentifiedExtensionType)Nodes.Values
             .Where(v => v.GetType() == typeof(IdentifiedExtensionType))

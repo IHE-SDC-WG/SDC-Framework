@@ -67,7 +67,6 @@ namespace SDC.Schema
         EventType AddOnExit();
 
 
-
         virtual internal PredGuardType AddActivateIfI()
         {
             var dt = this as DisplayedType;

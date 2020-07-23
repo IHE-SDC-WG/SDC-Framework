@@ -90,6 +90,7 @@ namespace SDC_Tests
 
 
         }
+        [TestMethod]
         public void DeserializeDEFromXml()
         {
             BaseType.ResetSdcImport();
@@ -242,6 +243,11 @@ namespace SDC_Tests
         public void AddComments()
         {
 
+        }
+        [TestMethod]
+        public void Misc()
+        {
+            
         }
     }
 
@@ -684,6 +690,19 @@ namespace SDC_Tests
         [TestMethod]
         public void IsItemChangeAllowed()
         {
+
+        }
+        [TestMethod]
+        public void Misc()
+        {
+            SectionItemType S;
+            //need AddActionNode
+            //Prevent adding nodes without  going through dictionaries
+            //Ensure that all add/remove functions use dictionaries   
+            //
+            //S.AddOnExit().Actions.AddActSendReport();
+
+            
 
         }
 

@@ -61,6 +61,8 @@ namespace SDC.Schema
         { (this as IFormDesign).RemoveFooterI(); return true; }
         public bool RemoveHeader()
         { (this as IFormDesign).RemoveHeaderI(); return true; }
+        public bool RemoveBody()
+        { (this as IFormDesign).RemoveBodyI(); return true; }
         public RulesType AddRules()
         { throw new NotImplementedException(); }
         #endregion
@@ -84,10 +86,10 @@ namespace SDC.Schema
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesListI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsColI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
@@ -237,10 +239,10 @@ namespace SDC.Schema
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesListI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsColI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; }
@@ -303,10 +305,10 @@ namespace SDC.Schema
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesListI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsColI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
@@ -367,10 +369,10 @@ namespace SDC.Schema
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesListI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsColI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
@@ -425,10 +427,10 @@ namespace SDC.Schema
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesList; }
+        public List<BaseType> SortedNodesList { get => ((ITopNode)this).SortedNodesListI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsCol; }
+        public ObservableCollection<BaseType> SortedNodesObsCol { get => ((ITopNode)this).SortedNodesObsColI; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
@@ -1048,20 +1050,20 @@ namespace SDC.Schema
                 return false; 
             }
 
-            //targetProperty must have at least one XmlElementAttribute, and that attribute must have a DataType that matches "this"
+            //targetProperty must have at least one XmlElementAttribute, and that attribute must have a DataType that matches Type of "this" (thisType)
             //or else it must have exactly one XmlElementAttribute where the DataType is null or empty string
             var atts = targetPropertyType.GetCustomAttributes<XmlElementAttribute>().Where(a => a.DataType == thisType.Name);
 
             if ((atts != null && atts.Count() > 0))
                 willSucceed = true;
             else
-            {// test for one XmlElementAttribute where the DataType is null/empty_string
+            {// test for exactly one XmlElementAttribute where the DataType is null/empty_string
                 atts = targetPropertyType.GetCustomAttributes<XmlElementAttribute>().Where(a => string.IsNullOrEmpty(a.DataType));
                 if (atts != null && atts.Count() == 1)
                     willSucceed = true;
                 else
                 {
-                    errList.Add("targetProperty is not decorated with an XmlElementAttribute with a Name or DataType appropriate for accepting \"this\" object");
+                    errList.Add("targetProperty is not decorated with an XmlElementAttribute with a DataType appropriate for accepting \"this\" object");
                     return false;
                 }
             }
@@ -1087,7 +1089,7 @@ $"The allowable ElementName(s) are: {nameList()}");
 
             return willSucceed;
 
-
+            //local utility method
             string nameList()
             {
                 string nl = "";
@@ -1132,16 +1134,17 @@ $"The allowable ElementName(s) are: {nameList()}");
             {
 
                 if (targetProperty is BaseType)
-                {
-                    MoveInDictionaries(this, (targetProperty as BaseType));
+                {                   
                     targetProperty = this;
+                    MoveInDictionaries(this, (targetProperty as BaseType));
                     return true;
                 }
-                if (targetProperty is IEnumerable<BaseType>)
+                if (targetProperty is IList<BaseType>)
                 {
                     IList<BaseType> propList = targetProperty as IList<BaseType>;
                     MoveInDictionaries(this, targetParent);
                     if (newListIndex < 0 || newListIndex >= propList.Count) propList.Add(this);
+
                     else propList.Insert(newListIndex, this);
 
                     return true;
@@ -3018,14 +3021,14 @@ $"The allowable ElementName(s) are: {nameList()}");
     #endregion
     #region  Actions
 
-    public partial class ActionsType : IAction
+    public partial class ActionsType : IActions
     {
         protected ActionsType() { }
         public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { ElementName = "Actions"; }
 
         public ActActionType AddActAction(int insertPosition = -1)
         {
-            return (this as IAction).AddActAction(insertPosition);
+            return (this as IActions).AddActAction(insertPosition);
         }
 
         public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1)

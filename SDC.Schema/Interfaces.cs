@@ -20,7 +20,7 @@ namespace SDC.Schema
         //FormDesignType CreateFormFromTemplateXML(string xml, string formID, string lineage, string version, string fullURI);
         //bool RemoveFormFromPackage(RetrieveFormPackageType pkg, FormDesignType form);
     }
-    public interface IPackage: ITopNode //TODO:
+    public interface IPackage : ITopNode //TODO:
     { }
     public interface IDataElement : ITopNode //TODO:
     { }
@@ -28,7 +28,7 @@ namespace SDC.Schema
     { }
     public interface IMap : ITopNode //TODO:
     { }
-    public interface IFormDesign : ITopNode //TODO:
+    public interface IFormDesign : ITopNode, IMoveRemove //TODO:
     {
 
         SectionItemType AddHeader();
@@ -36,6 +36,7 @@ namespace SDC.Schema
         SectionItemType AddFooter();
         bool RemoveHeader();
         bool RemoveFooter();
+        bool RemoveBody();
 
 
         //Default Implementations
@@ -70,25 +71,35 @@ namespace SDC.Schema
             return fd.Footer;
         }
         internal bool RemoveHeaderI()
-        { 
-            (this as FormDesignType).Header = null;
-            return true;
+        {
+           return (this as FormDesignType).Header.Remove();
+
         }
         internal bool RemoveFooterI()
         {
-            (this as FormDesignType).Footer = null;
-            return true;
+            return (this as FormDesignType).Footer.Remove();
+        }
+        internal bool RemoveBodyI()
+        {
+            return (this as FormDesignType).Body.Remove();
         }
     }
+    public interface IRetrieveFormPackage
+    {
+        LinkType AddFormURL();
+        HTMLPackageType AddHTMLPackage();
+        XMLPackageType AddXMLPackage();
+    }
+
     /// <summary>
     /// This interface is applied to the partial classes that can have a ChildItems element.
     /// These are Section, Question and ListItem.  
     /// This interface is require to support generic classes that must handle the creation ofthe 
     /// ChildItems element, which holds List of type IdentifiedItemType
     /// </summary>
-    public interface IChildItemsParent<T>:ISdcUtil, IQuestionBuilder //implemented by items that can have a ChildItems node.
-        where T:BaseType, IChildItemsParent<T>
-    { 
+    public interface IChildItemsParent<T> : ISdcUtil, IQuestionBuilder //implemented by items that can have a ChildItems node.
+        where T : BaseType, IChildItemsParent<T>
+    {
         ChildItemsType ChildItemsNode { get; set; }
         SectionItemType AddChildSection(string id, int insertPosition);
         SectionItemType AddChildSectionI(string id, int insertPosition)
@@ -138,7 +149,7 @@ namespace SDC.Schema
             }
 
             return qNew;
-        }        DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
+        } DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
         internal DisplayedType AddChildDisplayedItemI(string id, int insertPosition = -1)
         {
             var childItems = AddChildItemsNodeI(this as T);
@@ -220,16 +231,16 @@ namespace SDC.Schema
     public interface IChildItemsMember<Tchild> : ISdcUtil, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
             where Tchild : IdentifiedExtensionType, IChildItemsMember<Tchild>
     {
-        bool Remove(Tchild source)
-        {
-            var ci = ((ChildItemsType)source.ParentNode).Items;
-            return ci.Remove(source);
-        }
+        //bool Remove(Tchild source)
+        //{
+        //    var ci = ((ChildItemsType)source.ParentNode).Items;
+        //    return ci.Remove(source);
+        //}
         bool IsMoveAllowedToChild<U>(U Utarget, out string error)
             where U : notnull, IdentifiedExtensionType
             //where T : notnull, IdentifiedExtensionType
         {
-            Tchild Tsource = this as Tchild;  
+            Tchild Tsource = this as Tchild;
             var errorSource = "";
             var errorTarget = "";
             error = "";
@@ -548,7 +559,7 @@ namespace SDC.Schema
 
 
     }
-    public interface IQuestionListMember: ISdcUtil, IQuestionBuilder //decorates LI/LIR and DI
+    public interface IQuestionListMember : ISdcUtil, IQuestionBuilder //decorates LI/LIR and DI
     {
         //for DI, make sure parent is a ListType object
         bool Remove(bool removeDecendants = false);
@@ -567,7 +578,7 @@ namespace SDC.Schema
         DisplayedType ConvertToDI_I(bool testOnly) { throw new NotImplementedException(); } //abort if children of LI are present
         ListItemType ConvertToLIR_I(bool testOnly) { throw new NotImplementedException(); }
         bool IsMoveAllowedToListI<T>(T target, out string error)
-            where T:notnull, IQuestionListMember
+            where T : notnull, IQuestionListMember
         {
             error = "";
 
@@ -716,7 +727,7 @@ namespace SDC.Schema
         {
             var li = (ListItemType)this;
             var n = new PredGuardType(li);
-            li.SelectIf=n;
+            li.SelectIf = n;
             return n;
         }
         internal PredGuardType AddDeSelectIfI()
@@ -726,9 +737,6 @@ namespace SDC.Schema
             li.DeselectIf = n;
             return n;
         }
-
-
-
 
     }
     public interface IQuestionBuilder
@@ -777,6 +785,52 @@ namespace SDC.Schema
 
             return qParent.ListField_Item;
         }
+
+    }
+    public interface ISection
+    {
+        QuestionItemType ChangeToQuestionMultiple();
+        QuestionItemType ChangeToQuestionSingle();
+        QuestionItemType ChangeToQuestionResponse();
+        QuestionItemType ChangeToQuestionLookup();
+        DisplayedType ChangeToDisplayedItem();
+
+
+    }
+    public interface IDisplayedTypeChanges
+    {
+        // use these as part of a static DisplayedTypeChanges utility class; Do not add them to DisplayedType, since they would be inherited by Section, Question andd InjectForm
+        QuestionItemType ChangeToQuestionMultiple(DisplayedType source);
+        QuestionItemType ChangeToQuestionSingle(DisplayedType source);
+        QuestionItemType ChangeToQuestionResponse(DisplayedType source);
+        QuestionItemType ChangeToQuestionLookup(DisplayedType source);
+        SectionItemType ChangeToSection(DisplayedType source);
+        ButtonItemType ChangeToButtonAction(DisplayedType source);
+        InjectFormType ChangeToInjectForm(DisplayedType source);
+
+        DisplayedType ChangeToDisplayedItem(SectionItemType source);
+        QuestionItemType ChangeToQuestionMultiple(SectionItemType source);
+        QuestionItemType ChangeToQuestionSingle(SectionItemType source);
+        QuestionItemType ChangeToQuestionResponse(SectionItemType source);
+        QuestionItemType ChangeToQuestionLookup(SectionItemType source);
+        ButtonItemType ChangeToButtonAction(SectionItemType source);
+        InjectFormType ChangeToInjectForm(SectionItemType source);
+
+
+        DisplayedType ChangeToDisplayedItem(ListItemType source);
+
+        //ListItemType ChangeToListItem
+        //ListItemType ChangeToListItemResponse
+        //SectionItemType ChangeToSection()
+        //ChangeToButtonAction
+        //ChangeToInjectForm
+        //etc.
+
+
+        //Question
+        SectionItemType ChangeToSection(QuestionItemType source);
+        DisplayedType ChangeToDisplayedItem(QuestionItemType source);
+
 
     }
     public interface IExtensionBase
@@ -852,8 +906,9 @@ namespace SDC.Schema
 
 
     }
-    public interface IExtensionBaseTypeMember: ISdcUtil //Used on Extension, Property, Comment
+    public interface IExtensionBaseTypeMember : ISdcUtil, IMoveRemove //Used on Extension, Property, Comment
     {
+        //!+TODO: Handle Dictionary updates
         bool MoveI(ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
         {
             if (extension == null) return false;
@@ -901,7 +956,7 @@ namespace SDC.Schema
 
     }
     public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
-    public interface IResponse //marks LIR and QR
+    public interface IResponse: IVal //marks LIR and QR
     {
         UnitsType AddUnits(ResponseFieldType rfParent);
         UnitsType AddUnitsI(ResponseFieldType rfParent)
@@ -915,16 +970,29 @@ namespace SDC.Schema
         BaseType DataTypeObject { get; set; }
         RichTextType AddTextAfterResponse { get; set; }
     }
-    public interface IVal { object Val { get; set; } } //Implemented by data types, which have a strongly-type val attribute.  Not implemented by anyType, XML, or HTML
-    public interface IValNumeric: IVal { decimal ValDec{ get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.
-    public interface IValDateTime: IVal {} //Implemented by DateTime data types, which have a strongly-type val attribute.
-    public interface IValInteger : IVal { long ValLong { get; set; }} //Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
+    public interface IResponseField: IVal
+    {
+        CallFuncActionType AddCallSetValue();
+        ScriptCodeAnyType AddSetValue();
+        
+        
+    }
+    public interface IVal 
+    {
+        //Implemented by data types, which have a strongly-typed val attribute.  Not implemented by anyType, XML, or HTML  
+        object Val { get; set; }
+        string ValString { get; }
+
+    } 
+    public interface IValNumeric : IVal { decimal ValDec { get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.
+    public interface IValDateTime : IVal { } //Implemented by DateTime data types, which have a strongly-type val attribute.
+    public interface IValInteger : IVal { long ValLong { get; set; } } //Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
     public interface IIdentifiers
     {
         string GetNewCkey() { throw new NotImplementedException(); }
 
     }
-    public interface ICoding
+    public interface IAddCoding
     {
         CodingType AddCodedValue(DisplayedType dt, int insertPosition)
         {
@@ -942,7 +1010,7 @@ namespace SDC.Schema
             return u;
         }
     }
-    public interface IContact //(File)
+    public interface IAddContact //(File)
     {
         ContactType AddContact(FileType ftParent, int insertPosition)
         {
@@ -970,7 +1038,7 @@ namespace SDC.Schema
 
         }
     }
-    public interface IAddOrganization    {
+    public interface IAddOrganization {
         OrganizationType AddOganization();
 
         internal OrganizationType AddOrganizationI(ContactType contactParent)
@@ -1096,7 +1164,7 @@ namespace SDC.Schema
     /// //Used for guards, e.g., SelectIf, DeselectIf
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IPredGuardType //used by Guards on ListItem, Button
+    public interface IPredGuard //used by Guards on ListItem, Button
     {
         PredEvalAttribValuesType AddAttributeVal()
         {
@@ -1115,7 +1183,17 @@ namespace SDC.Schema
 
 
     }
-    public interface IRules { }
+    public interface IRules 
+    {
+        //List<ExtensionBaseType> Items 
+        RuleAutoActivateType AddAutoActivation();
+         RuleAutoSelectType AddAutoSelection();
+         PredActionType AddConditionalActions();
+         CallFuncActionType AddExternalRule();
+         ScriptCodeAnyType AddScriptedRule();
+         RuleSelectMatchingListItemsType AddSelectMatchingListItems();
+         ValidationType AddValidation();
+    }
     public interface IHasConditionalActionsNode
     {
         PredActionType AddConditionalActionsNode();
@@ -1157,11 +1235,11 @@ namespace SDC.Schema
             throw new InvalidCastException("The parent node must be of type EventType or PredActionType");
         }
     }
-    public interface IHasActionElseGroup: IAction, IHasElseNode
+    public interface IHasActionElseGroup : IActions, IHasElseNode
     {
-        
+
     }
-    public interface IHasElseNode: ISdcUtil
+    public interface IHasElseNode : ISdcUtil
     {
         PredActionType AddElseNode()
         {
@@ -1185,106 +1263,182 @@ namespace SDC.Schema
                 case SelectionTestActionType st:
                     st.Else.Add(elseNode); return elseNode;
                 default:
-
                     break;
-
             }
             throw new InvalidCastException();
             //return new Els
         }
 
     }
-    public interface IAction : ISdcUtil
+    public interface IActions
     {
+        //ExtensionBaseType[] Items
         public ActActionType AddActAction(int insertPosition = -1)
         {
             //var p = (ActionsType)this;
             //var act = new ActActionType(p);
             //return (ActActionType)ArrayAddReturnItem(p.Items, act);
-            return AddAction(new ActActionType((ActionsType)this));
+            return AddAction(new ActActionType((ActionsType)this), insertPosition);
         }
         public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1)
         {
-            return AddAction(new RuleSelectMatchingListItemsType((ActionsType)this));
+            return AddAction(new RuleSelectMatchingListItemsType((ActionsType)this), insertPosition);
         }
         //public abstract ActSetPropertyType AddSetProperty(ActionsType at);
         public ActAddCodeType AddActAddCode(int insertPosition = -1)
         {
-            return AddAction(new ActAddCodeType((ActionsType)this));
+            return AddAction(new ActAddCodeType((ActionsType)this), insertPosition);
         }
         //public abstract ActSetValueType AddSetValue(ActionsType at);
         public ActInjectType AddActInject(int insertPosition = -1)
         {
-            return AddAction(new ActInjectType((ActionsType)this));
+            return AddAction(new ActInjectType((ActionsType)this), insertPosition);
         }
         public CallFuncActionType AddActShowURL(int insertPosition = -1)
         {
-            return AddAction(new CallFuncActionType((ActionsType)this));
+            return AddAction(new CallFuncActionType((ActionsType)this), insertPosition);
         }
         public ActSaveResponsesType AddActSaveResponses(int insertPosition = -1)
         {
-            return AddAction(new ActSaveResponsesType((ActionsType)this));
+            return AddAction(new ActSaveResponsesType((ActionsType)this), insertPosition);
         }
         public ActSendReportType AddActSendReport(int insertPosition = -1)
         {
-            return AddAction(new ActSendReportType((ActionsType)this));
+            return AddAction(new ActSendReportType((ActionsType)this), insertPosition);
         }
         public ActSendMessageType AddActSendMessage(int insertPosition = -1)
         {
-            return AddAction(new ActSendMessageType((ActionsType)this));
+            return AddAction(new ActSendMessageType((ActionsType)this), insertPosition);
         }
         public ActSetAttributeType AddActSetAttributeValue(int insertPosition = -1)
         {
-            return AddAction(new ActSetAttributeType((ActionsType)this));
+            return AddAction(new ActSetAttributeType((ActionsType)this), insertPosition);
         }
         public ActSetAttrValueScriptType AddActSetAttributeValueScript(int insertPosition = -1)
         {
-            return AddAction(new ActSetAttrValueScriptType((ActionsType)this));
+            return AddAction(new ActSetAttrValueScriptType((ActionsType)this), insertPosition);
         }
         public ActSetBoolAttributeValueCodeType AddActSetBoolAttributeValueCode(int insertPosition = -1)
         {
-            return AddAction(new ActSetBoolAttributeValueCodeType((ActionsType)this));
+            return AddAction(new ActSetBoolAttributeValueCodeType((ActionsType)this), insertPosition);
         }
         public ActShowFormType AddActShowForm(int insertPosition = -1)
         {
-            return AddAction(new ActShowFormType((ActionsType)this));
+            return AddAction(new ActShowFormType((ActionsType)this), insertPosition);
         }
         public ActShowMessageType AddActShowMessage(int insertPosition = -1)
         {
-            return AddAction(new ActShowMessageType((ActionsType)this));
+            return AddAction(new ActShowMessageType((ActionsType)this), insertPosition);
         }
         public ActShowReportType AddActShowReport(int insertPosition = -1)
         {
-            return AddAction(new ActShowReportType((ActionsType)this));
+            return AddAction(new ActShowReportType((ActionsType)this), insertPosition);
         }
         public ActPreviewReportType AddActPreviewReport(int insertPosition = -1)
         {
-            return AddAction(new ActPreviewReportType((ActionsType)this));
+            return AddAction(new ActPreviewReportType((ActionsType)this), insertPosition);
         }
         public ActValidateFormType AddActValidateForm(int insertPosition = -1)
         {
-            return AddAction(new ActValidateFormType((ActionsType)this));
+            return AddAction(new ActValidateFormType((ActionsType)this), insertPosition);
         }
         public ScriptCodeAnyType AddActRunCode(int insertPosition = -1)
         {
-            return AddAction(new ScriptCodeAnyType((ActionsType)this));
+            return AddAction(new ScriptCodeAnyType((ActionsType)this), insertPosition);
         }
         public CallFuncActionType AddActCallFunction(int insertPosition = -1)
         {
-            return AddAction(new CallFuncActionType((ActionsType)this));
+            return AddAction(new CallFuncActionType((ActionsType)this), insertPosition);
         }
         public PredActionType AddActConditionalGroup(int insertPosition = -1)
         {
-            return AddAction(new PredActionType((ActionsType)this));
+            return AddAction(new PredActionType((ActionsType)this), insertPosition);
         }
 
-        T AddAction<T>(T action) where T : ExtensionBaseType
+        private T AddAction<T>(T action, int insertPosition = -1) where T : ExtensionBaseType
         {
             var p = (ActionsType)this;
-            var act = new ActActionType(p);
-            return (T)ArrayAddReturnItem(p.Items, act);
+            var lst = (IList<BaseType>)p.Items;
+            int c = lst.Count();
+            if (insertPosition > -1 && (insertPosition < c)) lst.Insert(insertPosition, action);
+            else lst.Insert(c, action);
+            return action;
+        }
+
+    }
+    public interface IActionsMember : IMoveRemove
+        //used from within an individual action object; "this" refers to the action object itself.  Its parent is the Actions element (ActionsType)
+    {
+
+        /// <summary>
+        /// Helper function to change the order of actions (e.g., ActSendMessage) inside the Actions element
+        /// All movements are within the same parent array (ExtensionBaseType[] Items)
+        /// The Nodes, ParentNodes and ChildNodes Dictionaries will be updated as well.
+        /// </summary>
+        /// <param name="action">ActionsType object that becomes the Actions element</param>
+        /// <param name="errList">If the retirn bool value is false, errList contains the errors encountered.</param>
+        /// <param name="newListIndex">Optional list location for the current action.  
+        /// If not provided or < 0, or > than the size of the Items list,the action will be placeed last in the Items list.
+        /// </param>
+        /// <returns></returns>
+        public bool Move(ExtensionBaseType action, out List<string> errList, int newListIndex = -1)
+        {
+            var par = ((BaseType)this).ParentNode;
+            var items = ((ActionsType)this).Items;
+            return Move(items, par, out errList, newListIndex);
         }
     }
+    public interface ISendMessage_Report
+    {
+        //List<ExtensionBaseType> Items
+        //Supports ActSendMessageType and ActSendReportType
+        EmailAddressType AddEmail();
+        PhoneNumberType AddFax();
+        CallFuncActionType AddWebService();
+    }
+    public interface IButtonItem
+    {
+        //List<EventType> Items
+        EventType AddOnClick();
+    }
+    public interface ICallFuncBase
+    {
+        //anyURI_Stype Item (choice)
+        anyURI_Stype AddFunctionURI();
+        anyURI_Stype AddLocalFunctionName();
+        
+
+        //List<ExtensionBaseType> Items
+        ListItemParameterType AddListItemParameterRef();
+        ParameterItemType AddParameterRef();
+        ParameterValueType AddParameterValue();
+
+    }
+    public interface IScriptBoolFuncAction
+    {
+        //ExtensionBaseType[] Items 
+         ActionsType AddActions();
+         PredActionType AddConditionalActions();
+         PredActionType AddElse();
+    }
+    public interface ICallFuncBoolAction: ICallFuncBase, IScriptBoolFuncAction
+    {
+        //ExtensionBaseType[] Items1
+        //see IScriptBoolFuncAction, which is identical except that this interface implementation must use "Item1", not "Item"
+        //Implementations using Item1:
+        ActionsType  AddActionsI();
+        PredActionType AddConditionalActionsI();
+        PredActionType AddElseI();
+
+    }
+    public interface IValidation
+    {
+        //List<FuncBoolBaseType> Items        
+         PredAlternativesType AddItemAlternatives();
+         ValidationTypeSelectionSets AddSelectionSets();
+         ValidationTypeSelectionTest AddSelectionTest();
+    }
+
     public interface INavigate
     {
         protected int GetListIndex<T>(List<T> list, T node) where T : notnull //TODO: could make this an interface feature of all list children
@@ -1428,5 +1582,34 @@ namespace SDC.Schema
         BaseType CloneSubtree(BaseType top)
         { throw new NotImplementedException(); }
     }
+    public interface IBlob
+    {
+        //Item types choice
+        bool AddBinaryMedia();
+        bool AddBlobURI();
+    }
+    public interface IInjectForm
+    {
+        //Item types choice
+        FormDesignType AddFormDesign();
+        QuestionItemType AddQuestion();
+        SectionItemType AddSection();
+    }
+    public interface IHTMLPackage
+    {
+        base64Binary_Stype AddHTMLbase64();
+    }
+    public interface IRegistrySummary
+    {
+        //BaseType[] Items
+        
+         ContactType AddContact();
+         FileType AddManual();
+         string_Stype AddReferenceStandardIdentifier();
+         InterfaceType AddRegistryInterfaceType();
+         string_Stype AddRegistryName();
+         FileType AddRegistryPurpose();
+         FileType AddServiceLevelAgreement();
 
+    }
 }

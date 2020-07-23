@@ -321,6 +321,15 @@ namespace SDC.Schema
             return rfParent.Response;
 
         }
+
+        DataTypes_SType AddDataTypesS();
+        DataTypesDateTime_DEType DataTypesDateTimeDE();
+        DataTypesDateTime_SType DataTypesDateTimeS();
+        DataTypesNumeric_DEType AddDataTypesNumericDE();
+        DataTypesNumeric_SType AddDataTypesNumericS();
+
+
+
         dtQuantEnum AssignQuantifier(string quantifier)
         {
             var dtQE = new dtQuantEnum();
@@ -328,21 +337,29 @@ namespace SDC.Schema
             switch (quantifier)
             {
                 case "EQ":
+                case "=":
+                case"==":
                     dtQE = dtQuantEnum.EQ;
                     break;
                 case "GT":
+                case ">":
                     dtQE = dtQuantEnum.GT;
                     break;
                 case "GTE":
+                case ">=":
                     dtQE = dtQuantEnum.GTE;
                     break;
                 case "LT":
+                case "<":
                     dtQE = dtQuantEnum.LT;
                     break;
                 case "LTE":
+                case "<=":
                     dtQE = dtQuantEnum.LTE;
                     break;
                 case "APPROX":
+                case "~":
+                case "@":
                     dtQE = dtQuantEnum.APPROX;
                     break;
                 case "":
