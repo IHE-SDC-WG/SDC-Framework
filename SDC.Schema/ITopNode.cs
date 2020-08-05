@@ -40,27 +40,15 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         Dictionary<Guid, List<BaseType>> ChildNodes { get; }
-        [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnore]
-        List<BaseType> SortedNodesList { get; }
-        [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnore]
-        internal List<BaseType> SortedNodesListI { 
-            get {
-                var snl = new List<BaseType>(Nodes.Count());
-                snl.Sort(new TreeComparer());
-                return snl;
-            }
+        List<BaseType> GetSortedNodesList()
+        {
+            var snl = new List<BaseType>(Nodes.Count());
+            snl.Sort(new TreeComparer());
+            return snl;
         }
 
-        [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnore]
-        ObservableCollection<BaseType> SortedNodesObsCol { get; }
-
-        [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnore]
-        ObservableCollection<BaseType> SortedNodesObsColI
-        { get => new ObservableCollection<BaseType>(SortedNodesList); }
+        ObservableCollection<BaseType> GetSortedNodesObsCol()
+        =>  new ObservableCollection<BaseType>(GetSortedNodesList());
 
         /// <summary>
         /// Returns SDC XML from the SDC object tree.  THe XML top node is determined by the top-level object tree node:
@@ -106,6 +94,7 @@ namespace SDC.Schema
         }
         static string ValidateSdcXml(string xml, string sdcSchemaUri = null)
         {
+            //https://docs.microsoft.com/en-us/dotnet/standard/data/xml/xmlschemaset-for-schema-compilation
             try
             {
                 var sdcSchemas = new XmlSchemaSet();
@@ -114,19 +103,20 @@ namespace SDC.Schema
                     sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCRetrieveForm.xsd"));
 
                     //unclear if the following Schemas will be automatically discovered by the validator
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCFormDesign.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCMapping.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCBase.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCDataTypes.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCExpressions.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCResources.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCTemplateAdmin.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "xhtml.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "xml.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCFormDesign.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCMapping.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCBase.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCDataTypes.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCExpressions.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCResources.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCTemplateAdmin.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "xhtml.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "xml.xsd"));
                     //Extras, not currently used.
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDC_IDR.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCRetrieveFormComplex.xsd"));
-                    //sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCOverrides.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDC_IDR.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCRetrieveFormComplex.xsd"));
+                    sdcSchemas.Add(null, Path.Combine(Directory.GetCurrentDirectory(), "SDCOverrides.xsd"));
+                    sdcSchemas.Compile();
                 }
                 ValidationLastMessage = "no error";
                 var doc = new XmlDocument();
@@ -165,8 +155,6 @@ namespace SDC.Schema
             //Should create error list to deliver all messages to ValidationLastMessage
         }
 
-
-
         /// <summary>
         /// Not yet supported
         /// </summary>
@@ -185,10 +173,6 @@ namespace SDC.Schema
         [JsonIgnore]
         bool GlobalAutoNameFlag { get; set; }
 
-
-
-
-
         void TreeLoadReset() => BaseType.ResetSdcImport();
         IdentifiedExtensionType NodeFromID(string id) =>
             (IdentifiedExtensionType)Nodes.Values
@@ -205,7 +189,7 @@ namespace SDC.Schema
         //Tenum ConvertStringToEnum<Tenum>(string inputString) where Tenum : struct;
         ITopNode ReorderNodes()
         {
-            var xml = ISdcUtil.XmlReorder(this.GetXml());
+            var xml = SdcUtil.XmlReorder(this.GetXml());
             ITopNode topNode;
             switch (this)
             {

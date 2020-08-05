@@ -38,33 +38,58 @@ namespace SDC.Schema
 
         {
             PropertyInfo = propertyInfo;
-            this.propName = propName;
-            this.itemIndex = itemIndex;
-            this.ieItems = ieItems;
-            this.xmlOrder = xmlOrder;
-            this.maxXmlOrder = maxXmlOrder;
-            this.xmlElementName = xmlElementName;
+            this.PropName = propName;
+            this.ItemIndex = itemIndex;
+            this.IeItems = ieItems;
+            this.XmlOrder = xmlOrder;
+            this.MaxXmlOrder = maxXmlOrder;
+            this.XmlElementName = xmlElementName;
 
 
         }
         public PropertyInfo PropertyInfo { get; }
-        public string propName { get; }
-        public int itemIndex { get; }
-        public IEnumerable<BaseType> ieItems { get; }
-        public int xmlOrder { get; }
-        public int maxXmlOrder { get; }
-        public string xmlElementName { get; }
+        /// <summary>
+        /// Name of the class property that contains the requested object
+        /// </summary>
+        public string PropName { get; }
+        /// <summary>
+        /// If the requested object is held by a parent IEnumerable (usually an array of List), itemIndex contains the index of the requested object inside ieItems
+        /// If the requested object is represented by a non-IEnumerable property, then itemIndex = -1 and ieItems is null.
+        /// </summary>
+        public int ItemIndex { get; }
+        /// <summary>
+        /// If the requested object is held by a parent IEnumerable (usually an array of List), the IEnumerable is retuurned as ieItems.
+        /// If the requested object is represented by a non-IEnumerable property, then itemIndex = -1 and ieItems is null.
+        /// </summary>
+        public IEnumerable<BaseType> IeItems { get; }
+        /// <summary>
+        /// xmlOrder is the Order found in the XmlElementAttribute's Order property.  
+        /// xmlOrder represents the element order in the SDC XML.  
+        /// However, all inherited properties of the requested object occur as SDC XML elements that precede the current object's XML element, 
+        /// even when the inherited properties have a higher xmlOrder value.
+        /// </summary>
+        public int XmlOrder { get; }
+        /// <summary>
+        /// maxXmlOrder is the maximum xmlOrder value found on properties in the XmlElementAttribute's Order field of the requested object's parent class 
+        /// The parent class codes for the property member that represents the requested object. 
+        /// Property members in the parent class may be decorated with XmlElementAttribute attributes, and these attributes have an "Order" field
+        /// </summary>
+        public int MaxXmlOrder { get; }
+        /// <summary>
+        /// Name of the XML element that is used to represent the requested object
+        /// </summary>
+        public string XmlElementName { get; }
 
         public override string  ToString()
         {
             return @$"PropertyInfoMetadata:
 ---------------------------------------
-ieItems.Count   {ieItems?.Count() ?? 0}
-itemIndex:      {itemIndex}
-propName:       {propName}
-xmlOrder:       {xmlOrder}
-maxXmlOrder:    {maxXmlOrder}
-xmlElementName: {xmlElementName}
+IeItems.Count   {IeItems?.Count() ?? 0}
+ItemIndex:      {ItemIndex}
+PropName:       {PropName}
+XmlOrder:       {XmlOrder}
+MaxXmlOrder:    {MaxXmlOrder}
+XmlElementName: {XmlElementName}
 ---------------------------------------";
         }
 
@@ -115,7 +140,7 @@ xmlElementName: {xmlElementName}
             {
 
                 ancSetB[indexB + 1] = prevPar;  //note that we create the ancSetB only as needed.  No need to walk all the way up to the root node if we don't need to.  Thus it's slightly more efficient to place the deeper-on-tree node in nodeB.
-                indexA = ISdcUtil.IndexOf(ancSetA, prevPar); //Find the lowest common parent node; later we'll see we can determine which parent node comes first in the tree
+                indexA = SdcUtil.IndexOf(ancSetA, prevPar); //Find the lowest common parent node; later we'll see we can determine which parent node comes first in the tree
                 indexB++;
                 if (indexA > -1)
                 {//we found the lowest common parent node
@@ -135,18 +160,18 @@ xmlElementName: {xmlElementName}
             BaseType ancNodeB = ancSetB[indexB - 1]; //first child of common ancester node on nodeB branch; this is still an ancester of NodeB, or NodeB itself
 
             //Retrieve customized Property Metadata for the class properties that hold our nodes.
-            var piAncNodeA = ISdcUtil.GetPropertyInfo(ancNodeA, false);
-            var piAncNodeB = ISdcUtil.GetPropertyInfo(ancNodeB, false);
+            var piAncNodeA = SdcUtil.GetPropertyInfo(ancNodeA, false);
+            var piAncNodeB = SdcUtil.GetPropertyInfo(ancNodeB, false);
 
             //Let's see if both items come from the same IEnumerable (ieItems) in ANC, and then see which one has the lower itemIndex
-            if (piAncNodeA.ieItems != null && piAncNodeB.ieItems!=null &&
-                piAncNodeA.ieItems == piAncNodeB.ieItems &&
-                piAncNodeA.itemIndex > -1 && piAncNodeB.itemIndex > -1)
+            if (piAncNodeA.IeItems != null && piAncNodeB.IeItems!=null &&
+                piAncNodeA.IeItems == piAncNodeB.IeItems &&
+                piAncNodeA.ItemIndex > -1 && piAncNodeB.ItemIndex > -1)
             {
-                if (piAncNodeA.itemIndex == piAncNodeB.itemIndex) 
+                if (piAncNodeA.ItemIndex == piAncNodeB.ItemIndex) 
                     throw new Exception("Unknown error - the compared nodes share a common ParentNode and appear to be identical");
-                if (piAncNodeA.itemIndex < piAncNodeB.itemIndex) return -1;
-                if (piAncNodeB.itemIndex < piAncNodeA.itemIndex) return 1;
+                if (piAncNodeA.ItemIndex < piAncNodeB.ItemIndex) return -1;
+                if (piAncNodeB.ItemIndex < piAncNodeA.ItemIndex) return 1;
             }
 
             //In XML Schemas, it appears that base class (Schema base type) xml elements always come before subclass elements, regardless of the XmlElementAttribute Order value.
@@ -154,15 +179,22 @@ xmlElementName: {xmlElementName}
             if (piAncNodeB.PropertyInfo.DeclaringType.IsSubclassOf(piAncNodeA.PropertyInfo.DeclaringType)) return -1;  //base class xml orders come before subclasses; ancNodeB is the base type here
 
             //Determine the comparison based on the xmlOrder in the XmlElementAttributes
-            if (piAncNodeA.xmlOrder < piAncNodeB.xmlOrder) return -1;
-            if (piAncNodeB.xmlOrder < piAncNodeA.xmlOrder) return 1;
+            if (piAncNodeA.XmlOrder < piAncNodeB.XmlOrder) return -1;
+            if (piAncNodeB.XmlOrder < piAncNodeA.XmlOrder) return 1;
             throw new Exception("the compare nodes algorithm could not determine the node order");
         }      
     }
 
-    public interface ISdcUtil
+    public static class SdcUtil
     {
         #region ArrayHelpers
+        public static bool IsGenericList(object o)
+        {
+            if (o == null) return false;
+            return o is IList &&
+                o.GetType().IsGenericType &&
+                o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
+        }
         public static int GetFirstNullArrayIndex<T>(T[] array, int growthIncrement = 3)
         {
             int i = 0;
@@ -175,7 +207,6 @@ xmlElementName: {xmlElementName}
             Array.Resize(ref array, array.Length + growthIncrement);
             return i;
         }
-
         public static object GetObjectFromIEnumerableObject(IEnumerable ie, object obj)
         {
             foreach (object o in ie)
@@ -192,7 +223,16 @@ xmlElementName: {xmlElementName}
             }
             return null;
         }
-
+        public static int GetListIndex<T>(List<T> list, T node) where T : notnull //TODO: could make this an interface feature of all list children
+        {
+            int i = 0;
+            foreach (T n in list)
+            {
+                if ((object)n == (object)node) return i;
+                i++;
+            }
+            return -1; //object was not found in list
+        }
         public static int IndexOf(IEnumerable array, object item)
         {
             int i = 0;
@@ -204,7 +244,6 @@ xmlElementName: {xmlElementName}
             }
             return -1;
         }
-
         public static object ObjectAtIndex(IEnumerable ie, int index)
         {
             //get Dictionary and similar object by index.  
@@ -228,7 +267,6 @@ xmlElementName: {xmlElementName}
             }
             return emptyTarget;
         }
-
         public static T[] ArrayAddItemReturnArray<T>(T[] array, T itemToAdd, int growthIncrement = 3)
         {
             int i = GetFirstNullArrayIndex(array, growthIncrement);
@@ -264,14 +302,14 @@ xmlElementName: {xmlElementName}
             BaseType par = item.ParentNode;
             if (par is null) return null; //We have the top node here
 
-            var prevSib = ISdcUtil.GetPrevSib(item);
+            var prevSib = SdcUtil.GetPrevSib(item);
             if (prevSib != null && prevSib != item)
             {
                 var lastDesc1 = GetLastDescendant(prevSib);
                 if (lastDesc1 != null && lastDesc1 != item) return lastDesc1;
             }
 
-            var lastDesc = GetLastDescendant(par, item);// move up on node and drill down to bottom of tree until we hit item, then back to prevNode
+            var lastDesc = GetLastDescendant(par, item);// move up one node and drill down to bottom of tree until we hit item, then back to prevNode
             if (lastDesc != null && lastDesc != item) return lastDesc;
 
 
@@ -317,11 +355,11 @@ xmlElementName: {xmlElementName}
 
                 //No child items contained the next node, so let's look at other properties inside the parent object
                 var piMeta = GetPropertyInfo(item, true);
-                xmlOrder = piMeta.xmlOrder;
+                xmlOrder = piMeta.XmlOrder;
 
                 //Is next item is contained inside the same IEnumerable parent?
-                if (piMeta.itemIndex > -1 && piMeta.itemIndex < piMeta.ieItems.Count() - 1)
-                    return ObjectAtIndex(piMeta.ieItems, piMeta.itemIndex + 1) as BaseType;
+                if (piMeta.ItemIndex > -1 && piMeta.ItemIndex < piMeta.IeItems.Count() - 1)
+                    return ObjectAtIndex(piMeta.IeItems, piMeta.ItemIndex + 1) as BaseType;
 
                 //Is next item part of a parent property that follows our item?
                 if (GetNextNode(par, item) != null) 
@@ -416,10 +454,7 @@ xmlElementName: {xmlElementName}
                 }
                 return null;
             }
-        }
-
-
-
+        }        
         public static BaseType GetLastSib(BaseType item)
         {
             var par = item.ParentNode;
@@ -708,14 +743,88 @@ xmlElementName: {xmlElementName}
             }
 
         }
-        internal static bool IsGenericList(object o)
+
+
+
+
+
+
+        static bool IsTargetForItemName(PropertyInfo targetProp, BaseType item, BaseType target)
         {
-            if (o == null) return false;
-            return o is IList &&
-                o.GetType().IsGenericType &&
-                o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
+            //We want to know if the supplied itemName is allowed to be atttached at a hypothetical property defined by piTarget
+            //piTarget can be an array or List of Type BaseType, or may be a subclass of BaseType
+            var par = item.ParentNode;
+            string itemName = GetPropertyInfo(item).XmlElementName;
+            if (targetProp is null) return false;
+
+            var dtAtts = (XmlElementAttribute[])Attribute.GetCustomAttributes(targetProp, typeof(XmlElementAttribute));
+
+
+                bool success = ElementNameFromEnum(ItemChoiceEnum(targetProp));
+                if (success) return true;
+
+
+                //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
+                if (dtAtts.Count() == 1)
+                {
+                    return dtAtts.ToArray()[0].ElementName ==itemName;
+                }
+
+                dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
+                if (dtAtts.Count() == 1)
+                {
+                    //return ElementName based on data type match in the XMLAttribute
+                    return dtAtts.ToArray()[0].ElementName == itemName;
+                }
+            //There was no ElementName to extract from an XmlElementAttribute
+            return false;
+
+            string ItemChoiceEnumName(PropertyInfo piTarget)
+            {
+                XmlChoiceIdentifierAttribute xci = (XmlChoiceIdentifierAttribute)piTarget.GetCustomAttribute(typeof(XmlChoiceIdentifierAttribute));
+                if (xci is null) return null;
+                return xci.MemberName;
+            }
+
+            object ItemChoiceEnum(PropertyInfo piTarget)
+            {
+                string enumName = ItemChoiceEnumName(piTarget);
+                if (enumName == null) return null;
+
+                var enumObj = target.GetType().GetProperty(enumName).GetValue(target);
+                if (enumObj is Enum) return (Enum)enumObj;
+                if (enumObj is IList[]) return (IList<Enum>[])enumObj;
+                return null;
+            }
+
+            bool ElementNameFromEnum(object choiceIdentifierObject)
+            {
+                if (choiceIdentifierObject is Enum)
+                {
+                    string enumVal;
+                    try //try to find out element name in the target enum
+                    {
+                        var et = choiceIdentifierObject.GetType();
+                        enumVal = Enum.Parse(et, itemName).ToString();
+                    }
+                    catch { return false; }
+                    return !string.IsNullOrEmpty(enumVal);
+                }
+
+                if (choiceIdentifierObject is IList)
+                {
+                    var lst = ((IList<string>)choiceIdentifierObject);
+                    return lst.Contains(itemName);
+                }
+                return false;
+            }
+
+
         }
-        internal static List<T> GetStatedListParent<T>(T item)
+
+
+
+        internal static List<T> X_GetStatedListParent<T>(T item)
             where T : BaseType
         {   //get the list object that points to the item node
             //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
@@ -755,7 +864,7 @@ xmlElementName: {xmlElementName}
 
             return null;
         }
-        private static List<BaseType> GetStatedListParent(BaseType item, string elementName)
+        private static List<BaseType> X_GetStatedListParent(BaseType item, string elementName)
         {   //get the list object that points to the item node
             //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
             //Work out how to return a list of the exact type <T>.
@@ -893,7 +1002,7 @@ xmlElementName: {xmlElementName}
             }
             return null;
         }
-        public static bool IsItemChangeAllowedI<S, T>(S source, T target)
+        public static bool IsItemChangeAllowed<S, T>(S source, T target)
             where S : notnull, IdentifiedExtensionType
             where T : notnull, IdentifiedExtensionType
         {

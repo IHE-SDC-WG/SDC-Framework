@@ -30,17 +30,8 @@ namespace SDC.Schema
     { }
     public interface IFormDesign : ITopNode, IMoveRemove //TODO:
     {
-
-        SectionItemType AddHeader();
-        SectionItemType AddBody();
-        SectionItemType AddFooter();
-        bool RemoveHeader();
-        bool RemoveFooter();
-        bool RemoveBody();
-
-
         //Default Implementations
-        internal SectionItemType AddHeaderI()
+        SectionItemType AddHeader()
         {
             var fd = (this as FormDesignType);
             if (fd.Header == null)
@@ -50,7 +41,7 @@ namespace SDC.Schema
             }
             return fd.Header;
         }
-        internal SectionItemType AddBodyI()
+        SectionItemType AddBody()
         {
             var fd = (this as FormDesignType);
             if (fd.Body == null)
@@ -60,7 +51,7 @@ namespace SDC.Schema
             }
             return fd.Body;
         }
-        internal SectionItemType AddFooterI()
+        SectionItemType AddFooter()
         {
             var fd = (this as FormDesignType);
             if (fd.Footer == null)
@@ -70,16 +61,16 @@ namespace SDC.Schema
             }
             return fd.Footer;
         }
-        internal bool RemoveHeaderI()
+        bool RemoveHeader()
         {
            return (this as FormDesignType).Header.Remove();
 
         }
-        internal bool RemoveFooterI()
+        bool RemoveFooter()
         {
             return (this as FormDesignType).Footer.Remove();
         }
-        internal bool RemoveBodyI()
+        bool RemoveBody()
         {
             return (this as FormDesignType).Body.Remove();
         }
@@ -90,21 +81,19 @@ namespace SDC.Schema
         HTMLPackageType AddHTMLPackage();
         XMLPackageType AddXMLPackage();
     }
-
     /// <summary>
     /// This interface is applied to the partial classes that can have a ChildItems element.
     /// These are Section, Question and ListItem.  
     /// This interface is require to support generic classes that must handle the creation ofthe 
     /// ChildItems element, which holds List of type IdentifiedItemType
     /// </summary>
-    public interface IChildItemsParent<T> : ISdcUtil, IQuestionBuilder //implemented by items that can have a ChildItems node.
+    public interface IChildItemsParent<T> : IQuestionBuilder //implemented by items that can have a ChildItems node.
         where T : BaseType, IChildItemsParent<T>
     {
         ChildItemsType ChildItemsNode { get; set; }
-        SectionItemType AddChildSection(string id, int insertPosition);
-        SectionItemType AddChildSectionI(string id, int insertPosition)
+        SectionItemType AddChildSection(string id, int insertPosition)
         {
-            var childItems = AddChildItemsNodeI(this as T);
+            var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
             var sNew = new SectionItemType(childItems, id);
             var count = childItemsList.Count;
@@ -113,10 +102,9 @@ namespace SDC.Schema
 
             return sNew;
         }
-        QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1);
-        internal QuestionItemType AddChildQuestionI(QuestionEnum qType, string id, int insertPosition = -1)
+        QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1)
         {
-            var childItems = AddChildItemsNodeI(this as T);
+            var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
             var qNew = new QuestionItemType(childItems, id);
             ListFieldType lf;
@@ -149,10 +137,10 @@ namespace SDC.Schema
             }
 
             return qNew;
-        } DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
-        internal DisplayedType AddChildDisplayedItemI(string id, int insertPosition = -1)
+        } 
+        DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1)
         {
-            var childItems = AddChildItemsNodeI(this as T);
+            var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
             var dNew = new DisplayedType(childItems, id);
             var count = childItemsList.Count;
@@ -161,10 +149,9 @@ namespace SDC.Schema
 
             return dNew;
         }
-        ButtonItemType AddChildButtonAction(string id, int insertPosition = -1);
-        internal ButtonItemType AddChildButtonActionI(string id, int insertPosition = -1)
+        ButtonItemType AddChildButtonAction(string id, int insertPosition = -1)
         {
-            var childItems = AddChildItemsNodeI(this as T);
+            var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
             var btnNew = new ButtonItemType(childItems, id);
             var count = childItemsList.Count;
@@ -174,10 +161,9 @@ namespace SDC.Schema
             // TODO: Add AddButtonActionTypeItems(btnNew);
             return btnNew;
         }
-        InjectFormType AddChildInjectedForm(string id, int insertPosition = -1);
-        internal InjectFormType AddChildInjectedFormI(string id, int insertPosition = -1)
+        InjectFormType AddChildInjectedForm(string id, int insertPosition = -1)
         {
-            var childItems = AddChildItemsNodeI(this as T);
+            var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
             var injForm = new InjectFormType(childItems, id);
             var count = childItemsList.Count;
@@ -187,19 +173,18 @@ namespace SDC.Schema
 
             return injForm;
         }
-        bool HasChildItems();
-        internal bool HasChildItemsI(IChildItemsParent<T> parent)
+        bool HasChildItems()
         {
             {
-                if (parent?.ChildItemsNode?.ChildItemsList != null)
+                if (this?.ChildItemsNode?.ChildItemsList != null)
                 {
-                    foreach (var n in parent.ChildItemsNode.ChildItemsList)
+                    foreach (var n in this.ChildItemsNode.ChildItemsList)
                     { if (n != null) return true; }
                 }
             }
             return false;
         }
-        internal ChildItemsType AddChildItemsNodeI(T T_Parent)
+        ChildItemsType AddChildItemsNode(T T_Parent)
         {
             ChildItemsType childItems = null;  //this class contains an "Items" list
             if (T_Parent == null)
@@ -228,14 +213,9 @@ namespace SDC.Schema
         //QL AddChildQL(string id = "", int insertPosition = -1);
 
     }
-    public interface IChildItemsMember<Tchild> : ISdcUtil, IQuestionBuilder  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
+    public interface IChildItemsMember<Tchild>  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
             where Tchild : IdentifiedExtensionType, IChildItemsMember<Tchild>
     {
-        //bool Remove(Tchild source)
-        //{
-        //    var ci = ((ChildItemsType)source.ParentNode).Items;
-        //    return ci.Remove(source);
-        //}
         bool IsMoveAllowedToChild<U>(U Utarget, out string error)
             where U : notnull, IdentifiedExtensionType
             //where T : notnull, IdentifiedExtensionType
@@ -327,7 +307,7 @@ namespace SDC.Schema
                                 q.GetQuestionSubtype() != QuestionEnum.QuestionRaw) return false;  //QR, and QL cannot have child LI nodes
                             if (q.ListField_Item is null)  //create new targetList
                             {
-                                targetList = AddListToListField(AddListFieldToQuestion(q)).Items.ToList<BaseType>();
+                                targetList = IQuestionBuilder.AddListToListField(IQuestionBuilder.AddListFieldToQuestion(q)).Items.ToList<BaseType>();
                                 if (targetList is null) return false;
                                 break;
                             }
@@ -336,16 +316,16 @@ namespace SDC.Schema
                         }
                         else //use the ChildItems node instead as the targetList
                         {
-                            (q as IChildItemsParent<QuestionItemType>).AddChildItemsNodeI(q);
+                            (q as IChildItemsParent<QuestionItemType>).AddChildItemsNode(q);
                             targetList = q.ChildItemsNode.Items.ToList<BaseType>();
                         }
                         break;
                     case SectionItemType s:
-                        (s as IChildItemsParent<SectionItemType>).AddChildItemsNodeI(s);
+                        (s as IChildItemsParent<SectionItemType>).AddChildItemsNode(s);
                         targetList = s.ChildItemsNode.Items.ToList<BaseType>();
                         break;
                     case ListItemType l:
-                        (l as IChildItemsParent<ListItemType>).AddChildItemsNodeI(l);
+                        (l as IChildItemsParent<ListItemType>).AddChildItemsNode(l);
                         targetList = l.ChildItemsNode.Items.ToList<BaseType>();
                         break;
                     default:
@@ -378,13 +358,6 @@ namespace SDC.Schema
             //iupdate TopNode.ParentNodes
             throw new Exception(String.Format("Not Implemented"));
         }
-
-        //bool Remove();
-        //bool Move<T>(T target = null, int newListIndex = -1) where T : ExtensionBaseType, IChildItemsParent;
-        //CanRemove
-        //CanMove (target ChildItems)
-        //ChildCount
-
     }
     public interface IQuestionItem : IQuestionList
     {
@@ -559,25 +532,56 @@ namespace SDC.Schema
 
 
     }
-    public interface IQuestionListMember : ISdcUtil, IQuestionBuilder //decorates LI/LIR and DI
+    public interface IQuestionListMember : IQuestionBuilder //decorates LI/LIR and DI
     {
         //for DI, make sure parent is a ListType object
-        bool Remove(bool removeDecendants = false);
-        bool Move(QuestionItemType target = null, bool moveAbove = false, bool testOnly = false);
-        bool Move(ListItemType target = null, bool moveAbove = false, bool testOnly = false);
-        ListItemType ConvertToLI(bool testOnly = false);
-        DisplayedType ConvertToDI(bool testOnly = false); //abort if children of LI are present
-        ListItemType ConvertToLIR(bool testOnly = false);
+        //bool Remove(bool removeDecendants = false);
+        //bool Move(QuestionItemType target = null, bool moveAbove = false, bool testOnly = false);
+        //bool Move(ListItemType target = null, bool moveAbove = false, bool testOnly = false);
+        //ListItemType ConvertToLI(bool testOnly = false);
+        //DisplayedType ConvertToDI(bool testOnly = false); //abort if children of LI are present
+        //ListItemType ConvertToLIR(bool testOnly = false);
 
 
         //for DI, make sure parent is a ListType object
-        bool RemoveI(bool removeDecendants) { throw new NotImplementedException(); }
-        bool MoveI(QuestionItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
-        bool MoveI(ListItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
-        ListItemType ConvertToLI_I(bool testOnly) { throw new NotImplementedException(); }
-        DisplayedType ConvertToDI_I(bool testOnly) { throw new NotImplementedException(); } //abort if children of LI are present
-        ListItemType ConvertToLIR_I(bool testOnly) { throw new NotImplementedException(); }
-        bool IsMoveAllowedToListI<T>(T target, out string error)
+        bool Remove(bool removeDecendants) { throw new NotImplementedException(); }
+        //bool Move(QuestionItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
+        //bool Move(ListItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
+        /// <summary>
+        /// Move a ListItem or DisplayedItem within the same List
+        /// </summary>
+        /// <returns>returns true if operation succeeded    
+        /// </returns>
+        bool MoveinList(out List<string> errList, int newListIndex = -1)
+        {
+            var qlm = this as BaseType;  //"this" is either a DI or LI
+            var list = (ListType)(qlm)?.ParentNode;
+            return qlm.Move(list, out errList, 6);
+        }
+        //bool Move(List<BaseType> targetProperty, out List<string> errList, int newListIndex = -1) //DI and LI must have a parent property of ListType (DI or LI) of ChildItems (DI)
+        //{
+        //    var qlm = this as BaseType;  //"this" is either a DI or LI
+        //    var list = (ListType)(qlm)?.ParentNode;
+        //    return qlm.Move(targetProperty, qlm, out errList, newListIndex);
+        //}
+
+        /// <summary>
+        /// Move a ListItem or DisplayedItem to another List
+        /// </summary>
+        /// <param name="targetList"></param>
+        /// <param name="errList"></param>
+        /// <param name="newListIndex"></param>
+        /// <returns>returns true if operation succeeded    </returns>
+        bool MoveToList(ListType targetList, out List<string> errList, int newListIndex = -1) 
+        {
+            var qlm = this as BaseType;  //"this" is either a DI or LI
+            return qlm.Move(targetList, out errList, newListIndex);
+        }
+
+        ListItemType ConvertToLI(bool testOnly) { throw new NotImplementedException(); }
+        DisplayedType ConvertToDI(bool testOnly) { throw new NotImplementedException(); } //abort if children of LI are present
+        ListItemType ConvertToLIR(bool testOnly) { throw new NotImplementedException(); }
+        bool IsMoveAllowedToList<T>(T target, out string error)
             where T : notnull, IQuestionListMember
         {
             error = "";
@@ -604,7 +608,7 @@ namespace SDC.Schema
             return true;
 
         }
-        bool MoveInListI(DisplayedType source, QuestionItemType target, bool moveAbove)
+        bool MoveInList(DisplayedType source, QuestionItemType target, bool moveAbove)
         {
             if (source is null) return false;
             if (source is RepeatingType) return false; //S, Q are illegal in the list
@@ -636,7 +640,7 @@ namespace SDC.Schema
             return false;
 
         }
-        bool MoveInListI(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType); need to address Nodes dictionary updates
+        bool MoveInList(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType); need to address Nodes dictionary updates
         {
             //this function allows dropping items inside a QS o QM list to rearrange the list
             //prevent illegal operationss
@@ -694,14 +698,7 @@ namespace SDC.Schema
     }
     public interface IListItem
     {
-        ListItemResponseFieldType AddListItemResponseField();
-        EventType AddOnDeselect();
-        EventType AddOnSelect();
-        PredGuardType AddSelectIf();
-        PredGuardType AddDeSelectIf();
-
-
-        internal ListItemResponseFieldType AddListItemResponseFieldI()
+        ListItemResponseFieldType AddListItemResponseField()
         {
             var liParent = this as ListItemType;
             var liRF = new ListItemResponseFieldType(liParent);
@@ -709,28 +706,28 @@ namespace SDC.Schema
 
             return liRF;
         }
-        internal EventType AddOnDeselectI()
+        EventType AddOnDeselect()
         {
             var li = (ListItemType)this;
             var ods = new EventType(li);
             li.OnDeselect.Add(ods);
             return ods;
         }
-        internal EventType AddOnSelectI()
+        EventType AddOnSelect()
         {
             var li = (ListItemType)this;
             var n = new EventType(li);
             li.OnSelect.Add(n);
             return n;
         }
-        internal PredGuardType AddSelectIfI()
+        PredGuardType AddSelectIf()
         {
             var li = (ListItemType)this;
             var n = new PredGuardType(li);
             li.SelectIf = n;
             return n;
         }
-        internal PredGuardType AddDeSelectIfI()
+        PredGuardType AddDeSelectIf()
         {
             var li = (ListItemType)this;
             var n = new PredGuardType(li);
@@ -741,14 +738,14 @@ namespace SDC.Schema
     }
     public interface IQuestionBuilder
     {
-        protected virtual ResponseFieldType AddQuestionResponseField(QuestionItemType qParent)
+        internal static ResponseFieldType AddQuestionResponseField(QuestionItemType qParent)
         {
             var rf = new ResponseFieldType(qParent);
             qParent.ResponseField_Item = rf;
 
             return rf;
         }
-        protected virtual LookupEndPointType AddEndpointToListField(ListFieldType listFieldParent)
+        internal static LookupEndPointType AddEndpointToListField(ListFieldType listFieldParent)
         {
             if (listFieldParent.List == null)
             {
@@ -758,7 +755,7 @@ namespace SDC.Schema
             }
             else throw new InvalidOperationException("Can only add LookupEndpoint to ListField if List object is not present");
         }
-        protected virtual ListType AddListToListField(ListFieldType listFieldParent)
+        internal static ListType AddListToListField(ListFieldType listFieldParent)
         {
             ListType list;  //this is not the .NET List class; It's an answer list
             if (listFieldParent.List == null)
@@ -775,7 +772,7 @@ namespace SDC.Schema
 
             return list;
         }
-        protected virtual ListFieldType AddListFieldToQuestion(QuestionItemType qParent)
+        internal static ListFieldType AddListFieldToQuestion(QuestionItemType qParent)
         {
             if (qParent.ListField_Item == null)
             {
@@ -835,12 +832,7 @@ namespace SDC.Schema
     }
     public interface IExtensionBase
     {
-        bool HasExtensionBaseMembers(); //Has Extension, Property or Comment sub-elements
-        CommentType AddComment(int insertPosition = -1);
-        ExtensionType AddExtension(int insertPosition = -1);
-        PropertyType AddProperty(int insertPosition = -1);
-
-        bool HasExtensionBaseMembersI() //Has Extension, Property or Comment sub-elements
+        bool HasExtensionBaseMembers() //Has Extension, Property or Comment sub-elements
         {
             var item = this as ExtensionBaseType;
             if (item?.Property?.Count() > 0)
@@ -860,7 +852,7 @@ namespace SDC.Schema
             }
             return false;
         }
-        ExtensionType AddExtensionI(int insertPosition = -1)
+        ExtensionType AddExtension(int insertPosition = -1)
         {
             var ebtParent = this as ExtensionBaseType;
             var e = new ExtensionType(ebtParent);
@@ -870,7 +862,7 @@ namespace SDC.Schema
             ebtParent.Extension.Insert(insertPosition, e);
             return e;
         }
-        CommentType AddCommentI(int insertPosition = -1)
+        CommentType AddComment(int insertPosition = -1)
         {
             var ebtParent = this as ExtensionBaseType;
             if (ebtParent.Comment == null) ebtParent.Comment = new List<CommentType>();
@@ -880,7 +872,7 @@ namespace SDC.Schema
             ebtParent.Comment.Insert(insertPosition, ct);  //return new empty Comment object for caller to fill
             return ct;
         }
-        PropertyType AddPropertyI(int insertPosition = -1)
+        PropertyType AddProperty(int insertPosition = -1)
         {
             var ebtParent = this as ExtensionBaseType;
             var prop = new PropertyType(ebtParent);
@@ -901,12 +893,12 @@ namespace SDC.Schema
     public interface IMoveRemove  //Used on BaseType only; IExtensionBaseTypeMember has some custom methods but they do not handle Node dictionaries or is-move-allowed testing
     {
         public bool Remove();
-        public bool Move(object targetProperty, BaseType targetParent, out List<string> errList, int newListIndex = -1);
-        public bool MoveAllowed(object targetProperty, BaseType targetParent, out List<string> errList, int newListIndex = -1);
+        public bool Move(BaseType targetProperty, out List<string> errList, int newListIndex = -1);
+        public bool IsMoveAllowed(BaseType targetProperty, out List<string> errList, int newListIndex = -1);
 
 
     }
-    public interface IExtensionBaseTypeMember : ISdcUtil, IMoveRemove //Used on Extension, Property, Comment
+    public interface IExtensionBaseTypeMember : IMoveRemove //Used on Extension, Property, Comment
     {
         //!+TODO: Handle Dictionary updates
         bool MoveI(ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
@@ -949,17 +941,12 @@ namespace SDC.Schema
             return false;
         }
 
-
-
-
-
-
     }
     public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
     public interface IResponse: IVal //marks LIR and QR
     {
-        UnitsType AddUnits(ResponseFieldType rfParent);
-        UnitsType AddUnitsI(ResponseFieldType rfParent)
+        //UnitsType AddUnits(ResponseFieldType rfParent);
+        UnitsType AddUnits(ResponseFieldType rfParent)
         {
             UnitsType u = new UnitsType(rfParent);
             rfParent.ResponseUnits = u;
@@ -1142,11 +1129,11 @@ namespace SDC.Schema
 
 
     }
-    public interface IEvent : IHasActionElseGroup, ISdcUtil  //Used for events (PredActionType)
+    public interface IEvent : IHasActionElseGroup  //Used for events (PredActionType)
     {
         PredEvalAttribValuesType AddAttributeVal()
         {
-            var pgt = (PredGuardType)this;
+            var pgt = (PredActionType)this;
             var av = new PredEvalAttribValuesType(pgt);
             pgt.Items.Add(av);
             return av;
@@ -1239,7 +1226,7 @@ namespace SDC.Schema
     {
 
     }
-    public interface IHasElseNode : ISdcUtil
+    public interface IHasElseNode
     {
         PredActionType AddElseNode()
         {
@@ -1251,9 +1238,9 @@ namespace SDC.Schema
                 case PredActionType pe:
                     pe.Else.Add(elseNode); return elseNode;
                 case CallFuncBoolActionType cfb:
-                    return (PredActionType)ArrayAddReturnItem(cfb.Items1, elseNode);
+                    return (PredActionType)SdcUtil.ArrayAddReturnItem(cfb.Items1, elseNode);
                 case ScriptBoolFuncActionType sb:
-                    return (PredActionType)ArrayAddReturnItem(sb.Items, elseNode);
+                    return (PredActionType)SdcUtil.ArrayAddReturnItem(sb.Items, elseNode);
                 case AttributeEvalActionType ae:
                     ae.Else.Add(elseNode); return elseNode;
                 case MultiSelectionsActionType ms:
@@ -1385,7 +1372,7 @@ namespace SDC.Schema
         {
             var par = ((BaseType)this).ParentNode;
             var items = ((ActionsType)this).Items;
-            return Move(items, par, out errList, newListIndex);
+            return Move(this as BaseType, out errList, newListIndex);
         }
     }
     public interface ISendMessage_Report
@@ -1431,149 +1418,27 @@ namespace SDC.Schema
         PredActionType AddElseI();
 
     }
-    public interface IValidation
+    public interface IValidationTests
     {
         //List<FuncBoolBaseType> Items        
          PredAlternativesType AddItemAlternatives();
          ValidationTypeSelectionSets AddSelectionSets();
          ValidationTypeSelectionTest AddSelectionTest();
     }
-
-    public interface INavigate
+    public interface INavigate //apply only to BaseType
     {
-        protected int GetListIndex<T>(List<T> list, T node) where T : notnull //TODO: could make this an interface feature of all list children
-        {
-            int i = 0;
-            foreach (T n in list)
-            {
-                if ((object)n == (object)node) return i;
-                i++;
-            }
-            return -1; //object was not found in list
-        }
-        bool IsItemChangeAllowed<S, T>(S source, T target)
-        {
-            ChildItemsType ci;
-            switch (source)
-            {
-                case SectionItemType _:
-                case QuestionItemType _:
-                case ListItemType _:
-                    ci = (source as ChildItemsType);
-                    switch (target)
-                    {
-                        case SectionItemType _:
-                        case QuestionItemType _:
-                        case ListItemType _:
-                            return true;
-                        case ButtonItemType _:
-                        case DisplayedType _:
-                            if (ci is null) return true;
-                            if (ci.ChildItemsList is null) return true;
-                            if (ci.ChildItemsList.Count == 0) return true;
-                            return false;
-                        case InjectFormType j:
-                            return false;
-                        default: return false;
-                    }
-                case ButtonItemType b:
-                    break;
-                case DisplayedType d:
-                    break;
-                case InjectFormType j:
-                    return false;
-                default:
-                    break;
-            }
+        BaseType GetPreviousSib() => SdcUtil.GetPrevSib((BaseType)this);
+        BaseType GetNextSib() => SdcUtil.GetNextSib((BaseType)this);
+        BaseType GetPrevious() => SdcUtil.PrevElement((BaseType)this);
+        BaseType GetNext() => SdcUtil.NextElement((BaseType)this);
+        BaseType GetFirstChild() => SdcUtil.GetFirstChild((BaseType)this);
+        BaseType GetLastChild() => SdcUtil.GetLastChild((BaseType)this);
+        BaseType GetLastDescendant() => SdcUtil.GetLastDescendant((BaseType)this);
 
-
-            return false;
-        }
-        protected BaseType GetParent(BaseType item) { return item.ParentNode; }
-        protected int GetIndex(BaseType item) { throw new NotImplementedException(); }
-        protected List<BaseType> GetList(BaseType item)
-        {   //get the list object that points to the item node
-            //Only works for SDC List<BaseType> derivitives.   Does not work e.g., for XML types, derived from XmlElement.
-            //Work out how to return a list of the exact type <T>.
-
-            var pn = item.ParentNode;
-            List<BaseType> list;
-
-            switch (item.GetType().Name)
-            {
-                case "Extension":
-                    list = (pn as ExtensionBaseType).Extension.Cast<BaseType>().ToList();
-                    return list;
-                case "Comment":
-                    list = (pn as ExtensionBaseType).Comment.Cast<BaseType>().ToList();
-                    return list;
-                case "Property":
-                    list = (pn as ExtensionBaseType).Property.Cast<BaseType>().ToList();
-                    return list;
-                case "OnEvent":
-                    list = (pn as FormDesignType).OnEvent.Cast<BaseType>().ToList();
-                    if (list != null) return list;
-                    list = (pn as DisplayedType).OnEvent.Cast<BaseType>().ToList();
-                    if (list != null) return list;
-                    break;
-                case "Section":
-                case "ListItem":
-                case "Question":
-                case "Header":
-                case "Body":
-                case "Footer":
-                    list = (pn as ChildItemsType).Items.Cast<BaseType>().ToList();
-                    return list;
-                case "BlobContent":
-                    list = (pn as DisplayedType).BlobContent.Cast<BaseType>().ToList();
-                    return list;
-                case "CodedValue":
-                    list = (pn as DisplayedType).CodedValue.Cast<BaseType>().ToList();
-                    return list;
-                case "Contact":
-                    list = (pn as DisplayedType).Contact.Cast<BaseType>().ToList();
-                    return list;
-                case "Link":
-                    list = (pn as DisplayedType).Link.Cast<BaseType>().ToList();
-                    return list;
-                case "OnEnter":
-                    list = (pn as DisplayedType).OnEnter.Cast<BaseType>().ToList();
-                    return list;
-                case "OnSelect":
-                    list = (pn as ListItemBaseType).OnSelect.Cast<BaseType>().ToList();
-                    return list;
-                case "OnDeselect":
-                    list = (pn as ListItemBaseType).OnDeselect.Cast<BaseType>().ToList();
-                    return list;
-                case "xx":
-                    list = (pn as DisplayedType).BlobContent.Cast<BaseType>().ToList();
-                    return list;
-
-
-
-                default:
-                    break;
-
-
-
-            }
-
-
-            return null;
-        }
-        protected bool IsList(object o)
-        {
-            if (o == null) return false;
-            return o is List<BaseType> &&  // is Ilist &&
-                   o.GetType().IsGenericType &&
-                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
-        }
-
-        protected bool IsArray(object[] o) { throw new NotImplementedException(); }
-        BaseType GetPreviousSib(BaseType item) { throw new NotImplementedException(); } //in list
-        BaseType GetNextSib(BaseType item) { throw new NotImplementedException(); } //in list
-        BaseType GetPrevious(BaseType item) { throw new NotImplementedException(); }
-        BaseType GetNext(BaseType item) { throw new NotImplementedException(); }
+        PropertyInfoMetadata GetPropertyInfo() => SdcUtil.GetPropertyInfo((BaseType)this);
+        bool IsItemChangeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType
+            => SdcUtil.IsItemChangeAllowed((IdentifiedExtensionType)this, target);
+        bool ReOrder() { throw new NotImplementedException(); }
 
     }
     public interface IClone
@@ -1583,25 +1448,26 @@ namespace SDC.Schema
         { throw new NotImplementedException(); }
     }
     public interface IBlob
-    {
-        //Item types choice
+    {   //DisplayedItem.BlobType
+        //Uses Items types choice
         bool AddBinaryMedia();
         bool AddBlobURI();
     }
     public interface IInjectForm
-    {
-        //Item types choice
+    {   //ChildItems.InjectForm - this is mainly useful for a DEF injecting items based on the InjectForm URL
+        //Item types choice under ChildItems
         FormDesignType AddFormDesign();
         QuestionItemType AddQuestion();
         SectionItemType AddSection();
     }
     public interface IHTMLPackage
-    {
+    {//On SDCPackage.HTMLPackage
         base64Binary_Stype AddHTMLbase64();
     }
     public interface IRegistrySummary
     {
         //BaseType[] Items
+        //Attach to Admin.RegistryData as OriginalRegistry and/or CurrentRegistry
         
          ContactType AddContact();
          FileType AddManual();

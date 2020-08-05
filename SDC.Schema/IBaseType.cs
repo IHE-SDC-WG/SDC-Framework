@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace SDC.Schema
 
 {
-    public interface IBaseType
+    public interface IBaseType: IMoveRemove, INavigate
     {
         #region Public Members
         [System.Xml.Serialization.XmlIgnore]
