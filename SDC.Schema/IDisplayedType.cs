@@ -109,12 +109,15 @@ namespace SDC.Schema
         }
 
 
-    //Convert to LI (if inside a List)
-    //Convert to LIR (if inside a List)
-    //Move (to ChildItems or List node, index for postition)
-    //Can Move
-    //under ChildItems - Convert to: QS/QM/QR, S
-    //under List: Convert to LI/LIR
 
-}
+
+
+        //Convert to LI (if inside a List)
+        //Convert to LIR (if inside a List)
+        //Move (to ChildItems or List node, index for postition)
+        //Can Move
+        //under ChildItems - Convert to: QS/QM/QR, S
+        //under List: Convert to LI/LIR
+
+    }
 }

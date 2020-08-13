@@ -522,27 +522,27 @@ namespace SDC.Schema
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
         { //return AddChildItem<SectionItemType, SectionItemType>(this, id, insertPosition); 
-            return ci.AddChildSection(id, insertPosition); //test of using "this" in the interface
+            return ci.AddChildSectionI(id, insertPosition); //test of using "this" in the interface
             //return sdcTreeBuilder.AddChildSection<SectionItemType>(this, id, insertPosition);
         }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
         {
-            return ci.AddChildQuestion(qType, id, insertPosition);
+            return ci.AddChildQuestionI(qType, id, insertPosition);
             //return sdcTreeBuilder.AddChildQuestion<SectionItemType>(this, qType, id); 
         }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
         {
-            return ci.AddChildInjectedForm(id, insertPosition);
+            return ci.AddChildInjectedFormI(id, insertPosition);
             //return sdcTreeBuilder.AddChildInjectedForm<SectionItemType>(this, id); 
         }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
         {
-            return ci.AddChildButtonAction(id, insertPosition);
+            return ci.AddChildButtonActionI(id, insertPosition);
             //return sdcTreeBuilder.AddChildButtonAction<SectionItemType>(this, id); 
         }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
         {
-            return ci.AddChildDisplayedItem(id, insertPosition);
+            return ci.AddChildDisplayedItemI(id, insertPosition);
             //return sdcTreeBuilder.AddChildDisplayedItem<SectionItemType>(this, id); 
         }
         public bool HasChildItems() => ci.HasChildItems(); //sdcTreeBuilder.HasChildItems(this);
@@ -570,7 +570,7 @@ namespace SDC.Schema
         }
 
         #region IChildItemsParent
-        IChildItemsParent<QuestionItemType> ci { get => this as IChildItemsParent<QuestionItemType>; }
+        IChildItemsParent<QuestionItemType> ci { get => (IChildItemsParent<QuestionItemType>)this; }
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ChildItemsType ChildItemsNode
@@ -579,15 +579,15 @@ namespace SDC.Schema
             set { this.Item1 = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return ci.AddChildSection(id, insertPosition); }
+        { return ci.AddChildSectionI(id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return ci.AddChildQuestion(qType, id, insertPosition); }
+        { return ci.AddChildQuestionI(qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return ci.AddChildInjectedForm(id, insertPosition); }
+        { return ci.AddChildInjectedFormI(id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return ci.AddChildButtonAction(id, insertPosition); }
+        { return ci.AddChildButtonActionI(id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return ci.AddChildDisplayedItem(id, insertPosition); }
+        { return ci.AddChildDisplayedItemI(id, insertPosition); }
         public bool HasChildItems() => ci.HasChildItems();
         #endregion
 
@@ -746,7 +746,7 @@ namespace SDC.Schema
 
     }
 
-    public partial class ListItemType : IChildItemsParent<ListItemType>, IListItem, IQuestionListMember
+    public partial class ListItemType : IChildItemsParent<ListItemType>, IListItem //, IQuestionListMember
     {
         protected ListItemType() { }
         public ListItemType(ListType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -786,32 +786,32 @@ namespace SDC.Schema
             set { this.Item = value; }
         }
         public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return ci.AddChildSection(id, insertPosition); }
+        { return ci.AddChildSectionI(id, insertPosition); }
         public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return ci.AddChildQuestion(qType, id, insertPosition); }
+        { return ci.AddChildQuestionI(qType, id, insertPosition); }
         public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return ci.AddChildInjectedForm(id, insertPosition); }
+        { return ci.AddChildInjectedFormI(id, insertPosition); }
         public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return ci.AddChildButtonAction(id, insertPosition); }
+        { return ci.AddChildButtonActionI(id, insertPosition); }
         public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return ci.AddChildDisplayedItem(id, insertPosition); }
+        { return ci.AddChildDisplayedItemI(id, insertPosition); }
         public bool HasChildItems() => ci.HasChildItems();
         #endregion
 
 
         #region IQuestionListMember
-        IQuestionListMember qlm { get => this as IQuestionListMember; }
-        //hide inherited with "new" IQuestionListMember from DisplayedType
-        public bool Remove(bool removeDecendants = false) => qlm.Remove(removeDecendants);
-        public bool MoveToList(ListType targetList, out List<string> errList, int newListIndex = -1)
-            => qlm.MoveToList(targetList, out errList, newListIndex);
-        public bool MoveToList(ListItemType dropTarget, out List<string> errList, int newListIndex = -1) //not part of interface
-            => qlm.MoveToList(dropTarget.ParentNode as ListType, out errList, newListIndex);
-        public bool MoveinList(out List<string> errList, int newListIndex = -1) //not part of interface
-            => qlm.MoveinList(out errList, newListIndex);
-        public ListItemType ConvertToLI(bool testOnly = false) => qlm.ConvertToLI(testOnly);
-        public DisplayedType ConvertToDI(bool testOnly = false) => qlm.ConvertToDI(testOnly);
-        public ListItemType ConvertToLIR(bool testOnly = false) => qlm.ConvertToLIR(testOnly);
+        //IQuestionListMember qlm { get => this as IQuestionListMember; }
+        ////hide inherited with "new" IQuestionListMember from DisplayedType
+        //public bool Remove(bool removeDecendants = false) => qlm.RemoveI(removeDecendants);
+        //public bool MoveToList(ListType targetList, out string errList, int newListIndex = -1)
+        //    => qlm.MoveToListI(targetList, out errList, newListIndex);
+        //public bool MoveToList(ListItemType dropTarget, out string errList, int newListIndex = -1)
+        //    => qlm.MoveToListI(dropTarget.ParentNode as ListType, out errList, newListIndex);
+        //public bool MoveinList(out string errList, int newListIndex = -1)
+        //    => qlm.MoveInListI(out errList, newListIndex);
+        //public ListItemType ConvertToLI(bool testOnly = false) => qlm.ConvertToLI_I(testOnly);
+        //public DisplayedType ConvertToDI(bool testOnly = false) => qlm.ConvertToDI_I(testOnly);
+        //public ListItemType ConvertToLIR(bool testOnly = false) => qlm.ConvertToLIR_I(testOnly);
         #endregion
     }
 
@@ -935,13 +935,13 @@ namespace SDC.Schema
                 else { throw new Exception("TopNode has already been assigned.  A call to ResetSdcImport() is required before this object can be set for importing a new SDC template;"); }
             }
         }
-        private void RegisterParent<T>(T inParentNode) where T : BaseType
+        internal void RegisterParent<T>(T inParentNode) where T : BaseType
         {
             try
             {
                 if (inParentNode != null)
                 {   //Register parent node
-                    TopNode.ParentNodes.Add(ObjectGUID, inParentNode);
+                    TopNode.ParentNodes.Add(ObjectGUID, inParentNode);  
 
                     List<BaseType> kids;
                     TopNode.ChildNodes.TryGetValue(inParentNode.ObjectGUID, out kids);
@@ -950,7 +950,7 @@ namespace SDC.Schema
                         kids = new List<BaseType>();
                         TopNode.ChildNodes.Add(inParentNode.ObjectGUID, kids);
                     }
-                    kids.Add(this);
+                    kids.Add(this); 
 
                     inParentNode.IsLeafNode = false; //the parent node has a child node, so it can't be a leaf node
                 }
@@ -959,22 +959,24 @@ namespace SDC.Schema
             { Debug.WriteLine(ex.Message + "/n  ObjectID:" + this.ObjectID.ToString()); }
         }
 
-        private void UnRegisterParent()
+        internal void UnRegisterParent()
         {
             var par = this.ParentNode;
             try
             {
                 bool success = false;
                 if (par != null)
-                {
-                    success = TopNode.ParentNodes.Remove(this.ObjectGUID);
-                    if (!success) throw new Exception($"Could not remove object from ParentNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
+                {   if (TopNode.ParentNodes.ContainsKey(this.ObjectGUID))
+                        success = TopNode.ParentNodes.Remove(this.ObjectGUID);
+                   // if (!success) throw new Exception($"Could not remove object from ParentNodes dictionary: name: {this.name ?? "(none)"} , ObjectID: {this.ObjectID}");
 
-                    success = TopNode.ChildNodes[par.ObjectGUID].Remove(this); //Returns a List<BaseType> and removes "item" from that list
-                    if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
+                    if (TopNode.ChildNodes.ContainsKey(par.ObjectGUID))
+                        success = TopNode.ChildNodes[par.ObjectGUID].Remove(this); //Returns a List<BaseType> and removes "item" from that list
+                    //if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
 
-                    success = TopNode.ChildNodes[this.ObjectGUID].Remove(this);
-                    if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
+                    if (TopNode.ChildNodes.ContainsKey(this.ObjectGUID))
+                        success = TopNode.ChildNodes[this.ObjectGUID].Remove(this);
+                    //if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
 
                     if(TopNode.ChildNodes[par.ObjectGUID] is null || par.TopNode.ChildNodes[par.ObjectGUID].Count() == 0)
                     par.IsLeafNode = true; //the parent node has no child nodes, so it is a leaf node
@@ -992,6 +994,7 @@ namespace SDC.Schema
 
         #endregion
 
+
         #region IMoveRemove //not tested
         private void MoveInDictionaries(BaseType targetParent = null)
         {
@@ -1001,33 +1004,20 @@ namespace SDC.Schema
             //Re-register item node under new parent
             this.RegisterParent(targetParent);
         }       
-        public virtual bool IsMoveAllowed (BaseType targetProperty, out List<string> errList, int newListIndex = -1)
-        {
+        public virtual bool IsMoveAllowed (BaseType targetProperty, out string errList, out object pObj, int newListIndex = -1)
+        { //reflect the object tree to determine if "this" can be attached to the SDC XML element represented by teh targetProperty object.   
+            //We must find an exact match for the element and the data type in the targetProperty to allow the move.
+
+            pObj = null;  //the object to which new nodes are attached; it may be an array or List<> or a non-List object.
+            errList = "";
+
+            if (targetProperty is null) return false; 
             //make sure that item and target are not null and are part of the same tree
+            if (TopNode.Nodes[targetProperty.ObjectGUID] is null) return false;
 
-            //bool willSucceed = false;
-            errList = new List<string>();
-
-            if (targetProperty is null) 
-            { 
-                errList.Add("The targetProperty node is null"); 
-                return false; 
-            }
-
-            if (TopNode.Nodes[targetProperty.ObjectGUID] is null)
-            {
-                errList.Add("The targetParent node is null");
-                return false;
-            }
-
-
-            Type thisType = this.GetType();
-            object pObj = null;  //
-            bool propMatch = false;
+            Type thisType = this.GetType();            
             var thisPi = SdcUtil.GetPropertyInfo(this);
             string thisName = thisPi.XmlElementName;
-            //string elName = "";
-            //string thisParName = SdcUtil.GetPropertyInfo(this.ParentNode).XmlElementName;
 
             foreach (var p in targetProperty.GetType().GetProperties())
             {                
@@ -1038,46 +1028,49 @@ namespace SDC.Schema
                     pObj = p.GetValue(targetProperty);  //object that can be assigned to "this"; it may be a List or Array to contain "this" as an element, or another BaseType object that can be set directly to "this"
                     foreach (var a in pAtts)
                     {
-                        if (a.Type == thisType && a.ElementName == thisName) propMatch = true; //if type matches, then ElementName must also match 
-                        if (!propMatch &&
-                                a.ElementName == thisName && 
-                                a.Type is null &&
-                                p.PropertyType == thisType) propMatch = true;
-                        if (!propMatch &&
-                            SdcUtil.IsGenericList(pObj) &&
+                        if (a.Type == thisType && 
+                            a.ElementName == thisName
+                            ) 
+                            return true; //if type matches, then ElementName must also match.  This is the most common case.
+
+                        if (a.ElementName == thisName &&
+                            a.Type is null &&
+                            p.PropertyType == thisType
+                            )
+                            return true;
+
+                        if (SdcUtil.IsGenericList(pObj) &&
                             p.PropertyType.GetGenericArguments()[0] == thisType &&
-                            a.ElementName == thisName) propMatch = true;
-                        if (!propMatch &&
-                            a.ElementName == thisName &&
+                            a.ElementName == thisName
+                            )
+                            return true;
+
+                        if (a.ElementName == thisName &&
                             p.PropertyType.IsArray &&
-                            p.PropertyType.GetElementType() == thisType) propMatch = true;
+                            p.PropertyType.GetElementType() == thisType
+                            ) 
+                            return true;
                     }
                     //if none of the XmlElementAttributes had a matching Type an ElementName, perhaps the property Type will match directly
-                    if (!propMatch && 
-                        p.PropertyType == thisType && 
-                        p.Name == thisName) propMatch = true;
-                    if (!propMatch &&
-                        SdcUtil.IsGenericList(pObj) &&
-                        p.PropertyType.GetGenericArguments()[0] == thisType &&
-                        p.Name == thisName) propMatch = true;
-                    if (!propMatch &&
-                        p.PropertyType.IsArray &&
-                        p.PropertyType.GetElementType() == thisType &&
-                        p.Name == thisName) propMatch = true;
-
-
-
-                    if (propMatch)
-                    {
+                    if (p.PropertyType == thisType && 
+                        p.Name == thisName
+                        ) 
                         return true;
-                    }
+
+                    if (SdcUtil.IsGenericList(pObj) &&
+                        p.PropertyType.GetGenericArguments()[0] == thisType &&
+                        p.Name == thisName
+                        ) 
+                        return true;
+
+                    if (p.PropertyType.IsArray &&
+                        p.PropertyType.GetElementType() == thisType &&
+                        p.Name == thisName
+                        ) 
+                        return true;
                 }
             }
-
-
-
             return false;
-
         }
         public bool Remove()
         {
@@ -1105,9 +1098,9 @@ namespace SDC.Schema
             }
             return false;
         }
-        public virtual bool Move(BaseType targetProperty, out List<string> errList, int newListIndex = -1)
+        public virtual bool Move(BaseType targetProperty, out string errList, int newListIndex = -1)
         {
-            if (IsMoveAllowed(targetProperty, out errList, newListIndex))
+            if (IsMoveAllowed(targetProperty, out errList, out object targetObj, newListIndex))
             {
 
                 if (targetProperty is BaseType)
@@ -1134,7 +1127,18 @@ namespace SDC.Schema
         #endregion
 
         #region INavigate
-        
+        public BaseType GetNodeFirstSib() => SdcUtil.GetFirstSib((BaseType)this);
+        public BaseType GetNodeLastSib() => SdcUtil.GetLastSib((BaseType)this);
+        public BaseType GetNodePreviousSib() => SdcUtil.GetPrevSib((BaseType)this);
+        public BaseType GetNodeNextSib() => SdcUtil.GetNextSib((BaseType)this);
+        public BaseType GetNodePrevious() => SdcUtil.PrevElement((BaseType)this);
+        public BaseType GetNodeNext() => SdcUtil.NextElement((BaseType)this);
+        public BaseType GetNodeFirstChild() => SdcUtil.GetFirstChild((BaseType)this);
+        public BaseType GetNodeLastChild() => SdcUtil.GetLastChild((BaseType)this);
+        public BaseType GetNodeLastDescendant() => SdcUtil.GetLastDescendant((BaseType)this);
+
+        public PropertyInfoMetadata GetPropertyInfo() => SdcUtil.GetPropertyInfo((BaseType)this);
+
         #endregion
 
         #region Public Members (IBaseType)
@@ -1343,8 +1347,7 @@ namespace SDC.Schema
         {   //Parent Nodes cannot be assigned through this constructor.  
             //After the object tree is created, Parent Nodes can be assigned by using InitNodes<T>
             ObjectGUID = Guid.NewGuid();
-            InitBaseType();
-
+            InitBaseType();     
         }
 
         protected BaseType(BaseType parentNode) //: this()
@@ -1352,7 +1355,7 @@ namespace SDC.Schema
             ObjectGUID = Guid.NewGuid();
             InitBaseType();
             RegisterParent(parentNode);
-
+            
         }
 
         #region     Init Methods
@@ -1373,7 +1376,7 @@ namespace SDC.Schema
             if (TopNodeTemp is null && this is ITopNode)
             {
                 TopNodeTemp = (ITopNode)this;
-                sdcTopType = SdcUtil.ConvertStringToEnum<SdcTopNodeTypesEnum>(GetType().Name);
+                sdcTopType = this.GetType().Name.ToEnum<SdcTopNodeTypesEnum>();
                 //if (sdcTreeBuilder == null) sdcTreeBuilder = new SDCTreeBuilder();  //we create SDCTreeBuilder only in the top node
             }
             else if (TopNodeTemp != null)
@@ -1443,7 +1446,7 @@ namespace SDC.Schema
                 parExists = int.TryParse(parNode?.Attributes?.GetNamedItem("index")?.Value, out parIndexXml);//The index of the parent XML node
                 if (parExists)
                 {
-                    parExists = dX_obj.TryGetValue(parIndexXml, out parObjectGUID);// find the matching parent FD node Object ID
+                    parExists = dX_obj.TryGetValue(parIndexXml, out parObjectGUID);// find the matching parent SDC node Object ID
                     if (parExists) { parExists = obj.Nodes.TryGetValue(parObjectGUID, out btPar); } //Find the parent node in FD
                     if (parExists)
                     {
@@ -1452,7 +1455,7 @@ namespace SDC.Schema
                         //Debug.WriteLine($"The node with ObjectID: {bt.ObjectID} is leaving InitializeNodesFromSdcXml. Item type is {bt.GetType().Name}.  " +
                         //            $"Parent ObjectID is {bt?.ParentID}, ParentIETypeID: {bt?.ParentIETypeID}, ParentType: {btPar.GetType().Name}");
                     }
-                    else { throw new KeyNotFoundException("No parent object was returned rom the FormDesign tree"); }
+                    else { throw new KeyNotFoundException("No parent object was returned from the SDC tree"); }
                 }
                 else
                 {
@@ -1522,9 +1525,9 @@ namespace SDC.Schema
         #region IExtensionBase
         private IExtensionBase eb { get => this; }
         public bool HasExtensionBaseMembers() => eb.HasExtensionBaseMembers();
-        public PropertyType AddProperty(int insertPosition = -1) { return eb.AddProperty(insertPosition); }
-        public CommentType AddComment(int insertPosition = -1) { return eb.AddComment(insertPosition); }
-        public ExtensionType AddExtension(int insertPosition = -1) { return eb.AddExtension(insertPosition); }
+        public PropertyType AddProperty(int insertPosition = -1) { return eb.AddPropertyI(insertPosition); }
+        public CommentType AddComment(int insertPosition = -1) { return eb.AddCommentI(insertPosition); }
+        public ExtensionType AddExtension(int insertPosition = -1) { return eb.AddExtensionI(insertPosition); }
         #endregion
 
         //public ExtensionBaseType AddExtensionBaseType() { return sdcTreeBuilder.AddExtensionBaseTypeItems(this); }
@@ -1585,7 +1588,7 @@ namespace SDC.Schema
     }
     #endregion
 
-    public partial class IdentifiedExtensionType
+    public partial class IdentifiedExtensionType: IIdentifiedExtensionType
     {
         protected IdentifiedExtensionType() { }
         protected IdentifiedExtensionType(BaseType parentNode, string id = "") : base(parentNode)
@@ -1595,6 +1598,12 @@ namespace SDC.Schema
             else if (this.ObjectGUID != null)
                 this.ID = this.ObjectGUID.ToString();
         }
+
+        #region IIdentifiedExtensionType
+        public bool IsItemChangeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType
+            => SdcUtil.IsItemChangeAllowed(this, target);
+
+        #endregion
 
 
         public static explicit operator IdentifiedExtensionType(KeyValuePair<int, BaseType> v)
@@ -1645,7 +1654,7 @@ namespace SDC.Schema
 
     #region DisplayedType and Members
 
-    public partial class DisplayedType : IDisplayedType, IChildItemsMember<DisplayedType>, IQuestionListMember
+    public partial class DisplayedType : IDisplayedType, IChildItemsMember<DisplayedType> //, IQuestionListMember
     {
         protected DisplayedType() { }
         public DisplayedType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -1693,27 +1702,47 @@ namespace SDC.Schema
         //#endregion
 
         #region IQuestionListMember
-        IQuestionListMember qlm { get => this as IQuestionListMember; }
-        //Explicit implementaion prevents this interface from being inherited directly by subclasses.
-        bool IQuestionListMember.Remove(bool removeDecendants) => qlm.Remove(removeDecendants);
-        bool MoveToList(ListType targetList, out List<string> errList, int newListIndex = -1)
-            => qlm.MoveToList(targetList, out errList, newListIndex);
-        bool MoveToList(ListItemType dropTarget, out List<string> errList, int newListIndex = -1) //not part of interface
-            => qlm.MoveToList(dropTarget.ParentNode as ListType, out errList, newListIndex);
-        bool MoveinList(out List<string> errList, int newListIndex = -1)
-        {
-            if (!(this.ParentNode is ListType))
-            {
-                errList = new List<string>();
-                errList.Add("The parent node must be List.  It cannot be ChildItems");
-                return false;
-            }
+        //IQuestionListMember qlm { get => this as IQuestionListMember; }
+        ////Explicit implementaion prevents this interface from being inherited directly by subclasses.
+        //public bool Remove(bool removeDecendants) => qlm.RemoveI(removeDecendants);
+        //public bool IsMoveAllowedToList(QuestionItemType target, out string error)=> qlm.IsMoveAllowedToListI(target, out error);
+        //public bool MoveToList(ListType targetList, out string errList, int newListIndex = -1)
+        //    => qlm.MoveToListI(targetList, out errList, newListIndex);
+        //public bool MoveToList(ListItemType dropTarget, out string errList, int newListIndex = -1) //not part of interface
+        //    => qlm.MoveToListI(dropTarget.ParentNode as ListType, out errList, newListIndex);
+        //public bool MoveInList(out string errList, int newListIndex = -1)
+        //{
+        //    if (!(this.ParentNode is ListType))
+        //    {
+        //        errList = "The parent node must be List.  It cannot be ChildItems";
+        //        return false;
+        //    }
 
-            return qlm.MoveinList(out errList, newListIndex);
-        }
-        ListItemType IQuestionListMember.ConvertToLI(bool testOnly) => qlm.ConvertToLI(testOnly);
-        DisplayedType IQuestionListMember.ConvertToDI(bool testOnly) => qlm.ConvertToDI(testOnly);
-        ListItemType IQuestionListMember.ConvertToLIR(bool testOnly) => qlm.ConvertToLIR(testOnly);
+        //    return qlm.MoveInListI(out errList, newListIndex);
+        //}
+        //public bool MoveInList(DisplayedType source, DisplayedType target, bool moveAbove)
+        //{
+        //    if (!(this.ParentNode is ListType))
+        //    {
+        //        var err = "The parent node must be List.  It cannot be ChildItems";
+        //        return false;
+        //    }
+
+        //    return qlm.MoveInListI(source, target, moveAbove);
+        //}
+        //public bool MoveInList(DisplayedType source, QuestionItemType target, bool moveAbove)
+        //{
+        //    if (!(this.ParentNode is ListType))
+        //    {
+        //        var err = "The parent node must be List.  It cannot be ChildItems";
+        //        return false;
+        //    }
+
+        //    return qlm.MoveInListI(source, target, moveAbove);
+        //}
+        //public ListItemType ConvertToLI(bool testOnly) => qlm.ConvertToLI_I(testOnly);
+        //public DisplayedType ConvertToDI(bool testOnly) => qlm.ConvertToDI_I(testOnly);
+        //public ListItemType ConvertToLIR(bool testOnly) => qlm.ConvertToLIR_I(testOnly);
         #endregion
 
     }

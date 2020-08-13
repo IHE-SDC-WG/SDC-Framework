@@ -18,12 +18,34 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
+using System.Xml.Serialization;using System.Text.RegularExpressions;
+using System.Collections.Concurrent;
+using System.CodeDom;
 
 
 //using SDC;
 namespace SDC.Schema
 {
+
+    public struct PropertyInfoOrdered
+    {
+        public PropertyInfoOrdered(PropertyInfo propertyInfo, int xmlOrder)
+
+        {
+            PropertyInfo = propertyInfo;
+            this.XmlOrder = xmlOrder;
+        }
+        public PropertyInfo PropertyInfo { get; }
+
+        /// <summary>
+        /// xmlOrder is the Order found in the XmlElementAttribute's Order property.  
+        /// xmlOrder represents the element order in the SDC XML.  
+        /// However, all inherited properties of the requested object occur as SDC XML elements that precede the current object's XML element, 
+        /// even when the inherited properties have a higher xmlOrder value.
+        /// </summary>
+        public int XmlOrder { get; }
+    }
+
     public struct PropertyInfoMetadata
     {
         public PropertyInfoMetadata(
@@ -80,7 +102,7 @@ namespace SDC.Schema
         /// </summary>
         public string XmlElementName { get; }
 
-        public override string  ToString()
+        public override string ToString()
         {
             return @$"PropertyInfoMetadata:
 ---------------------------------------
@@ -94,17 +116,65 @@ XmlElementName: {XmlElementName}
         }
 
     }
-    public class TreeComparer:Comparer<BaseType>
+
+    public class PropertyInfoOrderedComparer : Comparer<PropertyInfoOrdered>
+    {
+        public override int Compare(PropertyInfoOrdered pioA, PropertyInfoOrdered pioB)
+        {
+            //In XML Schemas, it appears that base class (Schema base type) xml elements always come before subclass elements, regardless of the XmlElementAttribute Order value.
+            if (pioA.PropertyInfo.DeclaringType.IsSubclassOf(pioB.PropertyInfo.DeclaringType))
+                return 1;  //base class xml orders come before subclasses; ancNodeA is the base type here
+            if (pioB.PropertyInfo.DeclaringType.IsSubclassOf(pioA.PropertyInfo.DeclaringType))
+                return -1; //base class xml orders come before subclasses; ancNodeB is the base type here
+
+            //Determine the comparison based on the xmlOrder in the XmlElementAttributes
+            if (pioA.XmlOrder < pioB.XmlOrder)
+                return -1;
+            if (pioB.XmlOrder < pioA.XmlOrder)
+                return 1;
+            else return 0;
+        }
+    }
+    public class AttributeComparer : Comparer<PropertyInfo>
+    {
+        public override int Compare(PropertyInfo piA, PropertyInfo piB)
+        {
+            //In XML Schemas, it appears that base class (Schema base type) xml elements always come before subclass elements, regardless of the XmlElementAttribute Order value.
+            if (piA.DeclaringType.IsSubclassOf(piB.DeclaringType))
+                return 1;  //base class xml orders come before subclasses
+            if (piB.DeclaringType.IsSubclassOf(piA.DeclaringType))
+                return -1; //base class xml orders come before subclasses
+
+            return piA.Name.CompareTo(piB.Name);
+        }
+    }
+    public class TreeComparer : Comparer<BaseType>
     {
         public override int Compare(BaseType nodeA, BaseType nodeB)
         {
             //if nodeA is higher in the tree, return -1;
             //if nodeB is higher in the tree, return 1;
+            int ord;
+            if (nodeA.ObjectID < nodeB.ObjectID)
+                ord = -1;
+            else if (nodeA.ObjectID > nodeB.ObjectID)
+                ord = 1;
+            else ord = 0;
 
-            if (nodeA == nodeB) return 0;
+            //Debug.Print($" {ord},   A:{nodeA.ObjectID},   B:{nodeB.ObjectID}");
+
+
+            if (nodeA == nodeB)
+            { Result(0); return 0; }
             if (nodeA.TopNode != nodeB.TopNode) throw new Exception("nodeA and nodeB are derived from different SDC templates");
-            if (nodeA == nodeA.TopNode) return -1;
-            if (nodeB == nodeB.TopNode) return 1;
+            if (nodeA == nodeA.TopNode)
+            { Result(-1); return -1; }
+            if (nodeB == nodeB.TopNode)
+            { Result(1); return 1; }
+            if (nodeB.ParentNode == nodeA)
+            { Result(-1); return -1; }
+            if (nodeA.ParentNode == nodeB)
+            { Result(1); return 1; }
             //if (nodeA.ParentNode is null && nodeB.ParentNode != null) return -1; //nodeA is the top node
             //if (nodeB.ParentNode is null && nodeA.ParentNode != null) return 1;  //nodeB is the top node
 
@@ -118,7 +188,7 @@ XmlElementName: {XmlElementName}
             prevPar = ancSetA[indexA]?.ParentNode ?? null;
             while (prevPar != null)
             {
-                ancSetA[indexA+1]= prevPar;
+                ancSetA[indexA + 1] = prevPar;
                 indexA++;
                 prevPar = ancSetA[indexA]?.ParentNode ?? null;
             }
@@ -128,14 +198,19 @@ XmlElementName: {XmlElementName}
             //If they have different ancesters, move down one node in both ancSetA and ancSetB.
             //The set with the highest level (first) parent indicates that the that all nodes in that set come before all nodes in the other set.
 
-            int indexB = 0;
             indexA = -1; //we reuse indexA to refer to the common ancester in AncSetA
+            indexA = SdcUtil.IndexOf(ancSetA, nodeB);
+
+            if (indexA > -1)
+            { Result(1); return 1; }//nodeB is an ancester of NodeA,and thus comes first in order
+
+            int indexB = 0;
             ancSetB[indexB] = nodeB;
-            //failed indicates that the nodeA and nodeB trees branches never converge on a common ancestor.  
-            //This will generate an exception unless it is set to false below.
-            bool failed = true; 
-            //!Look for nodeB ancestors in ancSetA.  Loop through nodeB ancesters (we build ancSetB as we loop here) until we find a common ancester in nodeA's ancesters (already assembled in ancSetB)
+            bool failed = true;//failed indicates that the nodeA and nodeB trees branches never converge on a common ancestor.              
+                               //This will generate an exception unless it is set to false below.
+                               //!Look for nodeB ancestors in ancSetA.  Loop through nodeB ancesters (we build ancSetB as we loop here) until we find a common ancester in nodeA's ancesters (already assembled in ancSetB)
             prevPar = ancSetB[indexB]?.ParentNode ?? null;
+
             while (prevPar != null)
             {
 
@@ -143,7 +218,7 @@ XmlElementName: {XmlElementName}
                 indexA = SdcUtil.IndexOf(ancSetA, prevPar); //Find the lowest common parent node; later we'll see we can determine which parent node comes first in the tree
                 indexB++;
                 if (indexA > -1)
-                {//we found the lowest common parent node
+                {//we found the lowest common parent node at ancSetB[IndexA] and ancSetB[IndexB], at nde prevPar
                     failed = false;
                     break;
                 }
@@ -156,33 +231,63 @@ XmlElementName: {XmlElementName}
             //We now move one parent node further from the root on each tree branch (ancSetA and ancSetA), closer to nodeA and nodeB
             //and determine which of these ancesters has an XML Element sequence that is closer to the root node.
             //Both of these ancester nodes have ANC as a common SDC ParentNode.
-            BaseType ancNodeA = ancSetA[indexA - 1]; //first child of common ancester node on nodeA branch; this is still an ancester of NodeA, or NodeA itself
-            BaseType ancNodeB = ancSetB[indexB - 1]; //first child of common ancester node on nodeB branch; this is still an ancester of NodeB, or NodeB itself
+            if (indexA == 0 && indexB > 0)
+            { Result(-1); return -1; } //nodeA (located at index 0) is a direct ancestor of nodeB, so it must come first
+            if (indexB == 0 && indexA > 0)
+            { Result(1); return 1; }  //nodeB (located at index 0) is a direct ancester of nodeA, so it must come first
+            BaseType ancNodeA = null;
+            BaseType ancNodeB = null;
 
+            if (indexA > 0 && indexB > 0)
+            {
+                ancNodeA = ancSetA[indexA - 1]; //first child of common ancester node on nodeA branch; this is still an ancester of NodeA, or NodeA itself
+                ancNodeB = ancSetB[indexB - 1]; //first child of common ancester node on nodeB branch; this is still an ancester of NodeB, or NodeB itself
+            }
+            else
+            {
+                ancNodeA = ancSetA[indexA]; //first child of common ancester node on nodeA branch; this is still an ancester of NodeA, or NodeA itself
+                ancNodeB = ancSetB[indexB]; //first child of common ancester node on nodeB branch; this is still an ancester of NodeB, or NodeB itself
+
+            }
             //Retrieve customized Property Metadata for the class properties that hold our nodes.
             var piAncNodeA = SdcUtil.GetPropertyInfo(ancNodeA, false);
             var piAncNodeB = SdcUtil.GetPropertyInfo(ancNodeB, false);
 
             //Let's see if both items come from the same IEnumerable (ieItems) in ANC, and then see which one has the lower itemIndex
-            if (piAncNodeA.IeItems != null && piAncNodeB.IeItems!=null &&
+            if (piAncNodeA.IeItems != null && piAncNodeB.IeItems != null &&
                 piAncNodeA.IeItems == piAncNodeB.IeItems &&
                 piAncNodeA.ItemIndex > -1 && piAncNodeB.ItemIndex > -1)
             {
-                if (piAncNodeA.ItemIndex == piAncNodeB.ItemIndex) 
+                if (piAncNodeA.ItemIndex == piAncNodeB.ItemIndex)
                     throw new Exception("Unknown error - the compared nodes share a common ParentNode and appear to be identical");
-                if (piAncNodeA.ItemIndex < piAncNodeB.ItemIndex) return -1;
-                if (piAncNodeB.ItemIndex < piAncNodeA.ItemIndex) return 1;
+                if (piAncNodeA.ItemIndex < piAncNodeB.ItemIndex)
+                { Result(-1); return -1; }
+                if (piAncNodeB.ItemIndex < piAncNodeA.ItemIndex)
+                { Result(1); return 1; }
             }
 
             //In XML Schemas, it appears that base class (Schema base type) xml elements always come before subclass elements, regardless of the XmlElementAttribute Order value.
-            if (piAncNodeA.PropertyInfo.DeclaringType.IsSubclassOf(piAncNodeB.PropertyInfo.DeclaringType)) return 1; //base class xml orders come before subclasses; ancNodeA is the base type here
-            if (piAncNodeB.PropertyInfo.DeclaringType.IsSubclassOf(piAncNodeA.PropertyInfo.DeclaringType)) return -1;  //base class xml orders come before subclasses; ancNodeB is the base type here
+            if (piAncNodeA.PropertyInfo.DeclaringType.IsSubclassOf(piAncNodeB.PropertyInfo.DeclaringType))
+            { Result(1); return 1; } //base class xml orders come before subclasses; ancNodeA is the base type here
+            if (piAncNodeB.PropertyInfo.DeclaringType.IsSubclassOf(piAncNodeA.PropertyInfo.DeclaringType))
+            { Result(-1); return -1; } //base class xml orders come before subclasses; ancNodeB is the base type here
 
             //Determine the comparison based on the xmlOrder in the XmlElementAttributes
-            if (piAncNodeA.XmlOrder < piAncNodeB.XmlOrder) return -1;
-            if (piAncNodeB.XmlOrder < piAncNodeA.XmlOrder) return 1;
+            if (piAncNodeA.XmlOrder < piAncNodeB.XmlOrder)
+            { Result(-1); return -1; }
+            if (piAncNodeB.XmlOrder < piAncNodeA.XmlOrder)
+            { Result(1); return 1; }
             throw new Exception("the compare nodes algorithm could not determine the node order");
-        }      
+
+
+            void Result(int i)
+            {
+                //Debug.Print($" {i}:ord:{ord},   A:{nodeA.ObjectID},   B:{nodeB.ObjectID}");
+                if (i != ord) Debugger.Break();
+            }
+
+
+        }
     }
 
     public static class SdcUtil
@@ -260,7 +365,7 @@ XmlElementName: {XmlElementName}
         }
         public static IEnumerable<T> IEnumerableCopy<T>(IEnumerable<T> source, IEnumerable<T> emptyTarget)
         {
-            if (emptyTarget.Count() > 0) throw new Exception(String.Format("","emptyTarget was not empty" ));
+            if (emptyTarget.Count() > 0) throw new Exception(String.Format("", "emptyTarget was not empty"));
             foreach (var n in source)
             {
                 emptyTarget.Append(n);
@@ -325,7 +430,7 @@ XmlElementName: {XmlElementName}
 
             var n = item;
             do
-            {                
+            {
                 var nextSib = GetNextSib(n);
                 if (nextSib != null) return nextSib;
 
@@ -342,7 +447,7 @@ XmlElementName: {XmlElementName}
             BaseType par = item.ParentNode;
             BaseType nextNode = null;
             bool doDescendants = true;
-            if(par is null) par = item; //We have the top node here
+            if (par is null) par = item; //We have the top node here
 
             while (par != null)
             {
@@ -350,8 +455,8 @@ XmlElementName: {XmlElementName}
                 xmlOrder = -1;
 
                 //Does item have any children of its own?  If yes, find the first non-null property in the XML element order
-                if (doDescendants) if (GetNextNode(item) != null) 
-                        return nextNode;                    
+                if (doDescendants) if (GetNextNode(item) != null)
+                        return nextNode;
 
                 //No child items contained the next node, so let's look at other properties inside the parent object
                 var piMeta = GetPropertyInfo(item, true);
@@ -362,10 +467,10 @@ XmlElementName: {XmlElementName}
                     return ObjectAtIndex(piMeta.IeItems, piMeta.ItemIndex + 1) as BaseType;
 
                 //Is next item part of a parent property that follows our item?
-                if (GetNextNode(par, item) != null) 
+                if (GetNextNode(par, item) != null)
                     return nextNode;
 
-                //We did not found a next item, so let's move up one parent level in this while loop and check the properties under the parent.
+                //We did not find a next item, so let's move up one parent level in this while loop and check the properties under the parent.
                 //We keep climbing upwards in the tree until we find a parent with a next item, or we hit the top ancester node and return null.
                 item = par;
                 par = item.ParentNode;
@@ -392,7 +497,7 @@ XmlElementName: {XmlElementName}
                 Type t = targetNode.GetType();
                 var s = new Stack<Type>();
                 s.Push(t);
-                
+
                 do
                 {//build the stack of inherited types
                     t = t.BaseType;
@@ -454,7 +559,7 @@ XmlElementName: {XmlElementName}
                 }
                 return null;
             }
-        }        
+        }
         public static BaseType GetLastSib(BaseType item)
         {
             var par = item.ParentNode;
@@ -462,6 +567,15 @@ XmlElementName: {XmlElementName}
             item.TopNode.ChildNodes.TryGetValue(par.ObjectGUID, out List<BaseType> sibs);
             sibs?.Sort(new TreeComparer());
             return sibs?[sibs.Count() - 1];
+        }
+
+        public static BaseType ReflectLastSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+
+            var lst = ReflectChildList(par);
+            return lst?.Last();
         }
         public static BaseType GetFirstSib(BaseType item)
         {
@@ -471,6 +585,16 @@ XmlElementName: {XmlElementName}
             sibs?.Sort(new TreeComparer());
             return sibs?[0];
         }
+        public static BaseType ReflectFirstSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+
+            var lst = ReflectChildList(par);
+            return lst?.FirstOrDefault();
+        }
+
+
         public static BaseType GetNextSib(BaseType item)
         {
             var par = item.ParentNode;
@@ -481,6 +605,16 @@ XmlElementName: {XmlElementName}
             var index = sibs.IndexOf(item);
             if (index == sibs.Count() - 1) return null; //item is the last item
             return sibs?[index + 1];
+        }
+        public static BaseType ReflectNextSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+
+            var lst = ReflectChildList(par);
+            var myIndex = lst?.IndexOf(item) ?? -1;
+            if (myIndex < 0 || myIndex == lst?.Count()-1) return null;
+            return lst[myIndex + 1];
         }
         public static BaseType GetPrevSib(BaseType item)
         {
@@ -493,6 +627,16 @@ XmlElementName: {XmlElementName}
             if (index == 0) return null; //item is the first item
             return sibs?[index - 1];
         }
+        public static BaseType ReflectPrevSib(BaseType item)
+        {
+            var par = item.ParentNode;
+            if (par is null) return null;
+
+            var lst = ReflectChildList(par);
+            var myIndex = lst?.IndexOf(item) ?? -1;
+            if (myIndex < 1) return null;
+            return lst[myIndex - 1];
+        }
 
         public static BaseType GetLastChild(BaseType item)
         {
@@ -500,11 +644,27 @@ XmlElementName: {XmlElementName}
             kids?.Sort(new TreeComparer());
             return kids?[kids.Count() - 1];
         }
+        public static BaseType ReflectLastChild(BaseType item)
+        {
+            if (item is null) return null;
+
+            var lst = ReflectChildList(item);
+            return lst?.Last();
+        }
+
+
         public static BaseType GetFirstChild(BaseType item)
         {
             item.TopNode.ChildNodes.TryGetValue(item.ObjectGUID, out List<BaseType> kids);
             kids?.Sort(new TreeComparer());
             return kids?[0];
+        }
+        public static BaseType ReflectFirstChild(BaseType item)
+        {
+            if (item is null) return null;
+
+            var lst = ReflectChildList(item);
+            return lst?.FirstOrDefault();
         }
         public static BaseType GetLastDescendant(BaseType item, BaseType stopNode = null)
         {
@@ -524,11 +684,42 @@ XmlElementName: {XmlElementName}
                     if (snIndex == 0) return last;
                 }
 
-                n = kids[kids.Count()-1];
+                n = kids[kids.Count() - 1];
                 if (n != null) last = n;
             }
             return last;
         }
+
+        public static BaseType ReflectLastDescendant(BaseType bt, BaseType stopNode = null)
+        {
+            if (bt is null) return null;
+            BaseType lastKid =  null;
+
+            FindLastKid(bt);
+            //!+-------Local Method--------------------------
+            void FindLastKid(BaseType bt)
+            {
+                List<BaseType> kids = ReflectChildList(bt);
+                var testLast = kids?.Last();
+                if (testLast is null) return; //we ran out of kids to check, so lastKid is the last descendant                
+
+                if (stopNode != null)
+                {
+                    var pos = kids.IndexOf(stopNode);
+                    if (pos == 0) return;
+                    if (pos > 0)
+                    {
+                        lastKid = kids[pos - 1];
+                        return;
+                    }
+                }
+                lastKid = testLast;
+
+                FindLastKid(lastKid);
+            }
+            return lastKid;
+        }
+
 
         internal static int GetMaxOrderFromXmlElementAttributes(BaseType item)
         {
@@ -552,11 +743,11 @@ XmlElementName: {XmlElementName}
         public static PropertyInfoMetadata GetPropertyInfo(BaseType item, bool getNames = true)
         {
             var pi = GetPropertyInfo(
-                item, 
+                item,
                 out string propName,
-                out int itemIndex, 
-                out IEnumerable<BaseType> ieItems, 
-                out int xmlOrder, 
+                out int itemIndex,
+                out IEnumerable<BaseType> ieItems,
+                out int xmlOrder,
                 out int maxXmlOrder,
                 out string xmlElementName,
                 getNames);
@@ -578,12 +769,12 @@ XmlElementName: {XmlElementName}
         /// itemIndex: the index of "item" in "ieItems" is returned as an out parameter, otherwise it is -1
         /// </returns>
         private static PropertyInfo GetPropertyInfo(
-            BaseType item, 
-            out string propName, 
-            out int itemIndex, 
-            out IEnumerable<BaseType> ieItems, 
-            out int xmlOrder, 
-            out int maxXmlOrder, 
+            BaseType item,
+            out string propName,
+            out int itemIndex,
+            out IEnumerable<BaseType> ieItems,
+            out int xmlOrder,
+            out int maxXmlOrder,
             out string xmlElementName,
             bool getNames = true)
         {
@@ -616,7 +807,7 @@ XmlElementName: {XmlElementName}
             //We want the inner property, because its PropertyInfo object contains the XmlElementAttributes we need.
             //Outer wrapper PropertyInfo objects do NOT have XmlElementAttributes.
 
-///////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////
             IList<PropertyInfo> piSet = par.GetType().GetProperties()?.Where(pi => ReferenceEquals(pi.GetValue(par), item))?.ToList();
 
             if (piSet != null && piSet.Count() > 0)
@@ -718,7 +909,7 @@ XmlElementName: {XmlElementName}
                 return xci.MemberName;
             }
 
-            object ItemChoiceEnum (PropertyInfo pi)
+            object ItemChoiceEnum(PropertyInfo pi)
             {
                 string enumName = ItemChoiceEnumName(pi);
                 if (enumName == null) return null;
@@ -734,7 +925,7 @@ XmlElementName: {XmlElementName}
                 if (choiceIdentifierObject is Enum)
                     return ((Enum)choiceIdentifierObject).ToString();
 
-                if (choiceIdentifierObject is IEnumerable && arrayIndex >-1)
+                if (choiceIdentifierObject is IEnumerable && arrayIndex > -1)
                 {
                     var ie = ((IEnumerable)choiceIdentifierObject);
                     return ((Enum)GetObjectFromIEnumerableIndex(ie, arrayIndex)).ToString();
@@ -744,10 +935,123 @@ XmlElementName: {XmlElementName}
 
         }
 
+        public static List<PropertyInfoOrdered> ReflectPropertyInfoList( BaseType bt)
+        {
+            return ReflectPropertyInfoElements(bt.GetType().GetTypeInfo());
+        }
+        public static List<PropertyInfoOrdered> ReflectPropertyInfoElements(TypeInfo ti)
+        {
+            if (ti is null) return null;
+            var props = new List<PropertyInfoOrdered>();
+            foreach (var p in ti.GetProperties())
+            {
+                var att = p.GetCustomAttributes<XmlElementAttribute>().FirstOrDefault();
+                if (att !=null)
 
+                    props.Add(new PropertyInfoOrdered(p, att.Order));
+            }
 
+            props.Sort(new PropertyInfoOrderedComparer());
+            return props;
 
+        }
+        /// <summary>
+        /// Uses reflection to determine XML attributes that are eligible to be serialized.
+        /// </summary>
+        /// <param name="ti"></param>
+        /// <returns>List<PropertyInfo></returns>
+        public static List<PropertyInfo> ReflectPropertyInfoAttributes(TypeInfo ti)
+        {
+            if (ti is null) return null;
+            var props = new List<PropertyInfo>();
+            foreach (var p in ti.GetProperties())
+            {
+                var att = p.GetCustomAttributes<XmlAttributeAttribute>().FirstOrDefault();
+                if (att != null)
 
+                    props.Add(p);
+            }
+            props.Sort(new AttributeComparer());
+            return props;
+        }
+        /// <summary>
+        /// Uses reflection to determine XML attributes that will be serialized, based on the passed parameter object.
+        /// These attributes are determined by innvoking the "ShouldSerialize[Attribute Name]" methods in the passed parameter
+        /// </summary>
+        /// <param name="bt">A non-null SDC object derrived from BaseType</param>
+        /// <returns>List<PropertyInfo></returns>
+        public static List<PropertyInfo> ReflectAttributesFilled(BaseType bt)
+        {
+            TypeInfo ti = bt.GetType().GetTypeInfo();
+            if (ti is null) return null;
+            var attProps = new List<PropertyInfo>();
+            foreach (var p in ReflectAttributesAll(bt))
+            {
+                    if ((bool)ti.GetMethod("ShouldSerialize" + p.Name).Invoke(bt, null))
+                        attProps.Add(p);
+            }
+            return attProps;
+        }
+        public static List<PropertyInfo> ReflectAttributesAll(BaseType bt)
+        {
+            return ReflectPropertyInfoAttributes(bt.GetType().GetTypeInfo());
+        }
+        public static List<BaseType> ReflectChildList(BaseType bt)
+        {
+            if (bt is null) return null;
+            var kids = new List<BaseType>();
+            foreach (var p in bt.GetType().GetProperties())
+            {
+                var att = p.GetCustomAttributes<XmlElementAttribute>().FirstOrDefault();
+                if (att != null)
+                {
+                    var kid = p.GetValue(bt);
+                    if (kid != null)
+                    {
+                        if (kid is BaseType btKid) kids.Add(btKid);
+                        else if (kid is IList kidList)
+                        {
+                            var pList = kidList.OfType<BaseType>().Cast<BaseType>();
+                            foreach (BaseType lkid in pList) { kids.Add(lkid); }
+                        }
+                    }
+                }
+            }
+
+            var tc = new TreeComparer();
+            kids.Sort(tc);
+            return kids;
+        }
+
+        public static List<BaseType> ReflectSubtree(BaseType bt, bool reOrder = false, bool reRegisterNodes = false)
+        {
+            if (bt is null) return null;
+            var i = 0;
+            var kids = new List<BaseType>();
+            kids.Add(bt); //root node
+            if (reOrder) bt.order = i++;
+
+            ReflectSubtree2(bt);
+            void ReflectSubtree2(BaseType bt)
+            {
+                var cList = ReflectChildList(bt);
+                foreach (BaseType c in cList)
+                {
+                    kids.Add(c);
+
+                    if (reRegisterNodes)
+                    {
+                        c.UnRegisterParent();
+                        c.RegisterParent(bt);
+                    }
+                    if (reOrder) c.order = i++;
+
+                    ReflectSubtree2(c);
+                }
+            }
+            return kids;
+
+        }
 
         static bool IsTargetForItemName(PropertyInfo targetProp, BaseType item, BaseType target)
         {
@@ -760,22 +1064,22 @@ XmlElementName: {XmlElementName}
             var dtAtts = (XmlElementAttribute[])Attribute.GetCustomAttributes(targetProp, typeof(XmlElementAttribute));
 
 
-                bool success = ElementNameFromEnum(ItemChoiceEnum(targetProp));
-                if (success) return true;
+            bool success = ElementNameFromEnum(ItemChoiceEnum(targetProp));
+            if (success) return true;
 
 
-                //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
-                if (dtAtts.Count() == 1)
-                {
-                    return dtAtts.ToArray()[0].ElementName ==itemName;
-                }
+            //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
+            if (dtAtts.Count() == 1)
+            {
+                return dtAtts.ToArray()[0].ElementName == itemName;
+            }
 
-                dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
-                if (dtAtts.Count() == 1)
-                {
-                    //return ElementName based on data type match in the XMLAttribute
-                    return dtAtts.ToArray()[0].ElementName == itemName;
-                }
+            dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
+            if (dtAtts.Count() == 1)
+            {
+                //return ElementName based on data type match in the XMLAttribute
+                return dtAtts.ToArray()[0].ElementName == itemName;
+            }
             //There was no ElementName to extract from an XmlElementAttribute
             return false;
 
@@ -842,7 +1146,7 @@ XmlElementName: {XmlElementName}
                 case PropertyType pt:
                     return (pn as ExtensionBaseType).Property as List<T>;
                 case EventType ev:
-                    return GetStatedEventParent(ev).Cast<T>().ToList();
+                    return X_GetStatedEventParent(ev).Cast<T>().ToList();
                 case SectionItemType s:
                 case ListItemType li:
                 case QuestionItemType q:
@@ -935,7 +1239,7 @@ XmlElementName: {XmlElementName}
 
             return null;
         }
-        private static List<T> GetStatedEventParent<T>(T item)
+        private static List<T> X_GetStatedEventParent<T>(T item)
             where T : EventType
         {
             var elementName = item.ElementName;
@@ -1010,14 +1314,11 @@ XmlElementName: {XmlElementName}
             switch (source)
             {
                 case SectionItemType _:
-                case QuestionItemType _:
-                case ListItemType _:
                     ci = (source as ChildItemsType);
                     switch (target)
                     {
                         case SectionItemType _:
                         case QuestionItemType _:
-                        case ListItemType _:
                             return true;
                         case ButtonItemType _:
                         case DisplayedType _:
@@ -1029,6 +1330,35 @@ XmlElementName: {XmlElementName}
                             return false;
                         default: return false;
                     }
+
+                case QuestionItemType q:
+                    ci = (source as ChildItemsType);
+                    switch (target)
+                    {
+                        case QuestionItemType _:
+                            //probably should not allow changing Q types
+                            return false;
+                        default: return false;
+                    }
+
+                case ListItemType _:
+                    ci = (source as ChildItemsType);
+                    switch (target)
+                    {
+                        case SectionItemType _:
+                        case QuestionItemType _:
+                        case ListItemType _:
+                        case InjectFormType _:
+                            return false;
+                        case ButtonItemType _:
+                        case DisplayedType _:
+                            if (ci is null) return true;
+                            if (ci.ChildItemsList is null) return true;
+                            if (ci.ChildItemsList.Count == 0) return true;
+                            return false;
+                        default: return false;
+                    }
+
                 case ButtonItemType b:
                     return false;
                 case DisplayedType d:
@@ -1045,7 +1375,7 @@ XmlElementName: {XmlElementName}
 
 
         #region Retired
-        
+
         #endregion
 
         #region Helpers
@@ -1053,42 +1383,42 @@ XmlElementName: {XmlElementName}
         {
             throw new NotImplementedException();
         }
-        internal static XmlElement StringToXMLElement(string rawXML)
-        {
-            var xe = XElement.Parse(rawXML, LoadOptions.PreserveWhitespace);
-            var doc = new XmlDocument();
+        //internal static XmlElement StringToXMLElement(string rawXML)
+        //{
+        //    var xe = XElement.Parse(rawXML, LoadOptions.PreserveWhitespace);
+        //    var doc = new XmlDocument();
 
-            var xmlReader = xe.CreateReader();
-            doc.Load(xmlReader);
-            xmlReader.Dispose();
+        //    var xmlReader = xe.CreateReader();
+        //    doc.Load(xmlReader);
+        //    xmlReader.Dispose();
 
-            return doc.DocumentElement;
-        }
+        //    return doc.DocumentElement;
+        //}
 
 
-         /// <summary>
+        /// <summary>
         /// Converts the string expression of an enum value to the desired type. Example: var qType= reeBuilder.ConvertStringToEnum&lt;ItemType&gt;("answer");
         /// </summary>
         /// <typeparam name="Tenum">The enum type that the inputString will be converted into.</typeparam>
         /// <param name="inputString">The string that must represent one of the Tenum enumerated values; not case sensitive</param>
         /// <returns></returns>
-        public static Tenum ConvertStringToEnum<Tenum>(string inputString) where Tenum : struct
-        {
-            //T newEnum = (T)Enum.Parse(typeof(T), inputString, true);
+        //public static Tenum ConvertStringToEnum<Tenum>(string inputString) where Tenum : struct
+        //{
+        //    //T newEnum = (T)Enum.Parse(typeof(T), inputString, true);
 
-            Tenum newEnum;
-            if (Enum.TryParse<Tenum>(inputString, true, out newEnum))
-            {
-                return newEnum;
-            }
-            else
-            { //throw new Exception("Failure to create enum");
+        //    Tenum newEnum;
+        //    if (Enum.TryParse<Tenum>(inputString, true, out newEnum))
+        //    {
+        //        return newEnum;
+        //    }
+        //    else
+        //    { //throw new Exception("Failure to create enum");
 
-            }
-            return newEnum;
-        }
-        
-        public static string XmlReorder (string Xml)
+        //    }
+        //    return newEnum;
+        //}
+
+        public static string XmlReorder(string Xml)
         {
             var doc = new XmlDocument();
             doc.LoadXml(Xml);
@@ -1104,7 +1434,7 @@ XmlElementName: {XmlElementName}
             return doc.OuterXml;
         }
 
-        public static string XmlFormat (string Xml)
+        public static string XmlFormat(string Xml)
         {
             return System.Xml.Linq.XDocument.Parse(Xml).ToString();  //prettify the minified doc XML 
         }
@@ -1114,5 +1444,179 @@ XmlElementName: {XmlElementName}
 
 
     }
+
+    public static class BaseTypeExtensions
+    {
+
+        public static List<BaseType> GetChildren(this BaseType bt)
+        {
+            return SdcUtil.ReflectChildList(bt);
+        }
+        /// <summary>
+        /// Provides PropertyInfo (PI) definitions for all bt attributes that will be serialized to XML
+        /// Each PI can be used t  obtain the type, name and other features of each attribute
+        /// Also, each PI can be used to create an instance of the object by calling PI.GetValue(parentObject)
+        /// </summary>
+        /// <param name="bt"></param>
+        /// <returns>List<PropertyInfo></returns>
+        public static List<PropertyInfo> GetAttributesFilled(this BaseType bt)
+        {
+            return SdcUtil.ReflectAttributesFilled (bt);
+        }
+        /// <summary>
+        /// Provides PropertyInfo (PI) definitions for all attributes of bt
+        /// </summary>
+        /// <param name="bt"></param>
+        /// <returns>List<PropertyInfo> </returns>
+        public static List<PropertyInfo> GetAttributeAll(this BaseType bt)
+        {
+            return SdcUtil.ReflectAttributesAll(bt);             
+        }
+        public static List<PropertyInfoOrdered> GetPropertyInfoList(this BaseType bt)
+        {
+            return SdcUtil.ReflectPropertyInfoList(bt);
+        }
+
+        public static PropertyInfoMetadata GetPropertyInfoMetaData(this BaseType bt)
+        {
+            return SdcUtil.GetPropertyInfo(bt);
+        }
+        public static List<BaseType> GetDescendants(this BaseType bt)
+        {
+            return SdcUtil.ReflectSubtree(bt);
+        }
+        public static List<BaseType> GetSibs(this BaseType bt)
+        {
+            return bt.GetPropertyInfoMetaData().IeItems.ToList();
+        }
+        public static bool IsItemChangeAllowed(this IdentifiedExtensionType iet, IdentifiedExtensionType targetType)
+        {
+            return SdcUtil.IsItemChangeAllowed(iet, targetType);
+
+        }
+
+    }
+
+}
+
+    
+
+public static class StringExtensions
+{
+    public static int WordCount(this String str)
+    {
+        return str.Split(new char[] { ' ', '.', '?' },
+                         StringSplitOptions.RemoveEmptyEntries).Length;
+    }
+    public static bool IsNullOrEmpty(this String str)
+    {
+        return string.IsNullOrEmpty(str);
+    }
+    public static bool IsNullOrWhitespace(this String str)
+    {
+        return string.IsNullOrWhiteSpace(str);
+    }
+    public static bool IsEmpty(this String str)
+    {
+        return str.IsNullOrEmpty() || str.IsNullOrWhitespace();
+    }
+    public static string TrimAndReduce(this string str)
+    {
+        return ReduceWhitespace(str).Trim();
+    }
+
+    public static string ReduceWhitespace(this string str)
+    {
+        return Regex.Replace(str, @"\s+", " ");
+    }
+    public static string ReduceWhitespaceRegex(this string str)
+    {
+        return Regex.Replace(str, "[\n\r\t]", " ");
+    }
+    public static XmlElement ToXmlElement(this string rawXML)
+    {
+        var xe = XElement.Parse(rawXML, LoadOptions.PreserveWhitespace);
+        var doc = new XmlDocument();
+
+        var xmlReader = xe.CreateReader();
+        doc.Load(xmlReader);
+        xmlReader.Dispose();
+
+        return doc.DocumentElement;
+    }
+
+    /// <summary>
+    /// Converts the string expression of an enum value to the desired type. Example: var qType= reeBuilder.ConvertStringToEnum&lt;ItemType&gt;("answer");
+    /// </summary>
+    /// <typeparam name="Tenum">The enum type that the inputString will be converted into.</typeparam>
+    /// <param name="inputString">The string that must represent one of the Tenum enumerated values; not case sensitive</param>
+    /// <returns></returns>
+    public static Tenum ToEnum<Tenum>(this string inputString) where Tenum : struct
+    {
+        //T newEnum = (T)Enum.Parse(typeof(T), inputString, true);
+
+        Tenum newEnum;
+        if (Enum.TryParse<Tenum>(inputString, true, out newEnum))
+        {
+            return newEnum;
+        }
+        else
+        { //throw new Exception("Failure to create enum");
+
+        }
+        return newEnum;
+    }
+
+}
+
+public static class ObjectExtensions
+{
+    public static bool IsGenericList(this object o)
+    {
+        try
+        {
+            return SDC.Schema.SdcUtil.IsGenericList(o);
+        }
+        catch {return false; }
+
+    }
+    /// <summary>
+    /// Direct Cast as T, if possible
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="o"></param>
+    /// <returns></returns>
+    public static T As<T>(this object o) where T:class 
+    {
+        try
+        {
+            return (T)o;
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+   /// <summary>
+   /// Try to Cast as T
+   /// </summary>
+   /// <typeparam name="T"></typeparam>
+   /// <param name="oIn"></param>
+   /// <param name="oOut"></param>
+   /// <returns></returns>
+    public static bool TryAs<T>(this object oIn, out T oOut ) where T : class 
+    {
+        try
+        {
+            oOut = (T)oIn;
+            return true;
+        }
+        catch
+        {
+            oOut = null;
+            return false;
+        }
+    }
+
 
 }

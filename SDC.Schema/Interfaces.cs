@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
@@ -91,7 +92,9 @@ namespace SDC.Schema
         where T : BaseType, IChildItemsParent<T>
     {
         ChildItemsType ChildItemsNode { get; set; }
-        SectionItemType AddChildSection(string id, int insertPosition)
+
+        SectionItemType AddChildSection(string id, int insertPosition);
+        SectionItemType AddChildSectionI(string id, int insertPosition)
         {
             var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
@@ -102,7 +105,8 @@ namespace SDC.Schema
 
             return sNew;
         }
-        QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1)
+        QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1);
+        QuestionItemType AddChildQuestionI(QuestionEnum qType, string id, int insertPosition = -1)
         {
             var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
@@ -137,8 +141,9 @@ namespace SDC.Schema
             }
 
             return qNew;
-        } 
-        DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1)
+        }
+        DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
+        DisplayedType AddChildDisplayedItemI(string id, int insertPosition = -1)
         {
             var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
@@ -149,7 +154,8 @@ namespace SDC.Schema
 
             return dNew;
         }
-        ButtonItemType AddChildButtonAction(string id, int insertPosition = -1)
+        ButtonItemType AddChildButtonAction(string id, int insertPosition = -1);
+        ButtonItemType AddChildButtonActionI(string id, int insertPosition = -1)
         {
             var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
@@ -161,7 +167,8 @@ namespace SDC.Schema
             // TODO: Add AddButtonActionTypeItems(btnNew);
             return btnNew;
         }
-        InjectFormType AddChildInjectedForm(string id, int insertPosition = -1)
+        InjectFormType AddChildInjectedForm(string id, int insertPosition = -1);
+        InjectFormType AddChildInjectedFormI(string id, int insertPosition = -1)
         {
             var childItems = AddChildItemsNode(this as T);
             var childItemsList = childItems.ChildItemsList;
@@ -216,7 +223,7 @@ namespace SDC.Schema
     public interface IChildItemsMember<Tchild>  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
             where Tchild : IdentifiedExtensionType, IChildItemsMember<Tchild>
     {
-        bool IsMoveAllowedToChild<U>(U Utarget, out string error)
+        bool X_IsMoveAllowedToChild<U>(U Utarget, out string error)
             where U : notnull, IdentifiedExtensionType
             //where T : notnull, IdentifiedExtensionType
         {
@@ -257,7 +264,7 @@ namespace SDC.Schema
 
             return sourceOK & targetOK;
         }
-        bool MoveAsChild<S, T>(S source, T target, int newListIndex)
+        bool X_MoveAsChild<S, T>(S source, T target, int newListIndex)
             where S : notnull, IdentifiedExtensionType    //, IChildItemMember
             where T : DisplayedType, IChildItemsParent<T>
         {
@@ -351,7 +358,7 @@ namespace SDC.Schema
             sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
             return false;
         }
-        bool MoveAfterSib<S, T>(S source, T target, int newListIndex, bool moveAbove)
+        bool X_MoveAfterSib<S, T>(S source, T target, int newListIndex, bool moveAbove)
             where S : notnull, IdentifiedExtensionType
             where T : notnull, IdentifiedExtensionType
         {
@@ -447,12 +454,12 @@ namespace SDC.Schema
         {
             throw new NotImplementedException();
         }
-        protected virtual ResponseFieldType AddQuestionResponseFieldI()
+        protected virtual ResponseFieldType AddQuestionResponseFieldI(ItemChoiceType itemType, dtQuantEnum dtQuant = dtQuantEnum.EQ, object valDefault = null)
         {
             var qParent = this as QuestionItemType;
             var rf = new ResponseFieldType(qParent);
             qParent.ResponseField_Item = rf;
-
+            var deType = IDataHelpers.AddDataTypesDE(rf, itemType, dtQuant, valDefault);
             return rf;
         }
         protected virtual LookupEndPointType AddEndpointToListFieldI(ListFieldType listFieldParent)
@@ -497,8 +504,6 @@ namespace SDC.Schema
 
 
 
-
-
         //bool ConvertToButton(); //abort if LIs or children present
 
         //convert type to QR
@@ -516,7 +521,7 @@ namespace SDC.Schema
         DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1);
 
 
-        ListItemType AddListItemI(ListType lt, string id, int insertPosition) //check that no ListItemResponseField object is present
+        ListItemType AddListItemI(ListType lt, string id, int insertPosition = -1) //check that no ListItemResponseField object is present
         {
             ListItemType li = new ListItemType(lt, id);
             var count = lt.QuestionListMembers.Count;
@@ -532,159 +537,157 @@ namespace SDC.Schema
 
 
     }
-    public interface IQuestionListMember : IQuestionBuilder //decorates LI/LIR and DI
-    {
-        //for DI, make sure parent is a ListType object
-        //bool Remove(bool removeDecendants = false);
-        //bool Move(QuestionItemType target = null, bool moveAbove = false, bool testOnly = false);
-        //bool Move(ListItemType target = null, bool moveAbove = false, bool testOnly = false);
-        //ListItemType ConvertToLI(bool testOnly = false);
-        //DisplayedType ConvertToDI(bool testOnly = false); //abort if children of LI are present
-        //ListItemType ConvertToLIR(bool testOnly = false);
+    //public interface IQuestionListMember : IQuestionBuilder //decorates LI/LIR and DI
+    //{
+    //    //for DI, make sure parent is a ListType object
+    //    //bool Remove(bool removeDecendants = false);
+    //    //bool Move(QuestionItemType target = null, bool moveAbove = false, bool testOnly = false);
+    //    //bool Move(ListItemType target = null, bool moveAbove = false, bool testOnly = false);
+    //    //ListItemType ConvertToLI(bool testOnly = false);
+    //    //DisplayedType ConvertToDI(bool testOnly = false); //abort if children of LI are present
+    //    //ListItemType ConvertToLIR(bool testOnly = false);
 
 
-        //for DI, make sure parent is a ListType object
-        bool Remove(bool removeDecendants) { throw new NotImplementedException(); }
-        //bool Move(QuestionItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
-        //bool Move(ListItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
-        /// <summary>
-        /// Move a ListItem or DisplayedItem within the same List
-        /// </summary>
-        /// <returns>returns true if operation succeeded    
-        /// </returns>
-        bool MoveinList(out List<string> errList, int newListIndex = -1)
-        {
-            var qlm = this as BaseType;  //"this" is either a DI or LI
-            var list = (ListType)(qlm)?.ParentNode;
-            return qlm.Move(list, out errList, 6);
-        }
-        //bool Move(List<BaseType> targetProperty, out List<string> errList, int newListIndex = -1) //DI and LI must have a parent property of ListType (DI or LI) of ChildItems (DI)
-        //{
-        //    var qlm = this as BaseType;  //"this" is either a DI or LI
-        //    var list = (ListType)(qlm)?.ParentNode;
-        //    return qlm.Move(targetProperty, qlm, out errList, newListIndex);
-        //}
+    //    //for DI, make sure parent is a ListType object
+    //    bool Remove(bool removeDecendants); 
+    //    bool RemoveI(bool removeDecendants) 
+    //    { throw new NotImplementedException(); }
+    //    //bool Move(QuestionItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
+    //    //bool Move(ListItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
+    //    /// <summary>
+    //    /// Move a ListItem or DisplayedItem within the same List
+    //    /// </summary>
+    //    /// <returns>returns true if operation succeeded    
+    //    /// </returns>
+    //    bool MoveInList(out string err, int newListIndex = -1);
+    //    bool MoveInListI(out string err, int newListIndex = -1)
+    //    {
+    //        var qlm = this as BaseType;  //"this" is either a DI or LI
+    //        var list = (ListType)(qlm)?.ParentNode;
+    //        return qlm.Move(list, out err, 6);
+    //    }
+    //    //bool Move(List<BaseType> targetProperty, out List<string> errList, int newListIndex = -1) //DI and LI must have a parent property of ListType (DI or LI) of ChildItems (DI)
+    //    //{
+    //    //    var qlm = this as BaseType;  //"this" is either a DI or LI
+    //    //    var list = (ListType)(qlm)?.ParentNode;
+    //    //    return qlm.Move(targetProperty, qlm, out errList, newListIndex);
+    //    //}
 
-        /// <summary>
-        /// Move a ListItem or DisplayedItem to another List
-        /// </summary>
-        /// <param name="targetList"></param>
-        /// <param name="errList"></param>
-        /// <param name="newListIndex"></param>
-        /// <returns>returns true if operation succeeded    </returns>
-        bool MoveToList(ListType targetList, out List<string> errList, int newListIndex = -1) 
-        {
-            var qlm = this as BaseType;  //"this" is either a DI or LI
-            return qlm.Move(targetList, out errList, newListIndex);
-        }
+    //    /// <summary>
+    //    /// Move a ListItem or DisplayedItem to another List
+    //    /// </summary>
+    //    /// <param name="targetList"></param>
+    //    /// <param name="errList"></param>
+    //    /// <param name="newListIndex"></param>
+    //    /// <returns>returns true if operation succeeded    </returns>
+    //    bool MoveToList(ListType targetList, out string err, int newListIndex = -1);
+    //    bool MoveToListI(ListType targetList, out string err, int newListIndex = -1)
+    //    {
+    //        var qlm = this as BaseType;  //"this" is either a DI or LI
+    //        return qlm.Move(targetList, out err, newListIndex);
+    //    }
 
-        ListItemType ConvertToLI(bool testOnly) { throw new NotImplementedException(); }
-        DisplayedType ConvertToDI(bool testOnly) { throw new NotImplementedException(); } //abort if children of LI are present
-        ListItemType ConvertToLIR(bool testOnly) { throw new NotImplementedException(); }
-        bool IsMoveAllowedToList<T>(T target, out string error)
-            where T : notnull, IQuestionListMember
-        {
-            error = "";
+    //    ListItemType ConvertToLI(bool testOnly);
+    //    ListItemType ConvertToLI_I(bool testOnly) 
+    //    { throw new NotImplementedException(); }
+    //    DisplayedType ConvertToDI(bool testOnly);
+    //    DisplayedType ConvertToDI_I(bool testOnly)
+    //    { throw new NotImplementedException(); } //abort if children of LI are present
+    //    ListItemType ConvertToLIR(bool testOnly);
+    //    ListItemType ConvertToLIR_I(bool testOnly)
+    //    { throw new NotImplementedException(); }
+    //    bool IsMoveAllowedToList(QuestionItemType target, out string error);
+    //    bool IsMoveAllowedToListI(QuestionItemType target, out string error)
+    //    {
+    //        error = "";
 
-            //if (source is null) { error = "source is null"; return false; }
-            //if (target is null) { error = "target is null"; return false; }
-            //if (source is SectionItemType) return false; //S is illegal in the list
-            //if (target is SectionItemType) return false; //S is illegal in the list
-            //if (source is ButtonItemType) return false; //B is illegal in the list
-            //if (target is ButtonItemType) return false; //B is illegal in the list
+    //        if (
+    //            !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionSingle) &&
+    //            !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionMultiple) 
+    //            )
+    //        { error = "A Question target must be a QuestionSingle or QuestionMultiple"; return false; }
 
-            //if (source is QuestionItemType) return false; //Q is illegal in the list
+    //        return true;
+    //    }
+    //    bool MoveInList(DisplayedType source, QuestionItemType target, bool moveAbove);
+    //    bool MoveInListI(DisplayedType source, QuestionItemType target, bool moveAbove)
+    //    {
+    //        if (source is null) return false;
+    //        if (source is RepeatingType) return false; //S, Q are illegal in the list
+    //        if (source is ButtonItemType) return false; //B is illegal in the list
 
+    //        if (target is null) target = source.ParentNode?.ParentNode?.ParentNode as QuestionItemType; //LI-->List-->ListField-->Q  - see if we can capture a Question from the source node
+    //        if (target is null) return false;
 
-            //if (!(source is ListItemType) && !(source is DisplayedType)) { error = "The source must be a ListItem or DisplayedItem"; return false; };
-            //if (!(target is ListItemType) && !(target is QuestionItemType)) { error = "The target must be a ListItem or Question"; return false; };
+    //        List<BaseType> sourceList = (source.ParentNode as ListType)?.Items?.ToList<BaseType>();//guess that the sourrce node is inside a List
+    //        if (sourceList is null) sourceList = (source.ParentNode as ChildItemsType)?.ChildItemsList?.ToList<BaseType>();//try again - guess that source node is inside a ChildItems node
+    //        if (sourceList is null) return false;//both guesses failed - this is probably a disconnected node, and we can't work with that.
 
-            if (target is QuestionItemType &&
-                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionSingle) &&
-                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionMultiple) &&
-                !((target as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionRaw))
-            { error = "A Question target must be a QuestionSingle, QuestionMultiple or of unassigned (QuestionRaw) type"; return false; }
+    //        if (target.ListField_Item is null) AddListToListField(AddListFieldToQuestion(target));  //make sure there is a ist instantiated on this target Question; if not, then create it.          
+    //        var targetList = target.ListField_Item.List.Items;
+    //        if (targetList is null) return false;  //unkown problem getting Question-->ListField-->List
 
-            return true;
+    //        var indexSource = sourceList.IndexOf(source);
+    //        int index = targetList.Count;
+    //        sourceList.Remove(source);
+    //        targetList.Insert(index, source);
+    //        if (targetList[index] == source)
+    //        {
+    //            source.TopNode.ParentNodes[source.ObjectGUID] = target;
+    //            return true;
+    //        }
 
-        }
-        bool MoveInList(DisplayedType source, QuestionItemType target, bool moveAbove)
-        {
-            if (source is null) return false;
-            if (source is RepeatingType) return false; //S, Q are illegal in the list
-            if (source is ButtonItemType) return false; //B is illegal in the list
+    //        //Error - the source item is now disconnected from the list.  Lets add it back to the end of the list.
+    //        sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
+    //        return false;
 
-            if (target is null) target = source.ParentNode?.ParentNode?.ParentNode as QuestionItemType; //LI-->List-->ListField-->Q  - see if we can capture a Question from the source node
-            if (target is null) return false;
+    //    }
+    //    bool MoveInList(DisplayedType source, DisplayedType target, bool moveAbove);
+    //    bool MoveInListI(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType); need to address Nodes dictionary updates
+    //    {
+    //        //this function allows dropping items inside a QS o QM list to rearrange the list
+    //        //prevent illegal operationss
+    //        if (source is null) return false;
+    //        if (source is RepeatingType) return false; //S, Q (RepeatingTypes) are illegal in the Q's list
+    //        if (target is RepeatingType) return false; //S, Q (RepeatingTypes) are illegal in the Q's list
+    //        if (source is ButtonItemType) return false; //B is illegal in the Q's list
+    //        if (target is ButtonItemType) return false; //B is illegal in the Q's list
 
-            List<BaseType> sourceList = (source.ParentNode as ListType)?.Items?.ToList<BaseType>();//guess that the sourrce node is inside a List
-            if (sourceList is null) sourceList = (source.ParentNode as ChildItemsType)?.ChildItemsList?.ToList<BaseType>();//try again - guess that source node is inside a ChildItems node
-            if (sourceList is null) return false;//both guesses failed - this is probably a disconnected node, and we can't work with that.
+    //        List<BaseType> sourceList = (source.ParentNode?.ParentNode as ListType)?.Items?.ToList<BaseType>();
+    //        if (sourceList is null) sourceList = (source.ParentNode as ChildItemsType)?.ChildItemsList?.ToList<BaseType>();
+    //        if (sourceList is null) return false;
 
-            if (target.ListField_Item is null) AddListToListField(AddListFieldToQuestion(target));  //make sure there is a ist instantiated on this target Question; if not, then create it.          
-            var targetList = target.ListField_Item.List.Items;
-            if (targetList is null) return false;  //unkown problem getting Question-->ListField-->List
+    //        var qTarget = target.ParentNode?.ParentNode?.ParentNode as QuestionItemType;
+    //        if (qTarget is null) return false;  //we did not get a Q object, so we are not moving  a node into a Q List
 
-            var indexSource = sourceList.IndexOf(source);
-            int index = targetList.Count;
-            sourceList.Remove(source);
-            targetList.Insert(index, source);
-            if (targetList[index] == source)
-            {
-                source.TopNode.ParentNodes[source.ObjectGUID] = target;
-                return true;
-            }
-
-            //Error - the source item is now disconnected from the list.  Lets add it back to the end of the list.
-            sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
-            return false;
-
-        }
-        bool MoveInList(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType); need to address Nodes dictionary updates
-        {
-            //this function allows dropping items inside a QS o QM list to rearrange the list
-            //prevent illegal operationss
-            if (source is null) return false;
-            if (source is RepeatingType) return false; //S, Q (RepeatingTypes) are illegal in the Q's list
-            if (target is RepeatingType) return false; //S, Q (RepeatingTypes) are illegal in the Q's list
-            if (source is ButtonItemType) return false; //B is illegal in the Q's list
-            if (target is ButtonItemType) return false; //B is illegal in the Q's list
-
-            List<BaseType> sourceList = (source.ParentNode?.ParentNode as ListType)?.Items?.ToList<BaseType>();
-            if (sourceList is null) sourceList = (source.ParentNode as ChildItemsType)?.ChildItemsList?.ToList<BaseType>();
-            if (sourceList is null) return false;
-
-            var qTarget = target.ParentNode?.ParentNode?.ParentNode as QuestionItemType;
-            if (qTarget is null) return false;  //we did not get a Q object, so we are not moving  a node into a Q List
-
-            var targetList = qTarget.ListField_Item?.List?.Items;
+    //        var targetList = qTarget.ListField_Item?.List?.Items;
 
 
-            if (targetList is null) return false;
+    //        if (targetList is null) return false;
 
-            var indexSource = sourceList.IndexOf(source);
-            sourceList.Remove(source);
+    //        var indexSource = sourceList.IndexOf(source);
+    //        sourceList.Remove(source);
 
-            //Determine where to insert the node in the list, based on the location of the existing Lis
-            var index = targetList.IndexOf(target);
-            if (index < 0) index = targetList.Count; //target node not found in list, so insert source at the end of the list; this should never execute
-            if (moveAbove) index--;
+    //        //Determine where to insert the node in the list, based on the location of the existing Lis
+    //        var index = targetList.IndexOf(target);
+    //        if (index < 0) index = targetList.Count; //target node not found in list, so insert source at the end of the list; this should never execute
+    //        if (moveAbove) index--;
 
-            targetList.Insert(index, source);
-            if (targetList[index] == source)
-            {
-                source.TopNode.ParentNodes[source.ObjectGUID] = target;
-                return true;
-            }
+    //        targetList.Insert(index, source);
+    //        if (targetList[index] == source)
+    //        {
+    //            source.TopNode.ParentNodes[source.ObjectGUID] = target;
+    //            return true;
+    //        }
 
-            //Error - the source item is now disconnected from the list.  Lets add it back to the end of the list.
-            sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
-            return false;
-        }
+    //        //Error - the source item is now disconnected from the list.  Lets add it back to the end of the list.
+    //        sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
+    //        return false;
+    //    }
 
 
 
-    } //Implemented on ListItem and DisplayedItem
+    //} //Implemented on ListItem and DisplayedItem
     public interface IListField
     {
         ListType List { get; set; }
@@ -794,6 +797,25 @@ namespace SDC.Schema
 
 
     }
+    public interface IButtonItem
+    {
+        //List<EventType> Items
+        EventType AddOnClick();
+    }    
+    public interface IInjectForm
+    {   //ChildItems.InjectForm - this is mainly useful for a DEF injecting items based on the InjectForm URL
+        //Item types choice under ChildItems
+        FormDesignType AddFormDesign();
+        QuestionItemType AddQuestion();
+        SectionItemType AddSection();
+    }    
+    public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
+    public interface IBlob
+    {   //DisplayedItem.BlobType
+        //Uses Items types choice
+        bool AddBinaryMedia();
+        bool AddBlobURI();
+    }
     public interface IDisplayedTypeChanges
     {
         // use these as part of a static DisplayedTypeChanges utility class; Do not add them to DisplayedType, since they would be inherited by Section, Question andd InjectForm
@@ -852,7 +874,7 @@ namespace SDC.Schema
             }
             return false;
         }
-        ExtensionType AddExtension(int insertPosition = -1)
+        ExtensionType AddExtensionI(int insertPosition = -1)
         {
             var ebtParent = this as ExtensionBaseType;
             var e = new ExtensionType(ebtParent);
@@ -862,7 +884,7 @@ namespace SDC.Schema
             ebtParent.Extension.Insert(insertPosition, e);
             return e;
         }
-        CommentType AddComment(int insertPosition = -1)
+        CommentType AddCommentI(int insertPosition = -1)
         {
             var ebtParent = this as ExtensionBaseType;
             if (ebtParent.Comment == null) ebtParent.Comment = new List<CommentType>();
@@ -872,7 +894,7 @@ namespace SDC.Schema
             ebtParent.Comment.Insert(insertPosition, ct);  //return new empty Comment object for caller to fill
             return ct;
         }
-        PropertyType AddProperty(int insertPosition = -1)
+        PropertyType AddPropertyI(int insertPosition = -1)
         {
             var ebtParent = this as ExtensionBaseType;
             var prop = new PropertyType(ebtParent);
@@ -883,18 +905,6 @@ namespace SDC.Schema
 
             return prop;
         }
-
-
-    }
-    /// <summary>
-    /// Move and Remove methods for Comment, Extension and Property
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IMoveRemove  //Used on BaseType only; IExtensionBaseTypeMember has some custom methods but they do not handle Node dictionaries or is-move-allowed testing
-    {
-        public bool Remove();
-        public bool Move(BaseType targetProperty, out List<string> errList, int newListIndex = -1);
-        public bool IsMoveAllowed(BaseType targetProperty, out List<string> errList, int newListIndex = -1);
 
 
     }
@@ -942,7 +952,39 @@ namespace SDC.Schema
         }
 
     }
-    public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
+    public interface IIdentifiedExtensionType
+    {
+        bool IsItemChangeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType;
+    }
+    /// <summary>
+    /// Move and Remove methods for Comment, Extension and Property
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IMoveRemove  //Used on BaseType only; IExtensionBaseTypeMember has some custom methods but they do not handle Node dictionaries or is-move-allowed testing
+    {
+        public bool Remove();
+        public bool Move(BaseType targetProperty, out string errList, int newListIndex = -1);
+        public bool IsMoveAllowed(BaseType targetProperty, out string errList, out object pObj, int newListIndex = -1);
+
+
+    }
+    public interface INavigate //apply only to BaseType
+    {
+        public BaseType GetNodeFirstSib();
+        public BaseType GetNodeLastSib();
+        BaseType GetNodePreviousSib();
+        BaseType GetNodeNextSib();
+        BaseType GetNodePrevious();
+        BaseType GetNodeNext();
+        BaseType GetNodeFirstChild();
+        BaseType GetNodeLastChild();
+        BaseType GetNodeLastDescendant();
+
+        PropertyInfoMetadata GetPropertyInfo();
+
+
+    }
+
     public interface IResponse: IVal //marks LIR and QR
     {
         //UnitsType AddUnits(ResponseFieldType rfParent);
@@ -1368,7 +1410,7 @@ namespace SDC.Schema
         /// If not provided or < 0, or > than the size of the Items list,the action will be placeed last in the Items list.
         /// </param>
         /// <returns></returns>
-        public bool Move(ExtensionBaseType action, out List<string> errList, int newListIndex = -1)
+        public bool Move(ExtensionBaseType action, out string errList, int newListIndex = -1)
         {
             var par = ((BaseType)this).ParentNode;
             var items = ((ActionsType)this).Items;
@@ -1382,12 +1424,7 @@ namespace SDC.Schema
         EmailAddressType AddEmail();
         PhoneNumberType AddFax();
         CallFuncActionType AddWebService();
-    }
-    public interface IButtonItem
-    {
-        //List<EventType> Items
-        EventType AddOnClick();
-    }
+    }    
     public interface ICallFuncBase
     {
         //anyURI_Stype Item (choice)
@@ -1425,40 +1462,12 @@ namespace SDC.Schema
          ValidationTypeSelectionSets AddSelectionSets();
          ValidationTypeSelectionTest AddSelectionTest();
     }
-    public interface INavigate //apply only to BaseType
-    {
-        BaseType GetPreviousSib() => SdcUtil.GetPrevSib((BaseType)this);
-        BaseType GetNextSib() => SdcUtil.GetNextSib((BaseType)this);
-        BaseType GetPrevious() => SdcUtil.PrevElement((BaseType)this);
-        BaseType GetNext() => SdcUtil.NextElement((BaseType)this);
-        BaseType GetFirstChild() => SdcUtil.GetFirstChild((BaseType)this);
-        BaseType GetLastChild() => SdcUtil.GetLastChild((BaseType)this);
-        BaseType GetLastDescendant() => SdcUtil.GetLastDescendant((BaseType)this);
 
-        PropertyInfoMetadata GetPropertyInfo() => SdcUtil.GetPropertyInfo((BaseType)this);
-        bool IsItemChangeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType
-            => SdcUtil.IsItemChangeAllowed((IdentifiedExtensionType)this, target);
-        bool ReOrder() { throw new NotImplementedException(); }
-
-    }
     public interface IClone
     {
         BaseType CloneSubtree();
         BaseType CloneSubtree(BaseType top)
         { throw new NotImplementedException(); }
-    }
-    public interface IBlob
-    {   //DisplayedItem.BlobType
-        //Uses Items types choice
-        bool AddBinaryMedia();
-        bool AddBlobURI();
-    }
-    public interface IInjectForm
-    {   //ChildItems.InjectForm - this is mainly useful for a DEF injecting items based on the InjectForm URL
-        //Item types choice under ChildItems
-        FormDesignType AddFormDesign();
-        QuestionItemType AddQuestion();
-        SectionItemType AddSection();
     }
     public interface IHTMLPackage
     {//On SDCPackage.HTMLPackage

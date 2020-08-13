@@ -629,7 +629,7 @@ public partial class FormDesignType : IdentifiedExtensionType
     /// readability. The instanceVersionURI is not required, and is not allowed
     /// in an FDF.
     /// </summary>
-    [System.Xml.Serialization.XmlAttributeAttribute(DataType="anyURI")]
+    [System.Xml.Serialization.XmlAttributeAttribute(DataType="anyURI" )]
     public virtual string instanceVersionURI
     {
         get

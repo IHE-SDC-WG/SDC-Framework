@@ -132,6 +132,11 @@ namespace SDC_Tests
             myXML = SdcUtil.XmlReorder(FD.GetXml());
             myXML = SdcUtil.XmlFormat(myXML);
 
+
+
+            ListItemType li;
+
+
             //var S1 = Q.AddOnEnter().Actions.AddActInject().Item = new SectionItemType(   //Need to add AddActionsNode to numerous classes via IHasActionsNode
             //    parentNode: Q,
             //    id: "myid",

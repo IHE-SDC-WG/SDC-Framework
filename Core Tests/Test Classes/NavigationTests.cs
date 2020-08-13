@@ -307,7 +307,47 @@ namespace SDC_Tests
         [TestMethod]
         public void IsItemChangeAllowed()
         {
+        }
+        [TestMethod]
+        public void ReflectPropertyInfoList()
+        {
+            var lst = SdcUtil.ReflectPropertyInfoList(FD);
+            foreach (var n in lst)
+                Debug.Print($"{n.XmlOrder}:\t Name: {n.PropertyInfo.Name}, \t Type: {n.PropertyInfo.PropertyType.Name}");
 
+        }
+        [TestMethod]
+        public void ReflectChildList()
+        {
+            var lst = SdcUtil.ReflectChildList(FD);
+            foreach (var n in lst)
+                Debug.Print($"{n.order}: \t Name: {n.name}");
+
+        }
+        [TestMethod]
+        public void ReflectSubtree()
+        {
+            var s = FD.TopNode.GetItemByName("S_57219");
+            var lst = SdcUtil.ReflectSubtree(s);
+            foreach (var n in lst)
+                Debug.Print($"{n.order}: \t Name: {n.name}");
+        }
+        [TestMethod]
+        public void ReflectAttributesAll()
+        {
+            var s = FD.TopNode.GetItemByName("S_57219").Get;
+            
+            var lst = SdcUtil.ReflectAttributesAll(s);
+            foreach (var n in lst)
+                Debug.Print($"{n.Name}");
+        }
+        [TestMethod]
+        public void ReflectAttributesFilled()
+        {
+            var s = FD.TopNode.GetItemByName("S_57219");
+            var lst = SdcUtil.ReflectAttributesFilled(s);
+            foreach (var n in lst)
+                Debug.Print($"{n.Name}");
         }
         [TestMethod]
         public void Misc()

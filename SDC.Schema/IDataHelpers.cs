@@ -15,7 +15,7 @@ namespace SDC.Schema
     public interface IDataHelpers
     {
         #region Data Helpers
-        DataTypes_DEType AddDataTypesDE(
+        static DataTypes_DEType AddDataTypesDE(
           ResponseFieldType rfParent,
           ItemChoiceType dataTypeEnum = ItemChoiceType.@string,
           dtQuantEnum quantifierEnum = dtQuantEnum.EQ,
@@ -28,7 +28,7 @@ namespace SDC.Schema
                 case ItemChoiceType.HTML:
                     {
                         var dt = new HTML_DEtype(rfParent.Response);
-                        dt.Any = new List<XmlElement>();
+                        dt.Any = value as List<XmlElement> ?? new List<XmlElement>();
                         dt.AnyAttr = new List<XmlAttribute>();
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -130,7 +130,7 @@ namespace SDC.Schema
                 case ItemChoiceType.duration:
                     {
                         var dt = new duration_DEtype(rfParent.Response);
-                        dt.val = (string)value;   //TODO:  bug in xsdCode++ - wrong data type
+                        dt.val = (string)value;   //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                     }
                     break;
@@ -145,7 +145,7 @@ namespace SDC.Schema
                 case ItemChoiceType.gDay:
                     {
                         var dt = new gDay_DEtype(rfParent.Response);
-                        dt.val = (string)value; ;  //TODO:  bug in xsdCode++ - wrong data type
+                        dt.val = (string)value; ;  //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -153,7 +153,7 @@ namespace SDC.Schema
                 case ItemChoiceType.gMonth:
                     {
                         var dt = new gMonth_DEtype(rfParent.Response);
-                        dt.val = (string)value; ;  //TODO:  bug in xsdCode++ - wrong data type
+                        dt.val = (string)value; ;  //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -161,7 +161,7 @@ namespace SDC.Schema
                 case ItemChoiceType.gMonthDay:
                     {
                         var dt = new gMonthDay_DEtype(rfParent.Response);
-                        dt.val = (string)value; ;  //TODO:  bug in xsdCode++ - wrong data type
+                        dt.val = (string)value; ;  //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -169,7 +169,7 @@ namespace SDC.Schema
                 case ItemChoiceType.gYear:
                     {
                         var dt = new gYear_DEtype(rfParent.Response);
-                        dt.val = (string)value; ;  //TODO:  bug in xsdCode++ - wrong data type
+                        dt.val = (string)value; ;  //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -177,7 +177,7 @@ namespace SDC.Schema
                 case ItemChoiceType.gYearMonth:
                     {
                         var dt = new gYearMonth_DEtype(rfParent.Response);
-                        dt.val = (string)value; //TODO:  bug in xsdCode++ - wrong data type
+                        dt.val = (string)value; //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -200,7 +200,7 @@ namespace SDC.Schema
                 case ItemChoiceType.integer:
                     {
                         var dt = new integer_DEtype(rfParent.Response);
-                        dt.val = (string)value; //(string)value; ;  //TODO:  bug in xsdCode++ - wrong data type - uses string because there is no integer (truncated decimal) format in .NET
+                        dt.val = (string)value; //(string)value; C# string data type in xsdCode++ - uses string because there is no integer (truncated decimal) format in .NET
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -216,7 +216,7 @@ namespace SDC.Schema
                 case ItemChoiceType.negativeInteger:
                     {
                         var dt = new negativeInteger_DEtype(rfParent.Response);
-                        dt.val = (string)value;  // drFormDesign["DefaultValue"].ToString(); ;  //TODO:  bug in xsdCode++ - wrong data type?
+                        dt.val = (string)value;  //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -224,7 +224,7 @@ namespace SDC.Schema
                 case ItemChoiceType.nonNegativeInteger:
                     {
                         var dt = new nonNegativeInteger_DEtype(rfParent.Response);
-                        dt.val = (string)value; //dt.val = drFormDesign["DefaultValue"].ToString(); ;  //TODO:  bug in xsdCode++ - wrong data type?
+                        dt.val = (string)value;  //TODO:  bug in xsdCode++ - wrong data type?
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -232,7 +232,7 @@ namespace SDC.Schema
                 case ItemChoiceType.nonPositiveInteger:
                     {
                         var dt = new nonPositiveInteger_DEtype(rfParent.Response);
-                        dt.val = (string)value; //dt.val = drFormDesign["DefaultValue"].ToString(); ;  //TODO:  bug in xsdCode++ - wrong data type?
+                        dt.val = (string)value; //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -240,7 +240,7 @@ namespace SDC.Schema
                 case ItemChoiceType.positiveInteger:
                     {
                         var dt = new positiveInteger_DEtype(rfParent.Response);
-                        dt.val = (string)value; //dt.val = drFormDesign["DefaultValue"].ToString(); ;  //TODO:  bug in xsdCode++ - wrong data type?
+                        dt.val = (string)value;//TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -303,7 +303,7 @@ namespace SDC.Schema
                 case ItemChoiceType.yearMonthDuration:
                     {
                         var dt = new yearMonthDuration_DEtype(rfParent.Response);
-                        dt.val = (string)value; ;  //TODO:  bug in xsdCode++ - wrong data type?
+                        dt.val = (string)value; ;  //TODO: C# string data type in xsdCode++
                         dt.quantEnum = quantifierEnum;
                         rfParent.Response.DataTypeDE_Item = dt;
                     }
@@ -374,9 +374,68 @@ namespace SDC.Schema
             }
             return dtQE;
         }
+
+
+        static DataTypes_DEType AddHTML_DE(ResponseFieldType rfParent, List<XmlElement> valEl = null, List<XmlAttribute> valAtt = null)
+        {
+            rfParent.Response = new DataTypes_DEType(rfParent);
+
+            var dt = new HTML_DEtype(rfParent.Response);
+            dt.Any = valEl?? new List<XmlElement>();
+            dt.AnyAttr = valAtt?? new List<XmlAttribute>();
+            rfParent.Response.DataTypeDE_Item = dt;
+
+            rfParent.Response.ItemElementName = ItemChoiceType2.HTML;
+            return rfParent.Response;
+        }
+        static DataTypes_DEType AddXML_DE(ResponseFieldType rfParent, List<XmlElement> valEl = null)
+        {
+            rfParent.Response = new DataTypes_DEType(rfParent);
+
+            var dt = new XML_DEtype(rfParent.Response);
+            dt.Any = valEl ?? new List<XmlElement>();
+            rfParent.Response.DataTypeDE_Item = dt;
+
+            rfParent.Response.ItemElementName = ItemChoiceType2.XML;
+            return rfParent.Response;
+        }
+        static DataTypes_DEType AddAny_DE(ResponseFieldType rfParent, List<XmlElement> valEl = null, List<XmlAttribute> valAtt = null, string nameSpace = null, string schema = null)
+        {
+            rfParent.Response = new DataTypes_DEType(rfParent);
+
+            var dt = new anyType_DEtype(rfParent.Response);
+            dt.@namespace = nameSpace ?? null;
+            dt.schema = schema ?? null;
+            dt.Any = valEl ?? new List<XmlElement>();
+            dt.AnyAttr = valAtt ?? new List<XmlAttribute>();
+            rfParent.Response.DataTypeDE_Item = dt;
+
+            rfParent.Response.ItemElementName = ItemChoiceType2.HTML;
+            return rfParent.Response;
+        }
+        static DataTypes_DEType AddBase64_DE(ResponseFieldType rfParent, byte[] value = null, string mediaType = null)
+        {
+            rfParent.Response = new DataTypes_DEType(rfParent);
+
+            var dt = new base64Binary_DEtype(rfParent.Response);
+            dt.val = value;
+            dt.mediaType = mediaType;
+            rfParent.Response.DataTypeDE_Item = dt;
+
+            rfParent.Response.ItemElementName = ItemChoiceType2.base64Binary;
+            return rfParent.Response;
+        }
+
+
         #endregion
 
     }
+
+
+
+
+
+
     public interface IHtmlHelpers
     {
         HTML_Stype AddHTML(RichTextType rt)

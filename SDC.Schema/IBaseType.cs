@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Newtonsoft.Json;
 namespace SDC.Schema
@@ -109,8 +111,6 @@ namespace SDC.Schema
         [JsonIgnore]
         public ITopNode TopNode { get; }
         public void SetNames(string elementName = "", string elementPrefix = "", string baseName = "");
-
-
         #endregion
 
     }

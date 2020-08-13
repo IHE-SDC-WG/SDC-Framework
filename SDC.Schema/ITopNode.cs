@@ -185,6 +185,7 @@ namespace SDC.Schema
             return n;
         }
 
+
         #region Utilities
         //Tenum ConvertStringToEnum<Tenum>(string inputString) where Tenum : struct;
         ITopNode ReorderNodes()
@@ -321,23 +322,21 @@ namespace SDC.Schema
             IdentifiedExtensionType iet;
             iet = (IdentifiedExtensionType)Nodes.Values.Where(
                 t => t.GetType() == typeof(IdentifiedExtensionType)).Where(
-                    t => ((IdentifiedExtensionType)t).ID == id).First();
+                    t => ((IdentifiedExtensionType)t).ID == id).FirstOrDefault();
             return iet;
         }
         BaseType GetItemByName(string name)
         {
-            BaseType iet;
-            iet = (BaseType)Nodes.Values.Where(
-                t => t.GetType() == typeof(BaseType)).Where(
-                    t => ((BaseType)t).name == name).First();
-            return iet;
+            BaseType bt;
+            bt = (BaseType)Nodes.Values.Where(
+                n => n.name == name).FirstOrDefault();
+            return bt;
         }
         QuestionItemType GetQuestion(string id)
         {
             QuestionItemType q;
-            q = (QuestionItemType)Nodes.Values.Where(
-                t => t.GetType() == typeof(QuestionItemType)).Where(
-                    q => ((QuestionItemType)q).ID == id).First();
+            q = (QuestionItemType)Nodes.Values.Where(                
+                    n => (n as QuestionItemType)?.ID == id).FirstOrDefault();
             return q;
         }
         QuestionItemType GetQuestionByName(string name)
@@ -345,7 +344,7 @@ namespace SDC.Schema
             QuestionItemType q;
             q = (QuestionItemType)Nodes.Values.Where(
                 t => t.GetType() == typeof(QuestionItemType)).Where(
-                    t => ((QuestionItemType)t).name == name).First();
+                    t => ((QuestionItemType)t).name == name).FirstOrDefault();
             return q;
         }
         DisplayedType GetDisplayedType(string id)
@@ -353,7 +352,7 @@ namespace SDC.Schema
             DisplayedType d;
             d = (DisplayedType)Nodes.Values.Where(
                 t => t.GetType() == typeof(DisplayedType)).Where(
-                    t => ((DisplayedType)t).ID == id).First();
+                    t => ((DisplayedType)t).ID == id).FirstOrDefault();
             return d;
         }
         DisplayedType GetDisplayedTypeByName(string name)
@@ -361,7 +360,7 @@ namespace SDC.Schema
             DisplayedType d;
             d = (DisplayedType)Nodes.Values.Where(
                 t => t.GetType() == typeof(DisplayedType)).Where(
-                    t => ((DisplayedType)t).name == name).First();
+                    t => ((DisplayedType)t).name == name).FirstOrDefault();
             return d;
         }
         SectionItemType GetSection(string id)
@@ -369,7 +368,7 @@ namespace SDC.Schema
             SectionItemType s;
             s = (SectionItemType)Nodes.Values.Where(
                 t => t.GetType() == typeof(SectionItemType)).Where(
-                    t => ((SectionItemType)t).ID == id).First();
+                    t => ((SectionItemType)t).ID == id).FirstOrDefault();
             return s;
         }
         SectionItemType GetSectionByName(string name)
@@ -377,7 +376,7 @@ namespace SDC.Schema
             SectionItemType s;
             s = (SectionItemType)Nodes.Values.Where(
                 t => t.GetType() == typeof(SectionItemType)).Where(
-                    t => ((SectionItemType)t).name == name).First();
+                    t => ((SectionItemType)t).name == name).FirstOrDefault();
             return s;
         }
         ListItemType GetListItem(string id)
@@ -385,7 +384,7 @@ namespace SDC.Schema
             ListItemType li;
             li = (ListItemType)Nodes.Values.Where(
                 t => t.GetType() == typeof(ListItemType)).Where(
-                    t => ((ListItemType)t).ID == id).First();
+                    t => ((ListItemType)t).ID == id).FirstOrDefault();
             return li;
         }
         ListItemType GetListItemByName(string name)
@@ -393,7 +392,7 @@ namespace SDC.Schema
             ListItemType li;
             li = (ListItemType)Nodes.Values.Where(
                 t => t.GetType() == typeof(ListItemType)).Where(
-                    t => ((ListItemType)t).name == name).First();
+                    t => ((ListItemType)t).name == name).FirstOrDefault();
             return li;
         }
 
@@ -402,7 +401,7 @@ namespace SDC.Schema
             ButtonItemType b;
             b = (ButtonItemType)Nodes.Values.Where(
                 t => t.GetType() == typeof(ButtonItemType)).Where(
-                    t => ((ButtonItemType)t).ID == id).First();
+                    t => ((ButtonItemType)t).ID == id).FirstOrDefault();
             return b;
         }
         ButtonItemType GetButtonByName(string name)
@@ -410,7 +409,7 @@ namespace SDC.Schema
             ButtonItemType b;
             b = (ButtonItemType)Nodes.Values.Where(
                 t => t.GetType() == typeof(ButtonItemType)).Where(
-                    t => ((ButtonItemType)t).name == name).First();
+                    t => ((ButtonItemType)t).name == name).FirstOrDefault();
             return b;
         }
         InjectFormType GetInjectForm(string id)
@@ -418,7 +417,7 @@ namespace SDC.Schema
             InjectFormType inj;
             inj = (InjectFormType)Nodes.Values.Where(
                 t => t.GetType() == typeof(InjectFormType)).Where(
-                    t => ((InjectFormType)t).ID == id).First();
+                    t => ((InjectFormType)t).ID == id).FirstOrDefault();
             return inj;
         }
         InjectFormType GetInjectFormByName(string name)
@@ -426,7 +425,7 @@ namespace SDC.Schema
             InjectFormType inj;
             inj = (InjectFormType)Nodes.Values.Where(
                 t => t.GetType() == typeof(InjectFormType)).Where(
-                    t => ((InjectFormType)t).name == name).First();
+                    t => ((InjectFormType)t).name == name).FirstOrDefault();
             return inj;
         }
         ResponseFieldType GetResponseFieldByName(string name)
@@ -434,7 +433,7 @@ namespace SDC.Schema
             ResponseFieldType rf;
             rf = (ResponseFieldType)Nodes.Values.Where(
                 t => t.GetType() == typeof(ResponseFieldType)).Where(
-                    t => ((ResponseFieldType)t).name == name).First();
+                    t => ((ResponseFieldType)t).name == name).FirstOrDefault();
             //rf.Response.Item.GetType().GetProperty("val").ToString();
             return rf;
         }
@@ -450,7 +449,7 @@ namespace SDC.Schema
             PropertyType p;
             p = (PropertyType)Nodes.Values.Where(
                 t => t.GetType() == typeof(PropertyType)).Where(
-                    t => ((PropertyType)t).name == name).First();
+                    t => ((PropertyType)t).name == name).FirstOrDefault();
             return p;
         }
         ExtensionType GetExtensionByName(string name)
@@ -458,7 +457,7 @@ namespace SDC.Schema
             ExtensionType e;
             e = (ExtensionType)Nodes.Values.Where(
                 t => t.GetType() == typeof(ExtensionType)).Where(
-                    t => ((ExtensionType)t).name == name).First();
+                    t => ((ExtensionType)t).name == name).FirstOrDefault();
             return e;
         }
         CommentType GetCommentByName(string name)
@@ -466,7 +465,7 @@ namespace SDC.Schema
             CommentType c;
             c = (CommentType)Nodes.Values.Where(
                 t => t.GetType() == typeof(CommentType)).Where(
-                    t => ((CommentType)t).name == name).First();
+                    t => ((CommentType)t).name == name).FirstOrDefault();
             return c;
         }
         ContactType GetContactByName(string name)
@@ -474,7 +473,7 @@ namespace SDC.Schema
             ContactType c;
             c = (ContactType)Nodes.Values.Where(
                 t => t.GetType() == typeof(CommentType)).Where(
-                    t => ((ContactType)t).name == name).First();
+                    t => ((ContactType)t).name == name).FirstOrDefault();
             return c;
         }
         LinkType GetLinkByName(string name)
@@ -482,7 +481,7 @@ namespace SDC.Schema
             LinkType l;
             l = (LinkType)Nodes.Values.Where(
                 t => t.GetType() == typeof(LinkType)).Where(
-                    t => ((LinkType)t).name == name).First();
+                    t => ((LinkType)t).name == name).FirstOrDefault();
             return l;
         }
         BlobType GetBlobByName(string name)
@@ -490,7 +489,7 @@ namespace SDC.Schema
             BlobType b;
             b = (BlobType)Nodes.Values.Where(
                 t => t.GetType() == typeof(BlobType)).Where(
-                    t => ((BlobType)t).name == name).First();
+                    t => ((BlobType)t).name == name).FirstOrDefault();
             return b;
         }
         CodingType GetCodedValueByName(string name)
@@ -498,7 +497,7 @@ namespace SDC.Schema
             CodingType c;
             c = (CodingType)Nodes.Values.Where(
                 t => t.GetType() == typeof(CodingType)).Where(
-                    t => ((CodingType)t).name == name).First();
+                    t => ((CodingType)t).name == name).FirstOrDefault();
             return c;
         }
 
