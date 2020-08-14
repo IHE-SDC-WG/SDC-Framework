@@ -79,20 +79,26 @@ namespace SDC_Tests
                 .Select(p => p.GetValue(lst4[0])).ToList();
 
             var propList = new List<BaseType>();
-            foreach (object o in res)
+
+            while (false)
             {
-                var bt = o as BaseType;
-                if (bt != null) 
-                { 
-                    Debug.Print(bt.name); 
-                    propList.Add(bt); 
-                }else
-                if (o is IList il) foreach (var n in il.OfType<BaseType>())
+                foreach (object o in res)
+                {
+                    var bt = o as BaseType;
+                    if (bt != null)
                     {
-                        Debug.Print(n.name); 
-                        propList.Add(n);
+                        Debug.Print(bt.name);
+                        propList.Add(bt);
                     }
+                    else
+                    if (o is IList il) foreach (var n in il.OfType<BaseType>())
+                        {
+                            Debug.Print(n.name);
+                            propList.Add(n);
+                        }
+                }
             }
+
             propList.Sort(new TreeComparer());
             int i = 0;
             foreach (var n in propList) Debug.Print((i++).ToString() + ": " + n.name);
@@ -106,9 +112,7 @@ namespace SDC_Tests
             
 
 
-            li.Move(list, out string errList, 6);
-            Assert.IsTrue(errList is null || errList.Count() == 0);
-                
+            li.Move(list, 6);                
             Assert.IsTrue(SdcUtil.GetPropertyInfo(li).ItemIndex == 6);            
 
             //li.Move(out errList, 5);
@@ -136,8 +140,7 @@ namespace SDC_Tests
             Assert.IsTrue(list2 is ListType);
 
             //Move to different List (list2)
-            li.Move(list2, out string errList, 2);
-            Assert.IsTrue(errList is null || errList.Count() == 0);
+            li.Move(list2, 2);
             Assert.IsTrue(SdcUtil.GetPropertyInfo(li).ItemIndex == 2);
             Assert.AreEqual(list2, li.ParentNode);
         }

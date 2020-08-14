@@ -963,8 +963,8 @@ namespace SDC.Schema
     public interface IMoveRemove  //Used on BaseType only; IExtensionBaseTypeMember has some custom methods but they do not handle Node dictionaries or is-move-allowed testing
     {
         public bool Remove();
-        public bool Move(BaseType targetProperty, out string errList, int newListIndex = -1);
-        public bool IsMoveAllowed(BaseType targetProperty, out string errList, out object pObj, int newListIndex = -1);
+        public bool Move(BaseType targetProperty, int newListIndex = -1);
+        public bool IsMoveAllowed(BaseType targetProperty, out object pObj, int newListIndex = -1);
 
 
     }
@@ -1410,11 +1410,11 @@ namespace SDC.Schema
         /// If not provided or < 0, or > than the size of the Items list,the action will be placeed last in the Items list.
         /// </param>
         /// <returns></returns>
-        public bool Move(ExtensionBaseType action, out string errList, int newListIndex = -1)
+        public bool Move(ExtensionBaseType action, int newListIndex = -1)
         {
             var par = ((BaseType)this).ParentNode;
             var items = ((ActionsType)this).Items;
-            return Move(this as BaseType, out errList, newListIndex);
+            return Move(this as BaseType, newListIndex);
         }
     }
     public interface ISendMessage_Report

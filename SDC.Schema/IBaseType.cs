@@ -110,6 +110,9 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ITopNode TopNode { get; }
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public RetrieveFormPackageType PackageNode { get; }
         public void SetNames(string elementName = "", string elementPrefix = "", string baseName = "");
         #endregion
 

@@ -568,7 +568,6 @@ XmlElementName: {XmlElementName}
             sibs?.Sort(new TreeComparer());
             return sibs?[sibs.Count() - 1];
         }
-
         public static BaseType ReflectLastSib(BaseType item)
         {
             var par = item.ParentNode;
@@ -593,8 +592,6 @@ XmlElementName: {XmlElementName}
             var lst = ReflectChildList(par);
             return lst?.FirstOrDefault();
         }
-
-
         public static BaseType GetNextSib(BaseType item)
         {
             var par = item.ParentNode;
@@ -651,8 +648,6 @@ XmlElementName: {XmlElementName}
             var lst = ReflectChildList(item);
             return lst?.Last();
         }
-
-
         public static BaseType GetFirstChild(BaseType item)
         {
             item.TopNode.ChildNodes.TryGetValue(item.ObjectGUID, out List<BaseType> kids);
@@ -980,19 +975,19 @@ XmlElementName: {XmlElementName}
         /// </summary>
         /// <param name="bt">A non-null SDC object derrived from BaseType</param>
         /// <returns>List<PropertyInfo></returns>
-        public static List<PropertyInfo> ReflectAttributesFilled(BaseType bt)
+        public static List<PropertyInfo> ReflectXmlAttributesFilled(BaseType bt)
         {
             TypeInfo ti = bt.GetType().GetTypeInfo();
             if (ti is null) return null;
             var attProps = new List<PropertyInfo>();
-            foreach (var p in ReflectAttributesAll(bt))
+            foreach (var p in ReflectXmlAttributesAll(bt))
             {
                     if ((bool)ti.GetMethod("ShouldSerialize" + p.Name).Invoke(bt, null))
                         attProps.Add(p);
             }
             return attProps;
         }
-        public static List<PropertyInfo> ReflectAttributesAll(BaseType bt)
+        public static List<PropertyInfo> ReflectXmlAttributesAll(BaseType bt)
         {
             return ReflectPropertyInfoAttributes(bt.GetType().GetTypeInfo());
         }
@@ -1459,18 +1454,18 @@ XmlElementName: {XmlElementName}
         /// </summary>
         /// <param name="bt"></param>
         /// <returns>List<PropertyInfo></returns>
-        public static List<PropertyInfo> GetAttributesFilled(this BaseType bt)
+        public static List<PropertyInfo> GetXmlAttributesFilled(this BaseType bt)
         {
-            return SdcUtil.ReflectAttributesFilled (bt);
+            return SdcUtil.ReflectXmlAttributesFilled (bt);
         }
         /// <summary>
         /// Provides PropertyInfo (PI) definitions for all attributes of bt
         /// </summary>
         /// <param name="bt"></param>
         /// <returns>List<PropertyInfo> </returns>
-        public static List<PropertyInfo> GetAttributeAll(this BaseType bt)
+        public static List<PropertyInfo> GetXmlAttributeAll(this BaseType bt)
         {
-            return SdcUtil.ReflectAttributesAll(bt);             
+            return SdcUtil.ReflectXmlAttributesAll(bt);             
         }
         public static List<PropertyInfoOrdered> GetPropertyInfoList(this BaseType bt)
         {
@@ -1481,7 +1476,7 @@ XmlElementName: {XmlElementName}
         {
             return SdcUtil.GetPropertyInfo(bt);
         }
-        public static List<BaseType> GetDescendants(this BaseType bt)
+        public static List<BaseType> GetSubtree(this BaseType bt)
         {
             return SdcUtil.ReflectSubtree(bt);
         }

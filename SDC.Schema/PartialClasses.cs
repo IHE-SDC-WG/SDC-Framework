@@ -1,6 +1,7 @@
 ﻿
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -922,10 +923,11 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         private decimal SubIETcounter { get; set; }
-        //private BaseType _ParentNode;
+        private BaseType _ParentNode;
+        private RetrieveFormPackageType _PackageNode;
         private static ITopNode topNodeTemp;
 
-        protected static ITopNode TopNodeTemp
+        private static ITopNode TopNodeTemp
         {
             get { return topNodeTemp; }
             set
@@ -937,6 +939,7 @@ namespace SDC.Schema
         }
         internal void RegisterParent<T>(T inParentNode) where T : BaseType
         {
+            _ParentNode = inParentNode;
             try
             {
                 if (inParentNode != null)
@@ -974,8 +977,8 @@ namespace SDC.Schema
                         success = TopNode.ChildNodes[par.ObjectGUID].Remove(this); //Returns a List<BaseType> and removes "item" from that list
                     //if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
 
-                    if (TopNode.ChildNodes.ContainsKey(this.ObjectGUID))
-                        success = TopNode.ChildNodes[this.ObjectGUID].Remove(this);
+                    //if (TopNode.ChildNodes.ContainsKey(this.ObjectGUID))
+                    //    success = TopNode.ChildNodes[this.ObjectGUID].Remove(this);
                     //if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
 
                     if(TopNode.ChildNodes[par.ObjectGUID] is null || par.TopNode.ChildNodes[par.ObjectGUID].Count() == 0)
@@ -984,6 +987,9 @@ namespace SDC.Schema
             }
             catch (Exception ex)
             { Debug.WriteLine(ex.Message + "/n  ObjectID:" + this.ObjectID.ToString()); }
+
+            this.ParentNode = null;
+            
         } //!not tested
         private void UnRegisterThis()
         {
@@ -1004,12 +1010,11 @@ namespace SDC.Schema
             //Re-register item node under new parent
             this.RegisterParent(targetParent);
         }       
-        public virtual bool IsMoveAllowed (BaseType targetProperty, out string errList, out object pObj, int newListIndex = -1)
+        public virtual bool IsMoveAllowed (BaseType targetProperty, out object pObj, int newListIndex = -1)
         { //reflect the object tree to determine if "this" can be attached to the SDC XML element represented by teh targetProperty object.   
             //We must find an exact match for the element and the data type in the targetProperty to allow the move.
 
             pObj = null;  //the object to which new nodes are attached; it may be an array or List<> or a non-List object.
-            errList = "";
 
             if (targetProperty is null) return false; 
             //make sure that item and target are not null and are part of the same tree
@@ -1098,31 +1103,48 @@ namespace SDC.Schema
             }
             return false;
         }
-        public virtual bool Move(BaseType targetProperty, out string errList, int newListIndex = -1)
+        public virtual bool Move(BaseType targetProperty, int newListIndex = -1)
         {
-            if (IsMoveAllowed(targetProperty, out errList, out object targetObj, newListIndex))
+            if (IsMoveAllowed(targetProperty, out object targetObj, newListIndex))
             {
 
-                if (targetProperty is BaseType)
+                if (targetObj is BaseType)
                 {
-                    MoveInDictionaries(targetProperty as BaseType);
+                    MoveInDictionaries(targetParent: targetProperty);
+                    targetObj = this;
                     return true;
-                }
-                if (targetProperty is IList<BaseType>)
+                } else if (targetObj is IList)
                 {
-                    IList<BaseType> propList = targetProperty as IList<BaseType>;
-                    MoveInDictionaries(targetProperty.ParentNode);
-                    if (newListIndex < 0 || newListIndex >= propList.Count) propList.Add(this);
+                    //Remove this from current parent object
+                    IsMoveAllowed(ParentNode, out object hook);
+                    if (hook is BaseType) hook = null;
+                    else if (hook is IList)
+                    {
+                        var hooklist = hook.As<IList>();
+                        if(hooklist.IndexOf(this) > -1) hooklist.Remove(this);
+                        else throw new Exception("Could not find node in parent object list");
+                    }
+                    else throw new Exception("Could not parent object to remove node");
 
+                    IList propList = (IList)targetObj;
+                    MoveInDictionaries(targetParent: targetProperty);
+
+                    if (newListIndex < 0 || newListIndex >= propList.Count) propList.Add(this);
                     else propList.Insert(newListIndex, this);
 
                     return true;
                 }
-                return false;
+                throw new Exception("Invalid targetProperty");
+
             }
-            else return false;
+            else return false; //invalid Move
 
         }
+
+
+
+
+
 
         #endregion
 
@@ -1249,24 +1271,26 @@ namespace SDC.Schema
         {
             get
             {
-                //if (!(_ParentNode is null)) return _ParentNode;  //this works for objects that were created with the parentNode constructor
-                //BaseType outParentNode;
-                // if (this.GetType() != typeof(FormDesignType)) //TODO: remove this reflection condition and test for errors
-                //{
-                //Debug.WriteLine(this.GetType().ToString());
+                return _ParentNode;  //this works for objects that were created with the parentNode constructor
+                
                 TopNode.ParentNodes.TryGetValue(this.ObjectGUID, out BaseType outParentNode);
                 return outParentNode;
-                //_ParentNode = outParentNode;
-                //}
-                //else { _ParentNode = null; }
-                //return _ParentNode;
-
 
             }
-            //internal set
-            //{
-            //    _ParentNode = value;
-            //}
+            internal set
+            {
+                _ParentNode = value;
+            }
+        }
+        /// <summary>
+        /// Retrieve the BaseType object that is the SDC Package containing the current object in the object tree
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public RetrieveFormPackageType PackageNode
+        {
+            get => _PackageNode;  //this works for objects that were created with the parentNode constructor
+            internal set =>_PackageNode = value; 
         }
 
         [System.Xml.Serialization.XmlIgnore]
