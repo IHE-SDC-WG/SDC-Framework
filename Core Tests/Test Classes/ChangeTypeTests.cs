@@ -5,45 +5,39 @@ using System.IO;
 using System.Linq;
 //using SDC.Schema;
 
-namespace SDC_Tests
+namespace SDC.Schema.Tests
 {
     [TestClass]
     public class ChangeTypeTests
     {
-        FormDesignType fd;
-        private TestContext testContextInstance;
 
-        public FormDesignType FD
-        {
-            get => fd;
-            set => fd = value;
-        }
-
-        public ChangeTypeTests()
-        {
-            BaseType.ResetSdcImport();
-            string path = Path.Combine(".", "Test files", "Breast.Invasive.Staging.359_.CTP9_sdcFDF.xml");
-            fd = FormDesignType.DeserializeFromXmlPath(path);
-        }
         [TestMethod]
         public void LItoDI()
         {
+            Setup.TimerStart("==>[] Started");
 
+            Setup.TimerPrintSeconds("  seconds: ", "\r\n<==[] Complete");
         }
         [TestMethod]
         public void DItoLI()
         {
+            Setup.TimerStart("==>[] Started");
 
+            Setup.TimerPrintSeconds("  seconds: ", "\r\n<==[] Complete");
         }
         [TestMethod]
         public void DItoQ()
         {
+            Setup.TimerStart("==>[] Started");
 
+            Setup.TimerPrintSeconds("  seconds: ", "\r\n<==[] Complete");
         }
         [TestMethod]
         public void DItoS()
         {
+            Setup.TimerStart("==>[] Started");
 
+            Setup.TimerPrintSeconds("  seconds: ", "\r\n<==[] Complete");
         }
     }
 }

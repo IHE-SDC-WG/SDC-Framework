@@ -10,18 +10,17 @@ using System.Xml;
 
 //using SDC.Schema;
 
-namespace SDC_Tests
+namespace SDC.Schema.Tests
 {
     [TestClass]
     public class SdcSerializationTests
     {
-        public SdcSerializationTests()
-        {
-        }
-
         [TestMethod]
         public void DeserializeDemogFormDesignFromPath()
         {
+            Setup.TimerStart("==>[] Started");
+
+            
             BaseType.ResetSdcImport();
             //string path = @".\Test files\Demog CCO Lung Surgery.xml";
 
@@ -38,7 +37,7 @@ namespace SDC_Tests
             Debug.Print(json);
             doc = JsonConvert.DeserializeXmlNode(json);
             Debug.Print(doc.OuterXml);
-
+            Setup.TimerPrintSeconds("  seconds: ", "\r\n<==[] Complete");
         }
         [TestMethod]
         public void DeserializePkgFromPath()
@@ -155,12 +154,16 @@ namespace SDC_Tests
         [TestMethod]
         public void SdcToJson()
         {
+            Setup.TimerStart($"==>{Setup.CallerName()} Started");
 
+            Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
         }
         [TestMethod]
         public void JsonToXML()
         {
+            Setup.TimerStart($"==>{Setup.CallerName()} Started");
 
+            Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
         }
 
 

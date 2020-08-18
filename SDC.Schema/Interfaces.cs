@@ -856,20 +856,20 @@ namespace SDC.Schema
     {
         bool HasExtensionBaseMembers() //Has Extension, Property or Comment sub-elements
         {
-            var item = this as ExtensionBaseType;
-            if (item?.Property?.Count() > 0)
+            var ebt = this as ExtensionBaseType;
+            if (ebt?.Property?.Count() > 0)
             {
-                foreach (var n in item.Property)
+                foreach (var n in ebt.Property)
                 { if (n != null) return true; }
             }
-            if (item?.Comment?.Count() > 0)
+            if (ebt?.Comment?.Count() > 0)
             {
-                foreach (var n in item.Comment)
+                foreach (var n in ebt.Comment)
                 { if (n != null) return true; }
             }
-            if (item?.Extension?.Count() > 0)
+            if (ebt?.Extension?.Count() > 0)
             {
-                foreach (var n in item.Extension)
+                foreach (var n in ebt.Extension)
                 { if (n != null) return true; }
             }
             return false;
@@ -954,7 +954,7 @@ namespace SDC.Schema
     }
     public interface IIdentifiedExtensionType
     {
-        bool IsItemChangeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType;
+        bool IsParentNodeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType;
     }
     /// <summary>
     /// Move and Remove methods for Comment, Extension and Property
@@ -964,7 +964,7 @@ namespace SDC.Schema
     {
         public bool Remove();
         public bool Move(BaseType targetProperty, int newListIndex = -1);
-        public bool IsMoveAllowed(BaseType targetProperty, out object pObj, int newListIndex = -1);
+        public bool IsParentNodeAllowed(BaseType targetProperty, out object pObj, int newListIndex = -1);
 
 
     }

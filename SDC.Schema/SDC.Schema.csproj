@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\rmoldwi\OneDrive\One Drive Documents\Visual Studio 2017\Projects\SDC Framework\SDC.Schema\SDC.Schema.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Schema Classes\**" />
     <Compile Remove="Schemas\JSON Generator\**" />

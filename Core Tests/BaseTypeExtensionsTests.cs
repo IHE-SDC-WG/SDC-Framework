@@ -1,4 +1,4 @@
-﻿using Core_Tests;
+﻿using SDC.Schema.Tests;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SDC.Schema;

@@ -93,10 +93,7 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
-        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
-        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
-        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
-        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
+
 
 
         #region Serialization
@@ -244,10 +241,7 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; }
-        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
-        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
-        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
-        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
+
         #region Serialization
         public static DataElementType DeserializeFromXmlPath(string sdcPath)
             => (DataElementType)GetSdcObjectFromXmlPath<DataElementType>(sdcPath);
@@ -308,10 +302,7 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
-        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
-        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
-        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
-        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
+
         #region Serialization
         public static RetrieveFormPackageType DeserializeFromXmlPath(string sdcPath)
             => (RetrieveFormPackageType)GetSdcObjectFromXmlPath<RetrieveFormPackageType>(sdcPath);
@@ -370,10 +361,7 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
-        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
-        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
-        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
-        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
+
         #region Serialization
         public static PackageListType DeserializeFromXmlPath(string sdcPath)
             => (PackageListType)GetSdcObjectFromXmlPath<PackageListType>(sdcPath);
@@ -426,10 +414,6 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
-        public void TreeLoadReset() => ((ITopNode)this).TreeLoadReset();
-        public IdentifiedExtensionType NodeFromID(string id) => ((ITopNode)this).NodeFromID(id);
-        public BaseType NodeFromName(string name) => ((ITopNode)this).NodeFromName(name);
-        public BaseType NodeFromObjectGUID(int objectGUID) => ((ITopNode)this).NodeFromObjectGUID(objectGUID);
 
         #region Serialization
         public static MappingType DeserializeFromXmlPath(string sdcPath)
@@ -466,11 +450,11 @@ namespace SDC.Schema
         : IChildItemsMember<ButtonItemType>
     {
         protected ButtonItemType() { }
-        public ButtonItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode)
+        public ButtonItemType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode)
         {
             ElementName = "ButtonAction";
             ElementPrefix = "B";
-            SetNames(elementName, elementPrefix);
+            //SetNames(elementName, elementPrefix);
         }
 
     }
@@ -478,24 +462,24 @@ namespace SDC.Schema
     public partial class InjectFormType : IChildItemsMember<InjectFormType>
     {
         protected InjectFormType() { }
-        public InjectFormType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
+        public InjectFormType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode, id)
         {
             this._repeat = "0";
             ElementName = "InjectForm";
             ElementPrefix = "Inj";
-            SetNames(elementName, elementPrefix);
+            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class SectionBaseType
     {
         public SectionBaseType() { }
-        internal SectionBaseType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
+        internal SectionBaseType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode, id)
         {
             this._ordered = true;
             ElementName = "Section";
             ElementPrefix = "S";
-            SetNames(elementName, elementPrefix);
+            //SetNames(elementName, elementPrefix);
         }
 
         //!+Replaced in original class: protected SectionBaseType() { }
@@ -506,7 +490,7 @@ namespace SDC.Schema
     public partial class SectionItemType : IChildItemsParent<SectionItemType>, IChildItemsMember<SectionItemType>
     {
         protected SectionItemType() { } //change back to protected
-        public SectionItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
+        public SectionItemType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode, id)
         { }
 
 
@@ -1010,73 +994,8 @@ namespace SDC.Schema
             //Re-register item node under new parent
             this.RegisterParent(targetParent);
         }       
-        public virtual bool IsMoveAllowed (BaseType targetProperty, out object pObj, int newListIndex = -1)
-        { //reflect the object tree to determine if "this" can be attached to the SDC XML element represented by teh targetProperty object.   
-            //We must find an exact match for the element and the data type in the targetProperty to allow the move.
-
-            pObj = null;  //the object to which new nodes are attached; it may be an array or List<> or a non-List object.
-
-            if (targetProperty is null) return false; 
-            //make sure that item and target are not null and are part of the same tree
-            if (TopNode.Nodes[targetProperty.ObjectGUID] is null) return false;
-
-            Type thisType = this.GetType();            
-            var thisPi = SdcUtil.GetPropertyInfo(this);
-            string thisName = thisPi.XmlElementName;
-
-            foreach (var p in targetProperty.GetType().GetProperties())
-            {                
-                var pAtts = p.GetCustomAttributes<XmlElementAttribute>();
-                
-                if (pAtts.Count() > 0)
-                {
-                    pObj = p.GetValue(targetProperty);  //object that can be assigned to "this"; it may be a List or Array to contain "this" as an element, or another BaseType object that can be set directly to "this"
-                    foreach (var a in pAtts)
-                    {
-                        if (a.Type == thisType && 
-                            a.ElementName == thisName
-                            ) 
-                            return true; //if type matches, then ElementName must also match.  This is the most common case.
-
-                        if (a.ElementName == thisName &&
-                            a.Type is null &&
-                            p.PropertyType == thisType
-                            )
-                            return true;
-
-                        if (SdcUtil.IsGenericList(pObj) &&
-                            p.PropertyType.GetGenericArguments()[0] == thisType &&
-                            a.ElementName == thisName
-                            )
-                            return true;
-
-                        if (a.ElementName == thisName &&
-                            p.PropertyType.IsArray &&
-                            p.PropertyType.GetElementType() == thisType
-                            ) 
-                            return true;
-                    }
-                    //if none of the XmlElementAttributes had a matching Type an ElementName, perhaps the property Type will match directly
-                    if (p.PropertyType == thisType && 
-                        p.Name == thisName
-                        ) 
-                        return true;
-
-                    if (SdcUtil.IsGenericList(pObj) &&
-                        p.PropertyType.GetGenericArguments()[0] == thisType &&
-                        p.Name == thisName
-                        ) 
-                        return true;
-
-                    if (p.PropertyType.IsArray &&
-                        p.PropertyType.GetElementType() == thisType &&
-                        p.Name == thisName
-                        ) 
-                        return true;
-                }
-            }
-            return false;
-        }
+        public virtual bool IsParentNodeAllowed (BaseType newParent, out object pObj, int newListIndex = -1)
+            => SdcUtil.IsParentNodeAllowed(this, newParent, out pObj, newListIndex);
         public bool Remove()
         {
             var par = this.ParentNode;
@@ -1103,31 +1022,31 @@ namespace SDC.Schema
             }
             return false;
         }
-        public virtual bool Move(BaseType targetProperty, int newListIndex = -1)
+        public virtual bool Move(BaseType newParent, int newListIndex = -1)
         {
-            if (IsMoveAllowed(targetProperty, out object targetObj, newListIndex))
+            if (IsParentNodeAllowed(newParent, out object targetObj, newListIndex))
             {
 
                 if (targetObj is BaseType)
                 {
-                    MoveInDictionaries(targetParent: targetProperty);
+                    MoveInDictionaries(targetParent: newParent);
                     targetObj = this;
                     return true;
                 } else if (targetObj is IList)
                 {
                     //Remove this from current parent object
-                    IsMoveAllowed(ParentNode, out object hook);
-                    if (hook is BaseType) hook = null;
-                    else if (hook is IList)
+                    IsParentNodeAllowed(ParentNode, out object currentParentObj);
+                    if (currentParentObj is BaseType) currentParentObj = null;
+                    else if (currentParentObj is IList)
                     {
-                        var hooklist = hook.As<IList>();
-                        if(hooklist.IndexOf(this) > -1) hooklist.Remove(this);
+                        var objList = currentParentObj.As<IList>();
+                        if(objList?.IndexOf(this) > -1) objList.Remove(this);
                         else throw new Exception("Could not find node in parent object list");
                     }
                     else throw new Exception("Could not parent object to remove node");
 
                     IList propList = (IList)targetObj;
-                    MoveInDictionaries(targetParent: targetProperty);
+                    MoveInDictionaries(targetParent: newParent);
 
                     if (newListIndex < 0 || newListIndex >= propList.Count) propList.Add(this);
                     else propList.Insert(newListIndex, this);
@@ -1172,7 +1091,7 @@ namespace SDC.Schema
         [JsonIgnore]
         public bool AutoNameFlag { get; set; } = false;
 
-
+        private bool cycleGuarded = false;
         /// <summary>
         /// The root text ("shortName") used to construct the name property.  The code may add a prefix and/or suffix to BaseName
         /// </summary>
@@ -1193,23 +1112,25 @@ namespace SDC.Schema
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public string ElementName //TODO: use reflection in GetPropertyInfo instead
+        public string ElementName //TODO: remove all references trying to set ElementName, and then remove the set{} option
         {
             get
             {
-                if (_elementName.Length == 0)
-                {//assign default ElementName from the type.  Strip off sufixes that are not used in the actual XML element tag.
-                    _elementName = this.GetType().ToString()
-                        .Replace("SDC.", string.Empty)
-                        .Replace("Type", string.Empty)
-                        .Replace("_Stype", string.Empty)
-                        .Replace("_DEtype", string.Empty);
+               // if (_elementName.IsEmpty() && !cycleGuarded)
+                {
+                    //cycleGuarded = true;
+                    //_elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
                 }
+                //cycleGuarded = false;
                 return _elementName;
             }
             set
             {
+                //cycleGuarded = true;
                 _elementName = value;
+                //_elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
+                //Debug.Print(this.name + ", ID: " + this.ObjectID.ToString() + ", ElName: " + _elementName);
+                //cycleGuarded = false;
             }
         }
 
@@ -1223,9 +1144,10 @@ namespace SDC.Schema
         {
             get
             { //assign default prefix from the ElementName
-                if (_elementPrefix.Length == 0)
+                if (_elementPrefix.IsEmpty())
                 {
-                    _elementPrefix = ElementName;
+                    _elementPrefix = _elementName;
+                    if (_elementName.IsEmpty()) return "";
                     //make sure first letter is lower case for non-IET types:
                     if (!(this.GetType().IsSubclassOf(typeof(IdentifiedExtensionType)))) _elementPrefix = _elementPrefix.Substring(0, 1).ToLower() + _elementPrefix.Substring(1);
                 }
@@ -1417,6 +1339,7 @@ namespace SDC.Schema
             //if (prevNode != null) TopObject.PreviousNodes.Add(ObjectID, prevNode);
 
             order = ObjectID;
+            //_elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
 
             //Debug.WriteLine($"The node with ObjectID: {this.ObjectID} has entered the BaseType ctor. Item type is {this.GetType()}.  "
             //    + $"The parent ObjectID is {this.ParentObjID.ToString()}");
@@ -1624,8 +1547,8 @@ namespace SDC.Schema
         }
 
         #region IIdentifiedExtensionType
-        public bool IsItemChangeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType
-            => SdcUtil.IsItemChangeAllowed(this, target);
+        public bool IsParentNodeAllowed<T>(T newParentNode) where T : notnull, IdentifiedExtensionType
+            => SdcUtil.IsParentNodeAllowed(this, newParentNode, out _);
 
         #endregion
 
@@ -3077,14 +3000,10 @@ namespace SDC.Schema
         public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { ElementName = "Actions"; }
 
         public ActActionType AddActAction(int insertPosition = -1)
-        {
-            return (this as IActions).AddActAction(insertPosition);
-        }
+            => this.As<IActions>()?.AddActAction(insertPosition);
 
         public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
+            => this.As<IActions>()?.AddActSelectMatchingListItems(insertPosition);
 
         public ActAddCodeType AddActAddCode(int insertPosition = -1)
         {
@@ -3174,7 +3093,8 @@ namespace SDC.Schema
     public partial class ActActionType
     {
         protected ActActionType() { }
-        public ActActionType(ActionsType parentNode) : base(parentNode) { ElementName = "Action"; }
+        public ActActionType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "Action"; }
         [XmlIgnore]
         public List<ExtensionBaseType> ActAction_Items
         {
@@ -3192,29 +3112,34 @@ namespace SDC.Schema
     public partial class RuleSelectMatchingListItemsType
     {
         protected RuleSelectMatchingListItemsType() { }
-        public RuleSelectMatchingListItemsType(ActionsType parentNode) : base(parentNode) { ElementName = "SelectMatchingListItems"; }
+        public RuleSelectMatchingListItemsType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "SelectMatchingListItems"; }
     }
     public partial class ActAddCodeType
     {
         protected ActAddCodeType() { }
-        public ActAddCodeType(ActionsType parentNode) : base(parentNode) { ElementName = "AddCode"; }
+        public ActAddCodeType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "AddCode"; }
 
     }
     public partial class ActInjectType : InjectFormType
     {
         protected ActInjectType() { }
-        public ActInjectType(ActionsType parentNode) : base(parentNode) { ElementName = "Inject"; }
+        public ActInjectType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "Inject"; }
 
     }
     public partial class ActSaveResponsesType
     {
         protected ActSaveResponsesType() { }
-        public ActSaveResponsesType(ActionsType parentNode) : base(parentNode) { ElementName = "Save"; }
+        public ActSaveResponsesType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "Save"; }
     }
     public partial class ActSendReportType
     {
         protected ActSendReportType() { }
-        public ActSendReportType(ActionsType parentNode) : base(parentNode) { ElementName = "SendReport"; }
+        public ActSendReportType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "SendReport"; }
 
         internal List<ExtensionBaseType> Email_Phone_WebSvc_List
         {
@@ -3225,7 +3150,8 @@ namespace SDC.Schema
     public partial class ActSendMessageType
     {
         protected ActSendMessageType() { }
-        public ActSendMessageType(ActionsType parentNode) : base(parentNode) { ElementName = "SendMessage"; } //"SendMessage111" in Schema
+        public ActSendMessageType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "SendMessage"; } //"SendMessage111" in Schema
 
         /// <summary>
         /// List<BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
@@ -3239,12 +3165,14 @@ namespace SDC.Schema
     public partial class ActSetAttributeType
     {
         protected ActSetAttributeType() { }
-        public ActSetAttributeType(ActionsType parentNode) : base(parentNode) { ElementName = "SetAttributeValue"; }
+        public ActSetAttributeType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "SetAttributeValue"; }
     }
     public partial class ActSetAttrValueScriptType
     {
         protected ActSetAttrValueScriptType() { }
-        public ActSetAttrValueScriptType(ActionsType parentNode) : base(parentNode) { ElementName = "SetAttributeValueScript"; }
+        public ActSetAttrValueScriptType(ActionsType parentNode) : base(parentNode) 
+        { ElementName = "SetAttributeValueScript"; }
     }
     public partial class ActSetBoolAttributeValueCodeType
     {
@@ -3447,7 +3375,7 @@ namespace SDC.Schema
         protected ContactType() { }
         public ContactType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "cont";
+            this.ElementPrefix = "cntct";
             SetNames(elementName, elementPrefix);
         }
 
@@ -3513,10 +3441,10 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
 
-        IHtmlHelpers idh { get => this; }
+        IHtmlHelpers ihh { get => this; }
         public HTML_Stype AddHTML()
         {
-            var h = idh.AddHTML(this);
+            var h = ihh.AddHTML(this);
             return h;
         }
     }
