@@ -1195,206 +1195,28 @@ namespace SDC.Schema
     /// <typeparam name="T"></typeparam>
     public interface IPredGuard //used by Guards on ListItem, Button
     {
-        PredEvalAttribValuesType AddAttributeVal()
-        {
-            var pgt = (PredGuardType)this;
-            var av = new PredEvalAttribValuesType(pgt);
-            pgt.Items.Add(av);
-            return av;
-        }
-        ScriptBoolFuncActionType AddScriptBoolFunc();
-        CallFuncBoolActionType AddCallBoolFunction();
-        MultiSelectionsActionType AddMultiSelections();
-        PredSelectionTestType AddSelectionTest();
-        PredGuardTypeSelectionSets AddSelectionSets();
-        PredAlternativesType AddItemAlternatives();
-        PredGuardType AddGroup();
-
-
-    }
-    public interface IRules 
-    {
-        //List<ExtensionBaseType> Items 
-        RuleAutoActivateType AddAutoActivation();
-         RuleAutoSelectType AddAutoSelection();
-         PredActionType AddConditionalActions();
-         CallFuncActionType AddExternalRule();
-         ScriptCodeAnyType AddScriptedRule();
-         RuleSelectMatchingListItemsType AddSelectMatchingListItems();
-         ValidationType AddValidation();
-    }
+    }//Empty
+    public interface IRule 
+    {    }//Empty
     public interface IHasConditionalActionsNode
-    {
-        PredActionType AddConditionalActionsNode();
-    }
+    {    }//Empty
     public interface IHasParameterGroup
-    {
-        ParameterItemType AddParameterRefNode();
-        ListItemParameterType AddListItemParameterRefNode();
-        ParameterValueType AddParameterValueNode();
-    }
+    {}//Empty
     public interface IHasDataType_SType
-    {
-        DataTypes_SType AddDataTypes_SType();
-    }
+    { }//Empty
     public interface IHasDataType_DEType
-    {
-        DataTypes_DEType AddDataTypes_DEType();
-    }
+    { }//Empty
     public interface IHasActionsNode
     {
-        ActionsType AddActionsNode()
-        {
-            var actions = new ActionsType((ExtensionBaseType)this);
-            var p = this as PredActionType;
-            if (p != null)
-            {
-                p.Actions = actions;
-                return p.Actions;
-            }
-            else
-            {
-                var pe = this as EventType;
-                if (pe != null)
-                {
-                    pe.Actions = actions;
-                    return pe.Actions;
-                }
-            }
-            throw new InvalidCastException("The parent node must be of type EventType or PredActionType");
-        }
-    }
+    }//Empty
     public interface IHasActionElseGroup : IActions, IHasElseNode
     {
 
-    }
+    }//Empty
     public interface IHasElseNode
-    {
-        PredActionType AddElseNode()
-        {
-            if (this is null) return null;
-            var elseNode = new PredActionType((BaseType)this);
-
-            switch (this)
-            {
-                case PredActionType pe:
-                    pe.Else.Add(elseNode); return elseNode;
-                case CallFuncBoolActionType cfb:
-                    return (PredActionType)SdcUtil.ArrayAddReturnItem(cfb.Items1, elseNode);
-                case ScriptBoolFuncActionType sb:
-                    return (PredActionType)SdcUtil.ArrayAddReturnItem(sb.Items, elseNode);
-                case AttributeEvalActionType ae:
-                    ae.Else.Add(elseNode); return elseNode;
-                case MultiSelectionsActionType ms:
-                    ms.Else.Add(elseNode); return elseNode;
-                case SelectionSetsActionType ss:
-                    ss.Else.Add(elseNode); return elseNode;
-                case SelectionTestActionType st:
-                    st.Else.Add(elseNode); return elseNode;
-                default:
-                    break;
-            }
-            throw new InvalidCastException();
-            //return new Els
-        }
-
-    }
+    {    }//Empty
     public interface IActions
-    {
-        //ExtensionBaseType[] Items
-        public ActActionType AddActAction(int insertPosition = -1)
-        {
-            //var p = (ActionsType)this;
-            //var act = new ActActionType(p);
-            //return (ActActionType)ArrayAddReturnItem(p.Items, act);
-            return AddAction(new ActActionType((ActionsType)this), insertPosition);
-        }
-        public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1)
-        {
-            return AddAction(new RuleSelectMatchingListItemsType((ActionsType)this), insertPosition);
-        }
-        //public abstract ActSetPropertyType AddSetProperty(ActionsType at);
-        public ActAddCodeType AddActAddCode(int insertPosition = -1)
-        {
-            return AddAction(new ActAddCodeType((ActionsType)this), insertPosition);
-        }
-        //public abstract ActSetValueType AddSetValue(ActionsType at);
-        public ActInjectType AddActInject(int insertPosition = -1)
-        {
-            return AddAction(new ActInjectType((ActionsType)this), insertPosition);
-        }
-        public CallFuncActionType AddActShowURL(int insertPosition = -1)
-        {
-            return AddAction(new CallFuncActionType((ActionsType)this), insertPosition);
-        }
-        public ActSaveResponsesType AddActSaveResponses(int insertPosition = -1)
-        {
-            return AddAction(new ActSaveResponsesType((ActionsType)this), insertPosition);
-        }
-        public ActSendReportType AddActSendReport(int insertPosition = -1)
-        {
-            return AddAction(new ActSendReportType((ActionsType)this), insertPosition);
-        }
-        public ActSendMessageType AddActSendMessage(int insertPosition = -1)
-        {
-            return AddAction(new ActSendMessageType((ActionsType)this), insertPosition);
-        }
-        public ActSetAttributeType AddActSetAttributeValue(int insertPosition = -1)
-        {
-            return AddAction(new ActSetAttributeType((ActionsType)this), insertPosition);
-        }
-        public ActSetAttrValueScriptType AddActSetAttributeValueScript(int insertPosition = -1)
-        {
-            return AddAction(new ActSetAttrValueScriptType((ActionsType)this), insertPosition);
-        }
-        public ActSetBoolAttributeValueCodeType AddActSetBoolAttributeValueCode(int insertPosition = -1)
-        {
-            return AddAction(new ActSetBoolAttributeValueCodeType((ActionsType)this), insertPosition);
-        }
-        public ActShowFormType AddActShowForm(int insertPosition = -1)
-        {
-            return AddAction(new ActShowFormType((ActionsType)this), insertPosition);
-        }
-        public ActShowMessageType AddActShowMessage(int insertPosition = -1)
-        {
-            return AddAction(new ActShowMessageType((ActionsType)this), insertPosition);
-        }
-        public ActShowReportType AddActShowReport(int insertPosition = -1)
-        {
-            return AddAction(new ActShowReportType((ActionsType)this), insertPosition);
-        }
-        public ActPreviewReportType AddActPreviewReport(int insertPosition = -1)
-        {
-            return AddAction(new ActPreviewReportType((ActionsType)this), insertPosition);
-        }
-        public ActValidateFormType AddActValidateForm(int insertPosition = -1)
-        {
-            return AddAction(new ActValidateFormType((ActionsType)this), insertPosition);
-        }
-        public ScriptCodeAnyType AddActRunCode(int insertPosition = -1)
-        {
-            return AddAction(new ScriptCodeAnyType((ActionsType)this), insertPosition);
-        }
-        public CallFuncActionType AddActCallFunction(int insertPosition = -1)
-        {
-            return AddAction(new CallFuncActionType((ActionsType)this), insertPosition);
-        }
-        public PredActionType AddActConditionalGroup(int insertPosition = -1)
-        {
-            return AddAction(new PredActionType((ActionsType)this), insertPosition);
-        }
-
-        private T AddAction<T>(T action, int insertPosition = -1) where T : ExtensionBaseType
-        {
-            var p = (ActionsType)this;
-            var lst = (IList<BaseType>)p.Items;
-            int c = lst.Count();
-            if (insertPosition > -1 && (insertPosition < c)) lst.Insert(insertPosition, action);
-            else lst.Insert(c, action);
-            return action;
-        }
-
-    }
+    {   } //Empty
     public interface IActionsMember : IMoveRemove
         //used from within an individual action object; "this" refers to the action object itself.  Its parent is the Actions element (ActionsType)
     {
@@ -1410,13 +1232,13 @@ namespace SDC.Schema
         /// If not provided or < 0, or > than the size of the Items list,the action will be placeed last in the Items list.
         /// </param>
         /// <returns></returns>
-        public bool Move(ExtensionBaseType action, int newListIndex = -1)
-        {
-            var par = ((BaseType)this).ParentNode;
-            var items = ((ActionsType)this).Items;
-            return Move(this as BaseType, newListIndex);
-        }
-    }
+        //public bool Move(ExtensionBaseType action, int newListIndex = -1)
+        //{
+        //    var par = ((BaseType)this).ParentNode;
+        //    var items = ((ActionsType)this).Items;
+        //    return Move(this as BaseType, newListIndex);
+        //}
+    }//Empty
     public interface ISendMessage_Report
     {
         //List<ExtensionBaseType> Items
@@ -1429,8 +1251,7 @@ namespace SDC.Schema
     {
         //anyURI_Stype Item (choice)
         anyURI_Stype AddFunctionURI();
-        anyURI_Stype AddLocalFunctionName();
-        
+        anyURI_Stype AddLocalFunctionName();        
 
         //List<ExtensionBaseType> Items
         ListItemParameterType AddListItemParameterRef();
@@ -1462,7 +1283,6 @@ namespace SDC.Schema
          ValidationTypeSelectionSets AddSelectionSets();
          ValidationTypeSelectionTest AddSelectionTest();
     }
-
     public interface IClone
     {
         BaseType CloneSubtree();
@@ -1476,15 +1296,6 @@ namespace SDC.Schema
     public interface IRegistrySummary
     {
         //BaseType[] Items
-        //Attach to Admin.RegistryData as OriginalRegistry and/or CurrentRegistry
-        
-         ContactType AddContact();
-         FileType AddManual();
-         string_Stype AddReferenceStandardIdentifier();
-         InterfaceType AddRegistryInterfaceType();
-         string_Stype AddRegistryName();
-         FileType AddRegistryPurpose();
-         FileType AddServiceLevelAgreement();
-
-    }
+        //Attach to Admin.RegistryData as OriginalRegistry and/or CurrentRegistry     
+    }//Empty
 }

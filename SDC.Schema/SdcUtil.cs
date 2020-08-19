@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Xml.Schema;
 using System.IO;
+using System.Runtime.InteropServices;
 
 
 
@@ -160,6 +161,7 @@ XmlElementName: {XmlElementName}
         {
             //if nodeA is higher in the tree, return -1;
             //if nodeB is higher in the tree, return 1;
+
             int ord;
             if (nodeA.ObjectID < nodeB.ObjectID)
                 ord = -1;
@@ -231,7 +233,7 @@ XmlElementName: {XmlElementName}
                 prevPar = ancSetB[indexB]?.ParentNode ?? null;
             }
             if (failed)
-                throw new Exception("the compared nodes cannot be  compared because they do not have a common ancester node");
+                throw new Exception("the compared nodes cannot be compared because they do not have a common ancester node");
 
             //We have found the lowest common ancester ("ANC") located at index indexA in ancSetA and at IndexB in ancSetB
             //We now move one parent node further from the root on each tree branch (ancSetA and ancSetA), closer to nodeA and nodeB
@@ -288,8 +290,9 @@ XmlElementName: {XmlElementName}
 
             void Result(int i)
             {
+                //For debugging only:
                 //Debug.Print($" {i}:ord:{ord},   A:{nodeA.ObjectID},   B:{nodeB.ObjectID}");
-                if (i != ord) Debugger.Break();
+                //if (i != ord) Debugger.Break();
             }
 
 
@@ -1670,7 +1673,7 @@ XmlElementName: {XmlElementName}
             var par = descendantNode.ParentNode;
             while (par != null)
             { if (par.Equals(ancestorNode)) return true; }
-
+           
             return false;
         }
         public static bool IsParentOf(this BaseType parentNode, BaseType childNode)
@@ -1746,6 +1749,98 @@ XmlElementName: {XmlElementName}
 
 
     }
+    public static class ActionsTypeExtensions
+    {
+        public static ActActionType AddActAction(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActActionType(at), insertPosition);
+        }
+        public static RuleSelectMatchingListItemsType AddActSelectMatchingListItems(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new RuleSelectMatchingListItemsType(at), insertPosition);
+        }
+        //public abstract ActSetPropertyType AddSetProperty(ActionsType at);
+        public static ActAddCodeType AddActAddCode(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActAddCodeType(at), insertPosition);
+        }
+        //public abstract ActSetValueType AddSetValue(ActionsType at);
+        public static ActInjectType AddActInject(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActInjectType(at), insertPosition);
+        }
+        public static CallFuncActionType AddActShowURL(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new CallFuncActionType(at), insertPosition);
+        }
+        public static ActSaveResponsesType AddActSaveResponses(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActSaveResponsesType(at), insertPosition);
+        }
+        public static ActSendReportType AddActSendReport(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActSendReportType(at), insertPosition);
+        }
+        public static ActSendMessageType AddActSendMessage(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActSendMessageType(at), insertPosition);
+        }
+        public static ActSetAttributeType AddActSetAttributeValue(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActSetAttributeType(at), insertPosition);
+        }
+        public static ActSetAttrValueScriptType AddActSetAttributeValueScript(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActSetAttrValueScriptType(at), insertPosition);
+        }
+        public static ActSetBoolAttributeValueCodeType AddActSetBoolAttributeValueCode(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActSetBoolAttributeValueCodeType(at), insertPosition);
+        }
+        public static ActShowFormType AddActShowForm(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActShowFormType(at), insertPosition);
+        }
+        public static ActShowMessageType AddActShowMessage(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActShowMessageType(at), insertPosition);
+        }
+        public static ActShowReportType AddActShowReport(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActShowReportType(at), insertPosition);
+        }
+        public static ActPreviewReportType AddActPreviewReport(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActPreviewReportType(at), insertPosition);
+        }
+        public static ActValidateFormType AddActValidateForm(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ActValidateFormType(at), insertPosition);
+        }
+        public static ScriptCodeAnyType AddActRunCode(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new ScriptCodeAnyType(at), insertPosition);
+        }
+        public static CallFuncActionType AddActCallFunction(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new CallFuncActionType(at), insertPosition);
+        }
+        public static PredActionType AddActConditionalGroup(this ActionsType at, int insertPosition = -1)
+        {
+            return AddAction(at, new PredActionType(at), insertPosition);
+        }
+
+        private static T AddAction<T>(this ActionsType at, T action, int insertPosition = -1) where T : ExtensionBaseType
+        {
+            var p = at;
+            var lst = (IList<BaseType>)p.Items;
+            int c = lst.Count();
+            if (insertPosition > -1 && (insertPosition < c)) lst.Insert(insertPosition, action);
+            else lst.Insert(c, action);
+            return action;
+        }
+    } 
+
     public static class ITopNodeExtensions
     {
         public static List<BaseType> ReorderNodes(this ITopNode itn)
@@ -1930,7 +2025,6 @@ XmlElementName: {XmlElementName}
 
         
         #endregion
-
 
         #region Utilities
 
@@ -2198,14 +2292,334 @@ XmlElementName: {XmlElementName}
         #endregion       
 
     }
+
+
+    public static class INewTopLevelExtensions
+    {
+
+    } //Empty
+    public static class IPackageExtensions
+    {
+
+    } //Empty
+    public static class IDataElementExtensions
+    {
+
+    } //Empty
+    public static class IDemogFormExtensions
+    {
+
+    } //Empty
+    public static class IMapExtensions
+    {
+
+    } //Empty
+    public static class IFormDesignExtensions
+    {
+
+    } //Empty
+    public static class IRetrieveFormPackageExtensions
+    {
+
+    } //Empty
+    public static class IChildItemsParentExtensions
+    {
+
+    } //Empty
+    public static class IChildItemsMemberExtensions
+    {
+
+    } //Empty
+    public static class IQuestionItemExtensions
+    {
+
+    } //Empty
+    public static class IQuestionListExtensions
+    {
+
+    } //Empty
+    public static class IListFieldExtensions
+    {
+
+    } //Empty
+    public static class IQuestionBaseExtensions
+    {
+
+    } //Empty
+    public static class IListItemExtensions
+    {
+
+    } //Empty
+    public static class IQuestionBuilderExtensions
+    {
+
+    } //Empty
+    public static class ISectionExtensions
+    {
+
+    } //Empty
+    public static class IButtonItemExtensions
+    {
+
+    } //Empty
+    public static class IInjectFormExtensions
+    {
+
+    } //Empty
+    public static class IDisplayedTypeMemberExtensions
+    {
+
+    } //Empty
+    public static class IBlobExtensions
+    {
+
+    } //Empty
+    public static class IDisplayedTypeChangesExtensions
+    {
+
+    } //Empty
+    public static class IExtensionBaseExtensions
+    {
+
+    } //Empty
+    public static class IExtensionBaseTypeMemberExtensions
+    {
+
+    } //Empty
+    public static class IIdentifiedExtensionTypeExtensions
+    {
+
+    } //Empty
+    public static class IMoveRemoveExtensions
+    {
+
+    } //Empty
+    public static class INavigateExtensions
+    {
+
+    } //Empty
+    public static class IResponseExtensions
+    {
+
+    } //Empty
+    public static class IResponseFieldExtensions
+    {
+
+    } //Empty
+    public static class IValExtensions
+    {
+
+    } //Empty
+    public static class IValNumericExtensions
+    {
+
+    } //Empty
+    public static class IValDateTimeExtensions
+    {
+
+    } //Empty
+    public static class IValIntegerExtensions
+    {
+
+    } //Empty
+    public static class IIdentifiersExtensions
+    {
+
+    } //Empty
+    public static class IAddCodingExtensions
+    {
+
+    } //Empty
     public static class IAddPersonExtensions
     {
-        
-        static IAddPersonExtensions()
+
+    } //Empty
+    public static class IAddContactExtensions
+    {
+
+    } //Empty
+    public static class IAddOrganizationExtension
+    {
+
+    } //Empty
+    public static class IPredGuardExtensions //used by Guards on ListItem, Button
+    {
+        public static PredEvalAttribValuesType AddAttributeVal(this IPredGuard ipg)
         {
-            
+            var pgt = (PredGuardType)ipg;
+            var av = new PredEvalAttribValuesType(pgt);
+            pgt.Items.Add(av);
+            return av;
+        }
+        public static ScriptBoolFuncActionType AddScriptBoolFunc(this IPredGuard ipg)
+        { throw new NotImplementedException(); }
+        public static CallFuncBoolActionType AddCallBoolFunction(this IPredGuard ipg) 
+        { throw new NotImplementedException(); }
+        public static MultiSelectionsActionType AddMultiSelections(this IPredGuard ipg) 
+        { throw new NotImplementedException(); }
+        public static PredSelectionTestType AddSelectionTest(this IPredGuard ipg) 
+        { throw new NotImplementedException(); }
+        public static PredGuardTypeSelectionSets AddSelectionSets(this IPredGuard ipg) 
+        { throw new NotImplementedException(); }
+        public static PredAlternativesType AddItemAlternatives(this IPredGuard ipg) 
+        { throw new NotImplementedException(); }
+        public static PredGuardType AddGroup(this IPredGuard ipg) 
+        { throw new NotImplementedException(); }
+
+
+    }
+    public static class IRuleExtensions
+    {
+        public static RuleAutoActivateType AddAutoActivation(this IRule r)
+        { throw new NotImplementedException(); }
+        public static RuleAutoSelectType AddAutoSelection(this IRule r)
+        { throw new NotImplementedException(); }
+        public static PredActionType AddConditionalActions(this IRule r)
+        { throw new NotImplementedException(); }
+        public static CallFuncActionType AddExternalRule(this IRule r)
+        { throw new NotImplementedException(); }
+        public static ScriptCodeAnyType AddScriptedRule(this IRule r)
+        { throw new NotImplementedException(); }
+        public static RuleSelectMatchingListItemsType AddSelectMatchingListItems(this IRule r)
+        { throw new NotImplementedException(); }
+        public static ValidationType AddValidation(this IRule r)
+        { throw new NotImplementedException(); }
+    } 
+    public static class IHasConditionalActionsNodeExtensions
+    {
+        public static PredActionType AddConditionalActionsNode(this IHasConditionalActionsNode hcan)
+        { throw new NotImplementedException();   }
+    }
+    public static class IHasParameterGroupExtensions
+    {
+        public static ParameterItemType AddParameterRefNode(this IHasParameterGroup hpg)
+        {throw new NotImplementedException();}
+        public static ListItemParameterType AddListItemParameterRefNode(this IHasParameterGroup hpg)
+        { throw new NotImplementedException(); }
+        public static ParameterValueType AddParameterValueNode(IHasParameterGroup hpg)
+        { throw new NotImplementedException(); }
+    } 
+    public static class IHasDataType_STypeExtensions
+    {
+        public static DataTypes_SType AddDataTypes_SType(this DataTypes_SType S)
+        { throw new NotImplementedException(); }
+    } 
+    public static class IHasDataType_DETypeExtensions
+    {
+        public static DataTypes_DEType AddDataTypes_DEType(this DataTypes_DEType DE)
+        { throw new NotImplementedException(); }
+    }
+    public static class IHasActionsNodeExtensions
+    {
+        public static ActionsType AddActionsNode(this IHasActionsNode han)
+        {
+            var actions = new ActionsType((ExtensionBaseType)han);
+            var p = han as PredActionType;
+            if (p != null)
+            {
+                p.Actions = actions;
+                return p.Actions;
+            }
+            else
+            {
+                var pe = han as EventType;
+                if (pe != null)
+                {
+                    pe.Actions = actions;
+                    return pe.Actions;
+                }
+            }
+            throw new InvalidCastException("The parent node must be of type EventType or PredActionType");
+        }
+    } 
+    public static class IHasActionElseGroupExtensions
+    {
+
+    } //Empty
+    public static class IHasElseNodeExtensions
+    {
+        public static PredActionType AddElseNode(this IHasElseNode hen)
+        {
+            if (hen is null) return null;
+            var elseNode = new PredActionType((BaseType)hen);
+
+            switch (hen)
+            {
+                case PredActionType pe:
+                    pe.Else.Add(elseNode); return elseNode;
+                case CallFuncBoolActionType cfb:
+                    return (PredActionType)SdcUtil.ArrayAddReturnItem(cfb.Items1, elseNode);
+                case ScriptBoolFuncActionType sb:
+                    return (PredActionType)SdcUtil.ArrayAddReturnItem(sb.Items, elseNode);
+                case AttributeEvalActionType ae:
+                    ae.Else.Add(elseNode); return elseNode;
+                case MultiSelectionsActionType ms:
+                    ms.Else.Add(elseNode); return elseNode;
+                case SelectionSetsActionType ss:
+                    ss.Else.Add(elseNode); return elseNode;
+                case SelectionTestActionType st:
+                    st.Else.Add(elseNode); return elseNode;
+                default:
+                    break;
+            }
+            throw new InvalidCastException();
+            //return new Els
         }
     }
+    public static class IActionsMemberExtensions
+    {
+
+    } //Empty
+    public static class ISendMessage_ReportExtensions
+    {
+
+    } //Empty
+    public static class ICallFuncBaseExtensions
+    {
+
+    } //Empty
+    public static class IScriptBoolFuncActionExtensions
+    {
+
+    } //Empty
+    public static class ICallFuncBoolActionExtensions
+    {
+
+    } //Empty
+    public static class IValidationTestsExtensions
+    {
+
+    } //Empty
+    public static class ICloneExtensions
+    {
+
+    } //Empty
+    public static class IHtmlPackageExtensions
+    {
+
+    } //Empty
+    public static class IRegistrySummaryExtensions
+    {
+        //BaseType[] Items
+        //Attach to Admin.RegistryData as OriginalRegistry and/or CurrentRegistry
+
+        public static ContactType AddContact(this IRegistrySummary rs)
+        { throw new NotImplementedException(); }
+        public static FileType AddManual(this IRegistrySummary rs)
+        { throw new NotImplementedException(); }
+        public static string_Stype AddReferenceStandardIdentifier(this IRegistrySummary rs)
+        { throw new NotImplementedException(); }
+        public static InterfaceType AddRegistryInterfaceType(this IRegistrySummary rs)
+        { throw new NotImplementedException(); }
+        public static string_Stype AddRegistryName(this IRegistrySummary rs)
+        { throw new NotImplementedException(); }
+        public static FileType AddRegistryPurpose(this IRegistrySummary rs)
+        { throw new NotImplementedException(); }
+        public static FileType AddServiceLevelAgreement(this IRegistrySummary rs)
+        { throw new NotImplementedException(); }
+    } 
+
+
 
 }
 
@@ -2299,13 +2713,9 @@ public static class ObjectExtensions
     public static T As<T>(this object o) where T:class 
     {
         try
-        {
-            return (T)o;
-        }
-        catch (Exception ex)
-        {
-            return null;
-        }
+        { return (T)o; }
+        catch
+        { return null; }
     }
    /// <summary>
    /// Try to Cast as T

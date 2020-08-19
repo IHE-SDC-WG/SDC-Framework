@@ -2996,99 +2996,10 @@ namespace SDC.Schema
 
     public partial class ActionsType : IActions
     {
-        protected ActionsType() { }
-        public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { ElementName = "Actions"; }
+        protected ActionsType() {}
+        public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { ElementName = "Actions"; ElementPrefix = "act"; }
 
-        public ActActionType AddActAction(int insertPosition = -1)
-            => this.As<IActions>()?.AddActAction(insertPosition);
-
-        public RuleSelectMatchingListItemsType AddActSelectMatchingListItems(int insertPosition = -1)
-            => this.As<IActions>()?.AddActSelectMatchingListItems(insertPosition);
-
-        public ActAddCodeType AddActAddCode(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActInjectType AddActInject(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CallFuncActionType AddActShowURL(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActSaveResponsesType AddActSaveResponses(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActSendReportType AddActSendReport(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActSendMessageType AddActSendMessage(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActSetAttributeType AddActSetAttributeValue(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActSetAttrValueScriptType AddActSetAttributeValueScript(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActSetBoolAttributeValueCodeType AddActSetBoolAttributeValueCode(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActShowFormType AddActShowForm(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActShowMessageType AddActShowMessage(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActShowReportType AddActShowReport(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActPreviewReportType AddActPreviewReport(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ActValidateFormType AddActValidateForm(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ScriptCodeAnyType AddActRunCode(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CallFuncActionType AddActCallFunction(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public PredActionType AddActConditionalGroup(int insertPosition = -1)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
     public partial class ActActionType
     {
