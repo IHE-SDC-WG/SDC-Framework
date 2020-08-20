@@ -20,15 +20,15 @@ namespace SDC.Schema
         //FormDesignType CreateFormFromTemplatePath(string path, string formID, string lineage, string version, string fullURI);
         //FormDesignType CreateFormFromTemplateXML(string xml, string formID, string lineage, string version, string fullURI);
         //bool RemoveFormFromPackage(RetrieveFormPackageType pkg, FormDesignType form);
-    }
+    } //Empty 
     public interface IPackage : ITopNode //TODO:
-    { }
+    { } //Empty 
     public interface IDataElement : ITopNode //TODO:
-    { }
+    { } //Empty 
     public interface IDemogForm : ITopNode //TODO:
-    { }
+    { } //Empty 
     public interface IMap : ITopNode //TODO:
-    { }
+    { } //Empty 
     public interface IFormDesign : ITopNode, IMoveRemove //TODO:
     {
         //Default Implementations
@@ -500,10 +500,7 @@ namespace SDC.Schema
 
             return qParent.ListField_Item;
         }
-
-
-
-
+        
         //bool ConvertToButton(); //abort if LIs or children present
 
         //convert type to QR
@@ -787,7 +784,7 @@ namespace SDC.Schema
         }
 
     }
-    public interface ISection
+    public interface ISection //may delete the change types
     {
         QuestionItemType ChangeToQuestionMultiple();
         QuestionItemType ChangeToQuestionSingle();
@@ -809,7 +806,9 @@ namespace SDC.Schema
         QuestionItemType AddQuestion();
         SectionItemType AddSection();
     }    
-    public interface IDisplayedTypeMember { } //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
+    public interface IDisplayedTypeMember 
+    { //LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
+    } //Empty
     public interface IBlob
     {   //DisplayedItem.BlobType
         //Uses Items types choice
@@ -851,351 +850,49 @@ namespace SDC.Schema
         DisplayedType ChangeToDisplayedItem(QuestionItemType source);
 
 
-    }
+    } //may delete this
     public interface IExtensionBase
-    {
-        bool HasExtensionBaseMembers() //Has Extension, Property or Comment sub-elements
-        {
-            var ebt = this as ExtensionBaseType;
-            if (ebt?.Property?.Count() > 0)
-            {
-                foreach (var n in ebt.Property)
-                { if (n != null) return true; }
-            }
-            if (ebt?.Comment?.Count() > 0)
-            {
-                foreach (var n in ebt.Comment)
-                { if (n != null) return true; }
-            }
-            if (ebt?.Extension?.Count() > 0)
-            {
-                foreach (var n in ebt.Extension)
-                { if (n != null) return true; }
-            }
-            return false;
-        }
-        ExtensionType AddExtensionI(int insertPosition = -1)
-        {
-            var ebtParent = this as ExtensionBaseType;
-            var e = new ExtensionType(ebtParent);
-            if (ebtParent.Extension == null) ebtParent.Extension = new List<ExtensionType>();
-            var count = ebtParent.Extension.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            ebtParent.Extension.Insert(insertPosition, e);
-            return e;
-        }
-        CommentType AddCommentI(int insertPosition = -1)
-        {
-            var ebtParent = this as ExtensionBaseType;
-            if (ebtParent.Comment == null) ebtParent.Comment = new List<CommentType>();
-            CommentType ct = null;
-            var count = ebtParent.Comment.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            ebtParent.Comment.Insert(insertPosition, ct);  //return new empty Comment object for caller to fill
-            return ct;
-        }
-        PropertyType AddPropertyI(int insertPosition = -1)
-        {
-            var ebtParent = this as ExtensionBaseType;
-            var prop = new PropertyType(ebtParent);
-            if (ebtParent.Property == null) ebtParent.Property = new List<PropertyType>();
-            var count = ebtParent.Property.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            ebtParent.Property.Insert(insertPosition, prop);
-
-            return prop;
-        }
-
-
-    }
+    { }//Empty
     public interface IExtensionBaseTypeMember : IMoveRemove //Used on Extension, Property, Comment
-    {
-        //!+TODO: Handle Dictionary updates
-        bool MoveI(ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
-        {
-            if (extension == null) return false;
-
-            var ebt = (ExtensionBaseType)(extension.ParentNode);  //get the list that comment is attached to          
-            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
-            bool b = ebt.Extension.Remove(extension);
-            if (b) ebtTarget.Extension.Insert(newListIndex, extension);
-            var count = ebtTarget.Extension.Count;
-            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
-            if (ebtTarget.Extension[newListIndex] == extension) return true; //success
-            return false;
-        }
-        bool MoveI(CommentType comment, ExtensionBaseType ebtTarget, int newListIndex)
-        {
-            if (comment == null) return false;
-
-            var ebt = (ExtensionBaseType)(comment.ParentNode);  //get the list that comment is attached to          
-            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
-            bool b = ebt.Comment.Remove(comment);
-            var count = ebt.Comment.Count;
-            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
-            if (b) ebtTarget.Comment.Insert(newListIndex, comment);
-            if (ebtTarget.Comment[newListIndex] == comment) return true; //success
-            return false;
-        }
-        bool MoveI(PropertyType property, ExtensionBaseType ebtTarget, int newListIndex)
-        {
-            if (property == null) return false;
-
-            var ebt = (ExtensionBaseType)(property.ParentNode);  //get the list that comment is attached to          
-            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
-            bool b = ebt.Property.Remove(property);
-            var count = ebt.Property.Count;
-            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
-            if (b) ebtTarget.Property.Insert(newListIndex, property);
-            if (ebtTarget.Property[newListIndex] == property) return true; //success
-            return false;
-        }
-
-    }
+    { }//Empty
     public interface IIdentifiedExtensionType
-    {
-        bool IsParentNodeAllowed<T>(T target) where T : notnull, IdentifiedExtensionType;
-    }
-    /// <summary>
-    /// Move and Remove methods for Comment, Extension and Property
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IMoveRemove  //Used on BaseType only; IExtensionBaseTypeMember has some custom methods but they do not handle Node dictionaries or is-move-allowed testing
-    {
-        public bool Remove();
-        public bool Move(BaseType targetProperty, int newListIndex = -1);
-        public bool IsParentNodeAllowed(BaseType targetProperty, out object pObj, int newListIndex = -1);
-
-
-    }
-    public interface INavigate //apply only to BaseType
-    {
-        public BaseType GetNodeFirstSib();
-        public BaseType GetNodeLastSib();
-        BaseType GetNodePreviousSib();
-        BaseType GetNodeNextSib();
-        BaseType GetNodePrevious();
-        BaseType GetNodeNext();
-        BaseType GetNodeFirstChild();
-        BaseType GetNodeLastChild();
-        BaseType GetNodeLastDescendant();
-
-        PropertyInfoMetadata GetPropertyInfo();
-
-
-    }
-
+    { }//Empty
+    public interface IMoveRemove
+    {//Used on BaseType only; IExtensionBaseTypeMember has some custom methods but they do not handle Node dictionaries or is-move-allowed testing 
+    }//Empty
+        public interface INavigate 
+    {//apply only to BaseType 
+     }//Empty
     public interface IResponse: IVal //marks LIR and QR
-    {
-        //UnitsType AddUnits(ResponseFieldType rfParent);
-        UnitsType AddUnits(ResponseFieldType rfParent)
-        {
-            UnitsType u = new UnitsType(rfParent);
-            rfParent.ResponseUnits = u;
-            return u;
-        }
-
-        void RemoveUnits(ResponseFieldType rfParent) => rfParent.ResponseUnits = null;
-        BaseType DataTypeObject { get; set; }
-        RichTextType AddTextAfterResponse { get; set; }
-    }
+    { }//Empty
     public interface IResponseField: IVal
-    {
-        CallFuncActionType AddCallSetValue();
-        ScriptCodeAnyType AddSetValue();
-        
-        
-    }
+    { }//Empty
     public interface IVal 
     {
         //Implemented by data types, which have a strongly-typed val attribute.  Not implemented by anyType, XML, or HTML  
         object Val { get; set; }
         string ValString { get; }
-
     } 
     public interface IValNumeric : IVal { decimal ValDec { get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.
     public interface IValDateTime : IVal { } //Implemented by DateTime data types, which have a strongly-type val attribute.
     public interface IValInteger : IVal { long ValLong { get; set; } } //Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
+    
+    
     public interface IIdentifiers
-    {
-        string GetNewCkey() { throw new NotImplementedException(); }
-
-    }
+    {    }//Empty
     public interface IAddCoding
-    {
-        CodingType AddCodedValue(DisplayedType dt, int insertPosition)
-        {
-            throw new NotImplementedException();
-        }
-
-        CodingType AddCodedValue(LookupEndPointType lep, int insertPosition)
-        {
-            throw new NotImplementedException();
-        }
-        UnitsType AddUnits(CodingType ctParent)
-        {
-            UnitsType u = new UnitsType(ctParent);
-            ctParent.Units = u;
-            return u;
-        }
-    }
+    {   }//Empty
     public interface IAddContact //(File)
-    {
-        ContactType AddContact(FileType ftParent, int insertPosition)
-        {
-            ContactsType c;
-            if (ftParent.Contacts == null)
-                c = AddContactsListToFileType(ftParent);
-            else
-                c = ftParent.Contacts;
-            var ct = new ContactType(c);
-            var count = c.Contact.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            c.Contact.Insert(insertPosition, ct);
-            //TODO: Need to be able to add multiple people/orgs by reading the data source or ORM
-            var p = (this as IAddPerson).AddPersonI(ct);
-            var org = (this as IAddOrganization).AddOrganizationI(ct);
-
-            return ct;
-        }
-        private ContactsType AddContactsListToFileType(FileType ftParent)
-        {
-            if (ftParent.Contacts == null)
-                ftParent.Contacts = new ContactsType(ftParent);
-
-            return ftParent.Contacts; //returns a .NET List<ContactType>
-
-        }
-    }
+    {   }//Empty
     public interface IAddOrganization {
-        OrganizationType AddOganization();
-
-        internal OrganizationType AddOrganizationI(ContactType contactParent)
-        {
-            var ot = new OrganizationType(contactParent);
-            contactParent.Organization = ot;
-
-            return ot;
-        }
-        internal OrganizationType AddOrganizationI(JobType jobParent)
-        {
-            var ot = new OrganizationType(jobParent);
-            jobParent.Organization = ot;
-
-            return ot;
-        }
-        internal OrganizationType AddOrganizationItemsI(OrganizationType ot)
-        {
-            throw new NotImplementedException();
-        }
-
-    }
+         }//Empty
     public interface IAddPerson
-    {
-        PersonType AddPerson();
-
-        internal PersonType AddPersonI(ContactType contactParent)
-        {
-
-            var newPerson = new PersonType(contactParent);
-            contactParent.Person = newPerson;
-
-            AddPersonItems(newPerson);  //AddFillPersonItems?
-
-            return newPerson;
-        }
-        internal PersonType AddPersonI(DisplayedType dtParent, int insertPosition)
-        {
-            List<ContactType> contactList;
-            if (dtParent.Contact == null)
-            {
-                contactList = new List<ContactType>();
-                dtParent.Contact = contactList;
-            }
-            else
-                contactList = dtParent.Contact;
-            var newContact = new ContactType(dtParent); //newContact will contain a person child
-            var count = contactList.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            contactList.Insert(insertPosition, newContact);
-
-            var newPerson = AddPersonI(newContact);
-
-            return newPerson;
-        }
-        internal PersonType AddContactPersonI(OrganizationType otParent, int insertPosition)
-        {
-            List<PersonType> contactPersonList;
-            if (otParent.ContactPerson == null)
-            {
-                contactPersonList = new List<PersonType>();
-                otParent.ContactPerson = contactPersonList;
-            }
-            else
-                contactPersonList = otParent.ContactPerson;
-
-            var newPerson = new PersonType(otParent);
-            AddPersonItems(newPerson);
-
-            var count = contactPersonList.Count;
-            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-            contactPersonList.Insert(insertPosition, newPerson);
-
-            return newPerson;
-        }
-        protected virtual PersonType AddPersonItems(PersonType pt)  //AddFillPersonItems, make this abstract and move to subclass?
-        {
-            pt.PersonName = new NameType(pt);//TODO: Need separate method(s) for this
-            //pt.Alias = new NameType();
-            //pt.PersonName.FirstName.val = (string)drFormDesign["FirstName"];  //TODO: replace with real data
-            //pt.PersonName.LastName.val = (string)drFormDesign["LastName"];  //TODO: replace with real data
-
-            pt.Email = new List<EmailType>();//TODO: Need separate method(s) for this
-            var email = new EmailType(pt);//TODO: Need separate method(s) for this
-            pt.Email.Add(email);
-
-            pt.Phone = new List<PhoneType>();//TODO: Need separate method(s) for this
-            pt.Job = new List<JobType>();//TODO: Need separate method(s) for this
-
-            pt.Role = new string_Stype(pt, "Role");
-
-            pt.StreetAddress = new List<AddressType>();//TODO: Need separate method(s) for this
-            pt.Identifier = new List<IdentifierType>();
-
-            pt.Usage = new string_Stype(pt, "Usage");
-
-            pt.WebURL = new List<anyURI_Stype>();//TODO: Need separate method(s) for this
-
-            return pt;
-        }
-
-
-    }
+    {    }//Empty
     public interface IEvent : IHasActionElseGroup  //Used for events (PredActionType)
-    {
-        PredEvalAttribValuesType AddAttributeVal()
-        {
-            var pgt = (PredActionType)this;
-            var av = new PredEvalAttribValuesType(pgt);
-            pgt.Items.Add(av);
-            return av;
-        }
-        ScriptBoolFuncActionType AddScriptBoolFunc();
-        CallFuncBoolActionType AddCallBoolFunction();
-        MultiSelectionsActionType AddMultiSelections();
-        SelectionSetsActionType AddSelectionSets();
-        PredSelectionTestType AddSelectionTest();
-        //PredAlternativesType AddItemAlternatives();
-        RuleSelectMatchingListItemsType SelectMatchingListItems();
-        PredGuardType AddGroup();
-    }
-    /// <summary>
-    /// //Used for guards, e.g., SelectIf, DeselectIf
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IPredGuard //used by Guards on ListItem, Button
-    {
-    }//Empty
+    { }//Empty
+    public interface IPredGuard
+        {   //used by Guards on ListItem, Button 
+        }//Empty
     public interface IRule 
     {    }//Empty
     public interface IHasConditionalActionsNode
@@ -1241,57 +938,37 @@ namespace SDC.Schema
     }//Empty
     public interface ISendMessage_Report
     {
-        //List<ExtensionBaseType> Items
-        //Supports ActSendMessageType and ActSendReportType
-        EmailAddressType AddEmail();
-        PhoneNumberType AddFax();
-        CallFuncActionType AddWebService();
-    }    
+
+    }  //Empty  
     public interface ICallFuncBase
     {
-        //anyURI_Stype Item (choice)
-        anyURI_Stype AddFunctionURI();
-        anyURI_Stype AddLocalFunctionName();        
 
-        //List<ExtensionBaseType> Items
-        ListItemParameterType AddListItemParameterRef();
-        ParameterItemType AddParameterRef();
-        ParameterValueType AddParameterValue();
 
-    }
+    }//Empty
     public interface IScriptBoolFuncAction
     {
-        //ExtensionBaseType[] Items 
-         ActionsType AddActions();
-         PredActionType AddConditionalActions();
-         PredActionType AddElse();
-    }
+
+    }//Empty
     public interface ICallFuncBoolAction: ICallFuncBase, IScriptBoolFuncAction
     {
         //ExtensionBaseType[] Items1
         //see IScriptBoolFuncAction, which is identical except that this interface implementation must use "Item1", not "Item"
         //Implementations using Item1:
-        ActionsType  AddActionsI();
-        PredActionType AddConditionalActionsI();
-        PredActionType AddElseI();
 
-    }
+
+    }//Empty
     public interface IValidationTests
     {
         //List<FuncBoolBaseType> Items        
-         PredAlternativesType AddItemAlternatives();
-         ValidationTypeSelectionSets AddSelectionSets();
-         ValidationTypeSelectionTest AddSelectionTest();
-    }
+
+    }//Empty
     public interface IClone
     {
-        BaseType CloneSubtree();
-        BaseType CloneSubtree(BaseType top)
-        { throw new NotImplementedException(); }
-    }
-    public interface IHTMLPackage
+
+    }//Empty
+    public interface IHtmlPackage
     {//On SDCPackage.HTMLPackage
-        base64Binary_Stype AddHTMLbase64();
+        
     }
     public interface IRegistrySummary
     {

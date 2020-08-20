@@ -1840,7 +1840,6 @@ XmlElementName: {XmlElementName}
             return action;
         }
     } 
-
     public static class ITopNodeExtensions
     {
         public static List<BaseType> ReorderNodes(this ITopNode itn)
@@ -2378,74 +2377,362 @@ XmlElementName: {XmlElementName}
     {
 
     } //Empty
+
+
     public static class IExtensionBaseExtensions
     {
+        public static bool HasExtensionBaseMembers(this IExtensionBase ieb) //Has Extension, Property or Comment sub-elements
+        {
+            var ebt = ieb as ExtensionBaseType;
+            if (ebt?.Property?.Count() > 0)
+            {
+                foreach (var n in ebt.Property)
+                { if (n != null) return true; }
+            }
+            if (ebt?.Comment?.Count() > 0)
+            {
+                foreach (var n in ebt.Comment)
+                { if (n != null) return true; }
+            }
+            if (ebt?.Extension?.Count() > 0)
+            {
+                foreach (var n in ebt.Extension)
+                { if (n != null) return true; }
+            }
+            return false;
+        }
+        public static ExtensionType AddExtensionI(this IExtensionBase ieb, int insertPosition = -1)
+        {
+            var ebtParent = ieb as ExtensionBaseType;
+            var e = new ExtensionType(ebtParent);
+            if (ebtParent.Extension == null) ebtParent.Extension = new List<ExtensionType>();
+            var count = ebtParent.Extension.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            ebtParent.Extension.Insert(insertPosition, e);
+            return e;
+        }
+        public static CommentType AddCommentI(this IExtensionBase ieb, int insertPosition = -1)
+        {
+            var ebtParent = ieb as ExtensionBaseType;
+            if (ebtParent.Comment == null) ebtParent.Comment = new List<CommentType>();
+            CommentType ct = null;
+            var count = ebtParent.Comment.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            ebtParent.Comment.Insert(insertPosition, ct);  //return new empty Comment object for caller to fill
+            return ct;
+        }
+        public static PropertyType AddPropertyI(this IExtensionBase ieb, int insertPosition = -1)
+        {
+            var ebtParent = ieb as ExtensionBaseType;
+            var prop = new PropertyType(ebtParent);
+            if (ebtParent.Property == null) ebtParent.Property = new List<PropertyType>();
+            var count = ebtParent.Property.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            ebtParent.Property.Insert(insertPosition, prop);
 
-    } //Empty
+            return prop;
+        }
+    }
     public static class IExtensionBaseTypeMemberExtensions
     {
+        //!+TODO: Handle Dictionary updates
+        public static bool MoveI(this IExtensionBaseTypeMember iebt, ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
+        {
+            if (extension == null) return false;
 
-    } //Empty
+            var ebt = (ExtensionBaseType)(extension.ParentNode);  //get the list that comment is attached to          
+            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
+            bool b = ebt.Extension.Remove(extension);
+            if (b) ebtTarget.Extension.Insert(newListIndex, extension);
+            var count = ebtTarget.Extension.Count;
+            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
+            if (ebtTarget.Extension[newListIndex] == extension) return true; //success
+            return false;
+        }
+        public static bool MoveI(this IExtensionBaseTypeMember iebt, CommentType comment, ExtensionBaseType ebtTarget, int newListIndex)
+        {
+            if (comment == null) return false;
+
+            var ebt = (ExtensionBaseType)(comment.ParentNode);  //get the list that comment is attached to          
+            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
+            bool b = ebt.Comment.Remove(comment);
+            var count = ebt.Comment.Count;
+            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
+            if (b) ebtTarget.Comment.Insert(newListIndex, comment);
+            if (ebtTarget.Comment[newListIndex] == comment) return true; //success
+            return false;
+        }
+        public static bool MoveI(this IExtensionBaseTypeMember iebt, PropertyType property, ExtensionBaseType ebtTarget, int newListIndex)
+        {
+            if (property == null) return false;
+
+            var ebt = (ExtensionBaseType)(property.ParentNode);  //get the list that comment is attached to          
+            if (ebtTarget == null) ebtTarget = ebt;  //attach to the original parent
+            bool b = ebt.Property.Remove(property);
+            var count = ebt.Property.Count;
+            if (newListIndex < 0 || newListIndex > count) newListIndex = count;
+            if (b) ebtTarget.Property.Insert(newListIndex, property);
+            if (ebtTarget.Property[newListIndex] == property) return true; //success
+            return false;
+        }
+    } 
     public static class IIdentifiedExtensionTypeExtensions
     {
-
-    } //Empty
+        public static bool IsParentNodeAllowed<T>(this IIdentifiedExtensionType iet, T target) where T : notnull, IdentifiedExtensionType
+        { throw new NotImplementedException(); }
+    } 
     public static class IMoveRemoveExtensions
     {
-
-    } //Empty
+        public static bool Remove(this IMoveRemove mr)
+        { throw new NotImplementedException(); }
+        public static bool Move(this IMoveRemove mr, BaseType targetProperty, int newListIndex = -1)
+        { throw new NotImplementedException(); }
+        public static bool IsParentNodeAllowed(this IMoveRemove mr, BaseType targetProperty, out object pObj, int newListIndex = -1)
+        { throw new NotImplementedException(); }
+    }
     public static class INavigateExtensions
     {
+        public static BaseType GetNodeFirstSib(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodeLastSib(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodePreviousSib(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodeNextSib(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodePrevious(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodeNext(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodeFirstChild(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodeLastChild(this INavigate n)
+        { throw new NotImplementedException(); }
+        public static BaseType GetNodeLastDescendant(this INavigate n)
+        { throw new NotImplementedException(); }
 
-    } //Empty
+        public static PropertyInfoMetadata GetPropertyInfo(this INavigate n)
+        { return SdcUtil.GetPropertyInfo(n as BaseType); }
+
+    }
     public static class IResponseExtensions
     {
+        //UnitsType AddUnits(ResponseFieldType rfParent);
+        public static UnitsType AddUnits(this IResponse r, ResponseFieldType rfParent)
+        {
+            UnitsType u = new UnitsType(rfParent);
+            rfParent.ResponseUnits = u;
+            return u;
+        }
 
-    } //Empty
+        public static void RemoveUnits(this IResponse r, ResponseFieldType rfParent) => rfParent.ResponseUnits = null;
+        public static BaseType DataTypeObject { get; set; }
+        public static RichTextType AddTextAfterResponse { get; set; }
+    }
     public static class IResponseFieldExtensions
     {
-
-    } //Empty
+        public static CallFuncActionType AddCallSetValue(this IResponseField rf)
+        { throw new NotImplementedException(); }
+        public static ScriptCodeAnyType AddSetValue(this IResponseField rf)
+        { throw new NotImplementedException(); }
+    }
     public static class IValExtensions
-    {
+    {//Implemented by data types, which have a strongly-typed val attribute.  Not implemented by anyType, XML, or HTML  
 
     } //Empty
     public static class IValNumericExtensions
-    {
+    {//Implemented by numeric data types, which have a strongly-type val attribute.
 
     } //Empty
     public static class IValDateTimeExtensions
-    {
+    {//Implemented by DateTime data types, which have a strongly-type val attribute.
 
     } //Empty
     public static class IValIntegerExtensions
-    {
-
+    {//Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
     } //Empty
     public static class IIdentifiersExtensions
     {
-
-    } //Empty
+        public static string GetNewCkey(this IIdentifiers i) 
+        { throw new NotImplementedException(); }
+    }
     public static class IAddCodingExtensions
     {
+        public static CodingType AddCodedValue(this IAddCoding ac, DisplayedType dt, int insertPosition)
+        {
+            throw new NotImplementedException();
+        }
 
-    } //Empty
-    public static class IAddPersonExtensions
+        public static CodingType AddCodedValue(this IAddCoding ac, LookupEndPointType lep, int insertPosition)
+        {
+            throw new NotImplementedException();
+        }
+        public static UnitsType AddUnits(this IAddCoding ac, CodingType ctParent)
+        {
+            UnitsType u = new UnitsType(ctParent);
+            ctParent.Units = u;
+            return u;
+        }
+    }
+    public static class IAddPersonExtensions    
     {
+        public static PersonType AddPerson(this IAddPerson ap)
+        { throw new NotImplementedException(); }
+        internal static PersonType AddPersonI(this IAddPerson ap, ContactType contactParent)
+        {
 
-    } //Empty
+            var newPerson = new PersonType(contactParent);
+            contactParent.Person = newPerson;
+
+            AddPersonItems(ap, newPerson);  //AddFillPersonItems?
+
+            return newPerson;
+        }
+        internal static PersonType AddPersonI(this IAddPerson ap, DisplayedType dtParent, int insertPosition)
+        {
+            List<ContactType> contactList;
+            if (dtParent.Contact == null)
+            {
+                contactList = new List<ContactType>();
+                dtParent.Contact = contactList;
+            }
+            else
+                contactList = dtParent.Contact;
+            var newContact = new ContactType(dtParent); //newContact will contain a person child
+            var count = contactList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            contactList.Insert(insertPosition, newContact);
+
+            var newPerson = AddPersonI(ap, newContact);
+
+            return newPerson;
+        }
+        internal static PersonType AddContactPersonI(this IAddPerson ap, OrganizationType otParent, int insertPosition)
+        {
+            List<PersonType> contactPersonList;
+            if (otParent.ContactPerson == null)
+            {
+                contactPersonList = new List<PersonType>();
+                otParent.ContactPerson = contactPersonList;
+            }
+            else
+                contactPersonList = otParent.ContactPerson;
+
+            var newPerson = new PersonType(otParent);
+            AddPersonItems(ap, newPerson);
+
+            var count = contactPersonList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            contactPersonList.Insert(insertPosition, newPerson);
+
+            return newPerson;
+        }
+        internal static PersonType AddPersonItems(this IAddPerson ap, PersonType pt)  //AddFillPersonItems, make this abstract and move to subclass?
+        {
+            pt.PersonName = new NameType(pt);//TODO: Need separate method(s) for this
+            //pt.Alias = new NameType();
+            //pt.PersonName.FirstName.val = (string)drFormDesign["FirstName"];  //TODO: replace with real data
+            //pt.PersonName.LastName.val = (string)drFormDesign["LastName"];  //TODO: replace with real data
+
+            pt.Email = new List<EmailType>();//TODO: Need separate method(s) for this
+            var email = new EmailType(pt);//TODO: Need separate method(s) for this
+            pt.Email.Add(email);
+
+            pt.Phone = new List<PhoneType>();//TODO: Need separate method(s) for this
+            pt.Job = new List<JobType>();//TODO: Need separate method(s) for this
+
+            pt.Role = new string_Stype(pt, "Role");
+
+            pt.StreetAddress = new List<AddressType>();//TODO: Need separate method(s) for this
+            pt.Identifier = new List<IdentifierType>();
+
+            pt.Usage = new string_Stype(pt, "Usage");
+
+            pt.WebURL = new List<anyURI_Stype>();//TODO: Need separate method(s) for this
+
+            return pt;
+        }
+    } 
     public static class IAddContactExtensions
     {
+        public static ContactType AddContact(this IAddContact ac, FileType ftParent, int insertPosition)
+        {
+            ContactsType c;
+            if (ftParent.Contacts == null)
+                c = AddContactsListToFileType(ac, ftParent);
+            else
+                c = ftParent.Contacts;
+            var ct = new ContactType(c);
+            var count = c.Contact.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            c.Contact.Insert(insertPosition, ct);
+            //TODO: Need to be able to add multiple people/orgs by reading the data source or ORM
+            var p = (ac as IAddPerson).AddPersonI(ct);
+            var org = (ac as IAddOrganization).AddOrganizationI(ct);
 
-    } //Empty
+            return ct;
+        }
+        private static ContactsType AddContactsListToFileType(this IAddContact ac, FileType ftParent)
+        {
+            if (ftParent.Contacts == null)
+                ftParent.Contacts = new ContactsType(ftParent);
+
+            return ftParent.Contacts; //returns a .NET List<ContactType>
+
+        }
+    }
     public static class IAddOrganizationExtension
     {
+        public static OrganizationType AddOganization(this IAddOrganization ao)
+        { throw new NotImplementedException(); }
 
-    } //Empty
-    public static class IPredGuardExtensions //used by Guards on ListItem, Button
+        public static  OrganizationType AddOrganizationI(this IAddOrganization ao, ContactType contactParent)
+        {
+            var ot = new OrganizationType(contactParent);
+            contactParent.Organization = ot;
+
+            return ot;
+        }
+        public static OrganizationType AddOrganizationI(this IAddOrganization ao, JobType jobParent)
+        {
+            var ot = new OrganizationType(jobParent);
+            jobParent.Organization = ot;
+
+            return ot;
+        }
+        public static OrganizationType AddOrganizationItemsI(this IAddOrganization ao, OrganizationType ot)
+        { throw new NotImplementedException(); }
+    }
+
+    public static class IEventExtension //Used for events (PredActionType)
+    {
+        public static PredEvalAttribValuesType AddAttributeVal(this IEvent ae)
+        {
+            var pgt = (PredActionType)ae;
+            var av = new PredEvalAttribValuesType(pgt);
+            pgt.Items.Add(av);
+            return av;
+        }
+        public static ScriptBoolFuncActionType AddScriptBoolFunc(this IEvent ae)
+        { throw new NotImplementedException(); }
+        public static CallFuncBoolActionType AddCallBoolFunction(this IEvent ae)
+        { throw new NotImplementedException(); }
+        public static MultiSelectionsActionType AddMultiSelections(this IEvent ae)
+        { throw new NotImplementedException(); }
+        public static SelectionSetsActionType AddSelectionSets(this IEvent ae)
+        { throw new NotImplementedException(); }
+        public static PredSelectionTestType AddSelectionTest(this IEvent ae)
+        { throw new NotImplementedException(); }
+        //PredAlternativesType AddItemAlternatives();
+        public static RuleSelectMatchingListItemsType SelectMatchingListItems(this IEvent ae)
+        { throw new NotImplementedException(); }
+        public static PredGuardType AddGroup(this IEvent ae)
+        { throw new NotImplementedException(); }
+    }
+    public static class IPredGuardExtensions //used by Guards on ListItem, Button, e.g., SelectIf, DeselectIf
     {
         public static PredEvalAttribValuesType AddAttributeVal(this IPredGuard ipg)
-        {
+        {            
             var pgt = (PredGuardType)ipg;
             var av = new PredEvalAttribValuesType(pgt);
             pgt.Items.Add(av);
@@ -2533,9 +2820,7 @@ XmlElementName: {XmlElementName}
         }
     } 
     public static class IHasActionElseGroupExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IHasElseNodeExtensions
     {
         public static PredActionType AddElseNode(this IHasElseNode hen)
@@ -2567,37 +2852,75 @@ XmlElementName: {XmlElementName}
         }
     }
     public static class IActionsMemberExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class ISendMessage_ReportExtensions
     {
-
-    } //Empty
+        //List<ExtensionBaseType> Items
+        //Supports ActSendMessageType and ActSendReportType
+        public static EmailAddressType AddEmail(this ISendMessage_Report smr)
+        { throw new NotImplementedException(); }
+        public static PhoneNumberType AddFax(this ISendMessage_Report smr)
+        { throw new NotImplementedException(); }
+        public static CallFuncActionType AddWebService(this ISendMessage_Report smr)
+        { throw new NotImplementedException(); }
+    }
     public static class ICallFuncBaseExtensions
     {
+        //anyURI_Stype Item (choice)
+        public static anyURI_Stype AddFunctionURI(this ICallFuncBase cfb)
+        { throw new NotImplementedException(); }
+        public static anyURI_Stype AddLocalFunctionName(this ICallFuncBase cfb)
+        { throw new NotImplementedException(); }
 
-    } //Empty
+        //List<ExtensionBaseType> Items
+        public static ListItemParameterType AddListItemParameterRef(this ICallFuncBase cfb)
+        { throw new NotImplementedException(); }
+        public static ParameterItemType AddParameterRef(this ICallFuncBase cfb)
+        { throw new NotImplementedException(); }
+        public static ParameterValueType AddParameterValue(this ICallFuncBase cfb)
+        { throw new NotImplementedException(); }
+    }
     public static class IScriptBoolFuncActionExtensions
     {
-
-    } //Empty
+        //ExtensionBaseType[] Items 
+        public static ActionsType AddActions(this IScriptBoolFuncAction sbfa)
+        { throw new NotImplementedException(); }
+        public static PredActionType AddConditionalActions(this IScriptBoolFuncAction sbfa)
+        { throw new NotImplementedException(); }
+        public static PredActionType AddElse(this IScriptBoolFuncAction sbfa)
+        { throw new NotImplementedException(); }
+    } 
     public static class ICallFuncBoolActionExtensions
     {
-
-    } //Empty
+        //ExtensionBaseType[] Items1
+        //see IScriptBoolFuncAction, which is identical except that this interface implementation must use "Item1", not "Item"
+        //Implementations using Item1:
+        public static ActionsType AddActionsI(this ICallFuncBoolAction cfba)
+        { throw new NotImplementedException(); }
+        public static PredActionType AddConditionalActionsI(this ICallFuncBoolAction cfba)
+        { throw new NotImplementedException(); }
+        public static PredActionType AddElseI(this ICallFuncBoolAction cfba)
+        { throw new NotImplementedException(); }
+    }
     public static class IValidationTestsExtensions
     {
-
-    } //Empty
-    public static class ICloneExtensions
+        public static PredAlternativesType AddItemAlternatives(this IValidationTests vt)
+        { throw new NotImplementedException(); }
+        public static ValidationTypeSelectionSets AddSelectionSets(this IValidationTests vt)
+        { throw new NotImplementedException(); }
+        public static ValidationTypeSelectionTest AddSelectionTest(this IValidationTests vt)
+        { throw new NotImplementedException(); }
+    }
+    public static class ICloneExtensions// Probably belongs on IBaseType 
     {
-
-    } //Empty
+        public static BaseType CloneSubtree(this IClone c, BaseType top)
+        { throw new NotImplementedException(); }
+    }
     public static class IHtmlPackageExtensions
     {
-
-    } //Empty
+        public static base64Binary_Stype AddHTMLbase64(this IHtmlPackage hp)
+        { throw new NotImplementedException(); }
+    }
     public static class IRegistrySummaryExtensions
     {
         //BaseType[] Items
@@ -2618,8 +2941,6 @@ XmlElementName: {XmlElementName}
         public static FileType AddServiceLevelAgreement(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
     } 
-
-
 
 }
 
