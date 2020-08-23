@@ -62,20 +62,8 @@
             This interface is require to support generic classes that must handle the creation ofthe 
             ChildItems element, which holds List of type IdentifiedItemType
             </summary>
+            
         </member>
-        <member name="T:SDC.Schema.IMoveRemove">
-            <summary>
-            Move and Remove methods for Comment, Extension and Property
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="T:SDC.Schema.IPredGuard">
-            <summary>
-            //Used for guards, e.g., SelectIf, DeselectIf
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:SDC.Schema.IActionsMember.Move(SDC.Schema.ExtensionBaseType,System.Int32)" -->
         <member name="T:SDC.Schema.ITopNode">
             <summary>
             </summary>
@@ -1013,7 +1001,7 @@
             Question.
             </summary>
         </member>
-        <member name="P:SDC.Schema.ListItemType.ci">
+        <member name="P:SDC.Schema.ListItemType.ChildItemsNode">
              <summary>
              The ChildItems node replaces "Item" (MainNodesType), and may contain:
             "ButtonAction", typeof(ButtonItemType),

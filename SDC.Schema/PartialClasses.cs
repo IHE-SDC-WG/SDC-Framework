@@ -59,12 +59,6 @@ namespace SDC.Schema
         { return (this as IFormDesign).AddFooter(); }
         public SectionItemType AddHeader()
         { return (this as IFormDesign).AddHeader(); }
-        public bool RemoveFooter()
-        { (this as IFormDesign).RemoveFooter(); return true; }
-        public bool RemoveHeader()
-        { (this as IFormDesign).RemoveHeader(); return true; }
-        public bool RemoveBody()
-        { (this as IFormDesign).RemoveBody(); return true; }
         public RulesType AddRules()
         { throw new NotImplementedException(); }
         #endregion
@@ -408,9 +402,6 @@ namespace SDC.Schema
         [JsonIgnore]
         public Dictionary<Guid, List<BaseType>> ChildNodes { get; private set; } = new Dictionary<Guid, List<BaseType>>();
 
-        public List<BaseType> GetSortedNodesList() => ((ITopNode)this).GetSortedNodesList();
-        public ObservableCollection<BaseType> GetSortedNodesObsCol() => ((ITopNode)this).GetSortedNodesObsCol();
-
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool GlobalAutoNameFlag { get; set; } = true;
@@ -493,9 +484,6 @@ namespace SDC.Schema
         public SectionItemType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode, id)
         { }
 
-
-
-
         #region IChildItemsParent Implementation
         private IChildItemsParent<SectionItemType> ci => this as IChildItemsParent<SectionItemType>;
         [System.Xml.Serialization.XmlIgnore]
@@ -503,41 +491,10 @@ namespace SDC.Schema
         public ChildItemsType ChildItemsNode
         {
             get { return this.Item; }
-            set { this.Item = value; }
-        }
-        public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { //return AddChildItem<SectionItemType, SectionItemType>(this, id, insertPosition); 
-            return ci.AddChildSectionI(id, insertPosition); //test of using "this" in the interface
-            //return sdcTreeBuilder.AddChildSection<SectionItemType>(this, id, insertPosition);
-        }
-        public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        {
-            return ci.AddChildQuestionI(qType, id, insertPosition);
-            //return sdcTreeBuilder.AddChildQuestion<SectionItemType>(this, qType, id); 
-        }
-        public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        {
-            return ci.AddChildInjectedFormI(id, insertPosition);
-            //return sdcTreeBuilder.AddChildInjectedForm<SectionItemType>(this, id); 
-        }
-        public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        {
-            return ci.AddChildButtonActionI(id, insertPosition);
-            //return sdcTreeBuilder.AddChildButtonAction<SectionItemType>(this, id); 
-        }
-        public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        {
-            return ci.AddChildDisplayedItemI(id, insertPosition);
-            //return sdcTreeBuilder.AddChildDisplayedItem<SectionItemType>(this, id); 
-        }
-        public bool HasChildItems() => ci.HasChildItems(); //sdcTreeBuilder.HasChildItems(this);
-
-        //public IChildItem AddChildItem(IdentifiedExtensionType childType, string childID = "", int insertPosition = -1)
-        //{ return sdcTreeBuilder.AddChildItem<SectionItemType, ButtonItemType>(this, childID, insertPosition); }
+            set { this.Item = value;}
+        }        
         #endregion
     }
-
-
     #region QAS
 
     #region Question
@@ -563,43 +520,7 @@ namespace SDC.Schema
             get { return this.Item1; }
             set { this.Item1 = value; }
         }
-        public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return ci.AddChildSectionI(id, insertPosition); }
-        public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return ci.AddChildQuestionI(qType, id, insertPosition); }
-        public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return ci.AddChildInjectedFormI(id, insertPosition); }
-        public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return ci.AddChildButtonActionI(id, insertPosition); }
-        public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return ci.AddChildDisplayedItemI(id, insertPosition); }
-        public bool HasChildItems() => ci.HasChildItems();
         #endregion
-
-        #region IQuestionItem
-
-        private IQuestionItem qi { get => this; }
-
-        public QuestionEnum GetQuestionSubtype() => qi.GetQuestionSubtype();
-        public ListItemType AddListItem(string id = "", int insertPosition = -1) => qi.AddListItem(id, insertPosition);
-        public ListItemType AddListItemResponse(string id = "", int insertPosition = -1) =>
-            qi.AddListItemResponseI(id, insertPosition);
-        public DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1) =>
-            qi.AddDisplayedTypeToListI(id, insertPosition);
-        public QuestionItemType ConvertToQR(bool testOnly = false) => qi.ConvertToQR_I(testOnly);
-        public QuestionItemType ConvertToQS(bool testOnly = false) => qi.ConvertToQS_I(testOnly);
-        public QuestionItemType ConvertToQM(int maxSelections = 0, bool testOnly = false) => qi.ConvertToQM_I(maxSelections, testOnly);
-        public DisplayedType ConvertToDI(bool testOnly = false) => qi.ConvertToDI_I(testOnly);
-        public QuestionItemType ConvertToSection(bool testOnly = false) => qi.ConvertToSectionI(testOnly);
-        public QuestionItemType ConvertToLookup(bool testOnly = false) => qi.ConvertToLookupI(testOnly);
-
-        //public ListItemType AddListItem(int insertPosition = -1) => sdcTreeBuilder.AddListItem(this?.ListField_Item?.List);
-        //public ListItemType AddListItemResponse(int insertPosition = -1) => sdcTreeBuilder.AddListItemResponse(this?.ListField_Item?.List);
-        //public DisplayedType AddDisplayedTypeToList(int insertPosition = -1) => sdcTreeBuilder.AddDisplayedTypeToList(this?.ListField_Item?.List);
-
-        #endregion
-
-
 
     }
 
@@ -624,9 +545,7 @@ namespace SDC.Schema
             set { this.Item = value; }
         }
 
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public QuestionEnum QuestionType { get; set; }
+
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ResponseFieldType ResponseField_Item
@@ -639,12 +558,7 @@ namespace SDC.Schema
             }
             set { this.Item = value; }
         }
-
-        //AddListField
-        //AddList or AddLookupField or AddResponseField
-        //AddListItem
-
-    }
+   }
     #endregion
 
     #region QAS ListItems and Lookups
@@ -669,19 +583,6 @@ namespace SDC.Schema
             get { return this.Items; }
             set { this.Items = value; }
         }
-
-        #region IQuestionList
-        private IQuestionList ql { get => this; }
-        public ListItemType AddListItem(string id = "", int insertPosition = -1) =>
-            ql.AddListItemI(this, id, insertPosition);
-
-        public ListItemType AddListItemResponse(string id = "", int insertPosition = -1) =>
-         ql.AddListItemResponseI(this, id, insertPosition);
-
-        public DisplayedType AddDisplayedTypeToList(string id = "", int insertPosition = -1) =>
-            ql.AddDisplayedItemToListI(this, id, insertPosition = -1);
-
-        #endregion
     }
 
     public partial class ListFieldType : IListField
@@ -740,18 +641,8 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
 
-        #region IListItem
-
-        private IListItem li { get => this; }
-
-        public ListItemResponseFieldType AddListItemResponseField() => li.AddListItemResponseField();
-        public EventType AddOnDeselect() => li.AddOnDeselect();
-        public EventType AddOnSelect() => li.AddOnSelect();
-        public PredGuardType AddSelectIf() => li.AddSelectIf();
-        public PredGuardType AddDeSelectIf() => li.AddDeSelectIf();
-        #endregion
-
         #region IChildItemsParent
+
         /// <summary>
         /// The ChildItems node replaces "Item" (MainNodesType), and may contain:
         ///"ButtonAction", typeof(ButtonItemType),
@@ -762,42 +653,15 @@ namespace SDC.Schema
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        private IChildItemsParent<ListItemType> ci { get => this as IChildItemsParent<ListItemType>; }
-        [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnore]
         public ChildItemsType ChildItemsNode
         {
             get { return this.Item; }
             set { this.Item = value; }
         }
-        public SectionItemType AddChildSection(string id = "", int insertPosition = -1)
-        { return ci.AddChildSectionI(id, insertPosition); }
-        public QuestionItemType AddChildQuestion(QuestionEnum qType, string id = "", int insertPosition = -1)
-        { return ci.AddChildQuestionI(qType, id, insertPosition); }
-        public InjectFormType AddChildInjectedForm(string id = "", int insertPosition = -1)
-        { return ci.AddChildInjectedFormI(id, insertPosition); }
-        public ButtonItemType AddChildButtonAction(string id = "", int insertPosition = -1)
-        { return ci.AddChildButtonActionI(id, insertPosition); }
-        public DisplayedType AddChildDisplayedItem(string id = "", int insertPosition = -1)
-        { return ci.AddChildDisplayedItemI(id, insertPosition); }
-        public bool HasChildItems() => ci.HasChildItems();
+
         #endregion
 
 
-        #region IQuestionListMember
-        //IQuestionListMember qlm { get => this as IQuestionListMember; }
-        ////hide inherited with "new" IQuestionListMember from DisplayedType
-        //public bool Remove(bool removeDecendants = false) => qlm.RemoveI(removeDecendants);
-        //public bool MoveToList(ListType targetList, out string errList, int newListIndex = -1)
-        //    => qlm.MoveToListI(targetList, out errList, newListIndex);
-        //public bool MoveToList(ListItemType dropTarget, out string errList, int newListIndex = -1)
-        //    => qlm.MoveToListI(dropTarget.ParentNode as ListType, out errList, newListIndex);
-        //public bool MoveinList(out string errList, int newListIndex = -1)
-        //    => qlm.MoveInListI(out errList, newListIndex);
-        //public ListItemType ConvertToLI(bool testOnly = false) => qlm.ConvertToLI_I(testOnly);
-        //public DisplayedType ConvertToDI(bool testOnly = false) => qlm.ConvertToDI_I(testOnly);
-        //public ListItemType ConvertToLIR(bool testOnly = false) => qlm.ConvertToLIR_I(testOnly);
-        #endregion
     }
 
     public partial class ListItemBaseType
@@ -812,10 +676,6 @@ namespace SDC.Schema
             this._repeat = "0";
         }
 
-        //[NonSerialized]
-        //[System.Xml.Serialization.XmlIgnore]
-        //[JsonIgnore]
-        //public Dictionary<string, ListItemType> ListItems;
 
     }
 
@@ -3290,14 +3150,14 @@ namespace SDC.Schema
             SetNames(elementName, elementPrefix);
         }
 
-        public PersonType AddPerson()
-        {
-            return (this as IAddPerson).AddPersonI(this);
-        }
-        public OrganizationType AddOganization()
-        {
-            return (this as IAddOrganization).AddOrganizationI(this);
-        }
+        //public PersonType AddPerson()
+        //{
+        //    return (this as IAddPerson).AddPersonI(this);
+        //}
+        //public OrganizationType AddOganization()
+        //{
+        //    return (this as IAddOrganization).AddOrganizationI(this);
+        //}
 
     }
 

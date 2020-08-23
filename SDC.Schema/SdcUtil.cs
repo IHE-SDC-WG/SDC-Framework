@@ -1198,9 +1198,6 @@ XmlElementName: {XmlElementName}
             return dict;
         }
 
-
-
-
         public static BaseType GetLastDescendantNode(BaseType n)
         {
             //var nodes = n.TopNode.Nodes;
@@ -1642,8 +1639,6 @@ XmlElementName: {XmlElementName}
             return doc.OuterXml;
         }
 
-
-
         public static string XmlFormat(string Xml)
         {
             return System.Xml.Linq.XDocument.Parse(Xml).ToString();  //prettify the minified doc XML 
@@ -1740,7 +1735,7 @@ XmlElementName: {XmlElementName}
 
             return null;
         }
-        public static bool X_IsItemChangeAllowed(this IdentifiedExtensionType iet, IdentifiedExtensionType targetType)
+        public static bool X_IsItemChangeAllowed_(this IdentifiedExtensionType iet, IdentifiedExtensionType targetType)
         {            
             throw new NotImplementedException();
 
@@ -2294,89 +2289,629 @@ XmlElementName: {XmlElementName}
 
 
     public static class INewTopLevelExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IPackageExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IDataElementExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IDemogFormExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IMapExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IFormDesignExtensions
     {
+        //Default Implementations
+        public static SectionItemType AddHeader(this IFormDesign ifd)
+        {
+            var fd = (ifd as FormDesignType);
+            if (fd.Header == null)
+            {
+                fd.Header = new SectionItemType(fd, fd.ID + "_Header");  //Set a default ID, in case the database template does not have a body
+                fd.Header.name = "Header";
+            }
+            return fd.Header;
+        }
+        public static SectionItemType AddBody(this IFormDesign ifd)
+        {
+            var fd = (ifd as FormDesignType);
+            if (fd.Body == null)
+            {
+                fd.Body = new SectionItemType(fd, fd.ID + "_Body");  //Set a default ID, in case the database template does not have a body
+                fd.Body.name = "Body";
+            }
+            return fd.Body;
+        }
+        public static SectionItemType AddFooter(this IFormDesign ifd)
+        {
+            var fd = (ifd as FormDesignType);
+            if (fd.Footer == null)
+            {
+                fd.Footer = new SectionItemType(fd, fd.ID + "_Footer");  //Set a default ID, in case the database template does not have a body
+                fd.Footer.name = "Footer";
+            }
+            return fd.Footer;
+        }
 
     } //Empty
     public static class IRetrieveFormPackageExtensions
     {
-
+        public static LinkType AddFormURL_(this IRetrieveFormPackage rfp)
+        { throw new NotImplementedException();  }
+        public static HTMLPackageType AddHTMLPackage_(this IRetrieveFormPackage rfp)
+        { throw new NotImplementedException(); }
+        public static XMLPackageType AddXMLPackage_(this IRetrieveFormPackage rfp)
+        { throw new NotImplementedException(); }
     } //Empty
     public static class IChildItemsParentExtensions
-    {
+    {        
+        public static SectionItemType AddChildSection<T>(this IChildItemsParent<T> T_Parent, string id, int insertPosition) where T : BaseType, IChildItemsParent<T>
+        {
+            var childItems = AddChildItemsNode(T_Parent);
+            var childItemsList = childItems.ChildItemsList;
+            var sNew = new SectionItemType(childItems, id);
+            var count = childItemsList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            childItemsList.Insert(insertPosition, sNew);
 
-    } //Empty
+            return sNew;
+        }
+        public static QuestionItemType AddChildQuestion<T>(this IChildItemsParent<T> T_Parent, QuestionEnum qType, string id, int insertPosition = -1) where T : BaseType, IChildItemsParent<T>
+        {
+            var childItems = AddChildItemsNode(T_Parent);
+            var childItemsList = childItems.ChildItemsList;
+            var qNew = new QuestionItemType(childItems, id);
+            ListFieldType lf;
+            var count = childItemsList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            childItemsList.Insert(insertPosition, qNew);
+
+            switch (qType)
+            {
+                case QuestionEnum.QuestionSingle:
+                    AddListToListField( AddListFieldToQuestion( qNew));
+                    break;
+                case QuestionEnum.QuestionMultiple:
+                    AddListToListField(AddListFieldToQuestion(qNew));
+                    qNew.ListField_Item.maxSelections = 0;
+                    break;
+                case QuestionEnum.QuestionFill:
+                    AddQuestionResponseField(qNew);
+                    break;
+                case QuestionEnum.QuestionLookupSingle:
+                    lf = AddListFieldToQuestion(qNew);
+                    AddEndpointToListField(lf);
+                    break;
+                case QuestionEnum.QuestionLookupMultiple:
+                    lf = AddListFieldToQuestion(qNew);
+                    AddEndpointToListField(lf);
+                    break;
+                default:
+                    throw new NotSupportedException($"{qType} is not supported");
+            }
+
+            return qNew;
+        }
+
+        public static DisplayedType AddChildDisplayedItem<T>(this IChildItemsParent<T> T_Parent, string id, int insertPosition = -1) where T : BaseType, IChildItemsParent<T>
+        {
+            var childItems = AddChildItemsNode(T_Parent);
+            var childItemsList = childItems.ChildItemsList;
+            var dNew = new DisplayedType(childItems, id);
+            var count = childItemsList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            childItemsList.Insert(insertPosition, dNew);
+
+            return dNew;
+        }
+        public static ButtonItemType AddChildButtonAction<T>(this IChildItemsParent<T> T_Parent, string id, int insertPosition = -1) where T : BaseType, IChildItemsParent<T>
+        {
+            var childItems = AddChildItemsNode(T_Parent);
+            var childItemsList = childItems.ChildItemsList;
+            var btnNew = new ButtonItemType(childItems, id);
+            var count = childItemsList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            childItemsList.Insert(insertPosition, btnNew);
+
+            // TODO: Add AddButtonActionTypeItems(btnNew);
+            return btnNew;
+        }
+        public static InjectFormType AddChildInjectedForm<T>(this IChildItemsParent<T> T_Parent, string id, int insertPosition = -1) where T : BaseType, IChildItemsParent<T>
+        {
+            var childItems = AddChildItemsNode(T_Parent);
+            var childItemsList = childItems.ChildItemsList;
+            var injForm = new InjectFormType(childItems, id);
+            var count = childItemsList.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            childItemsList.Insert(insertPosition, injForm);
+            //TODO: init this InjectForm object
+
+            return injForm;
+        }
+        public static bool HasChildItems<T>(this IChildItemsParent<T> T_Parent) where T : BaseType, IChildItemsParent<T>
+        {
+            {
+                if (T_Parent?.ChildItemsNode?.ChildItemsList != null)
+                {
+                    foreach (var n in T_Parent.ChildItemsNode.ChildItemsList)
+                    { if (n != null) return true; }
+                }
+            }
+            return false;
+        }
+        public static ChildItemsType AddChildItemsNode<T>(this IChildItemsParent<T> T_Parent) where T : BaseType , IChildItemsParent<T>
+        {
+            ChildItemsType childItems = null;  //this class contains an "Items" list
+            if (T_Parent == null)
+                throw new ArgumentNullException("The T_Parent object was null");
+            //return childItems; 
+            else if (T_Parent.ChildItemsNode == null)
+            {
+                childItems = new ChildItemsType(T_Parent as BaseType);
+                T_Parent.ChildItemsNode = childItems;  //This may be null for the Header, Body and Footer  - need to check this
+            }
+            else //(T_Parent.ChildItemsNode != null)
+                childItems = T_Parent.ChildItemsNode;
+
+            if (childItems.ChildItemsList == null)
+                childItems.ChildItemsList = new List<IdentifiedExtensionType>();
+
+            return childItems;
+        }
+        internal static ResponseFieldType AddQuestionResponseField(QuestionItemType qParent)
+        {
+            var rf = new ResponseFieldType(qParent);
+            qParent.ResponseField_Item = rf;
+
+            return rf;
+        }
+        internal static LookupEndPointType AddEndpointToListField(ListFieldType listFieldParent)
+        {
+            if (listFieldParent.List == null)
+            {
+                var lep = new LookupEndPointType(listFieldParent);
+                listFieldParent.LookupEndpoint = lep;
+                return lep;
+            }
+            else throw new InvalidOperationException("Can only add LookupEndpoint to ListField if List object is not present");
+        }
+        internal static ListType AddListToListField(ListFieldType listFieldParent)
+        {
+            ListType list;  //this is not the .NET List class; It's an answer list
+            if (listFieldParent.List == null)
+            {
+                list = new ListType(listFieldParent);
+                listFieldParent.List = list;
+            }
+            else list = listFieldParent.List;
+
+            //The "list" item contains a list<DisplayedType>, to which the ListItems and ListNotes (DisplayedItems) are added.
+            if (list.QuestionListMembers == null)
+
+                list.QuestionListMembers = new List<DisplayedType>();
+
+            return list;
+        }
+        internal static ListFieldType AddListFieldToQuestion(QuestionItemType qParent)
+        {
+            if (qParent.ListField_Item == null)
+            {
+                var listField = new ListFieldType(qParent);
+                qParent.ListField_Item = listField;
+            }
+
+            return qParent.ListField_Item;
+        }
+    } 
     public static class IChildItemsMemberExtensions
     {
+    //    public static bool X_IsMoveAllowedToChild<U>(U Utarget, out string error)
+    //where U : notnull, IdentifiedExtensionType
+    //        //where T : notnull, IdentifiedExtensionType
+    //    {
+    //        Tchild Tsource = this as Tchild;
+    //        var errorSource = "";
+    //        var errorTarget = "";
+    //        error = "";
+    //        bool sourceOK = false;
+    //        bool targetOK = false;
 
+    //        if (Tsource is null) { error = "source is null"; return false; }
+    //        if (Utarget is null) { error = "target is null"; return false; }
+    //        if (Utarget is ButtonItemType) { error = "ButtonItemType is not allowed as a target"; return false; }
+    //        if (Utarget is InjectFormType) { error = "InjectFormType is not allowed as a target"; return false; }
+    //        if (Utarget is DisplayedType) { error = "DisplayedItem is not allowed as a target"; return false; }
+
+    //        if (Tsource is ListItemType && !(Utarget is QuestionItemType) && !(Utarget is ListItemType)) { error = "A ListItem can only be moved into a Question List"; return false; };
+
+    //        //special case to allow LI to drop on a Q and be added to the Q's List, rather than under ChildItem (which would be illegal)
+    //        if (Tsource is ListItemType &&
+    //            Utarget is QuestionItemType &&
+    //            !((Utarget as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionSingle) &&
+    //            !((Utarget as QuestionItemType).GetQuestionSubtype() == QuestionEnum.QuestionMultiple))
+    //        { error = "A Question target must be a QuestionSingle or QuestionMultiple"; return false; }
+
+
+    //        if (Tsource is DisplayedType || Tsource is InjectFormType) sourceOK = true;
+    //        if (Utarget is QuestionItemType || Utarget is SectionItemType || Utarget is ListItemType) targetOK = true;
+
+    //        if (!sourceOK || !targetOK)
+    //        {
+    //            if (!sourceOK) errorSource = "Illegal source object";
+    //            if (!targetOK) errorTarget = "Illegal target object";
+    //            if (errorTarget.Length > 0) errorTarget += " and ";
+    //            error = errorSource + errorTarget;
+    //        }
+
+
+    //        return sourceOK & targetOK;
+    //    }
+    //    public static bool X_MoveAsChild<S, T>(S source, T target, int newListIndex)
+    //        where S : notnull, IdentifiedExtensionType    //, IChildItemMember
+    //        where T : DisplayedType, IChildItemsParent<T>
+    //    {
+    //        if (source is null) return false;
+    //        if (source.ParentNode is null) return false;
+    //        if (source is ListItemType && !(target is QuestionItemType)) return false;  //ListItem can only be moved to a question.
+
+    //        List<BaseType> sourceList;
+    //        BaseType newParent = target;
+
+    //        switch (source)  //get the sourceList from the parent node
+    //        {
+    //            case QuestionItemType _:
+    //            case SectionItemType _:
+    //            case InjectFormType _:
+    //            case ButtonItemType _:
+    //                sourceList = (source.ParentNode as ChildItemsType)?.Items.ToList<BaseType>();
+    //                //sourceList = (source.ParentNode as ChildItemsType).Items.Cast<BaseType>().ToList(); //alternate method
+    //                break;
+    //            case ListItemType _:
+    //                sourceList = (source.ParentNode as ListType)?.Items.ToList<BaseType>();
+    //                break;
+    //            case DisplayedType _:
+    //                sourceList = (source.ParentNode as ChildItemsType)?.Items.ToList<BaseType>();
+    //                if (sourceList is null)
+    //                    sourceList = (source.ParentNode as ListType)?.Items.ToList<BaseType>();
+    //                else return false;
+    //                break;
+    //            default:
+    //                return false; //error in source type
+    //        }
+
+    //        if (sourceList is null) return false;
+
+    //        List<BaseType> targetList = null;
+
+    //        if (target != null)
+    //        {
+    //            switch (target)  //get the targetList from the child node
+    //            {
+    //                case QuestionItemType q:
+    //                    //This is an exception - if we drop a source LI on a QS/QM, we will want to add it ant the end of the Q's List object
+    //                    if (source is ListItemType)
+    //                    {
+    //                        if (q.GetQuestionSubtype() != QuestionEnum.QuestionSingle &&
+    //                            q.GetQuestionSubtype() != QuestionEnum.QuestionMultiple &&
+    //                            q.GetQuestionSubtype() != QuestionEnum.QuestionRaw) return false;  //QR, and QL cannot have child LI nodes
+    //                        if (q.ListField_Item is null)  //create new targetList
+    //                        {
+    //                            targetList = IQuestionBuilder.AddListToListField(IQuestionBuilder.AddListFieldToQuestion(q)).Items.ToList<BaseType>();
+    //                            if (targetList is null) return false;
+    //                            break;
+    //                        }
+    //                        newParent = q.ListField_Item.List;
+    //                        targetList = q.ListField_Item.List.Items.ToList<BaseType>();
+    //                    }
+    //                    else //use the ChildItems node instead as the targetList
+    //                    {
+    //                        (q as IChildItemsParent<QuestionItemType>).AddChildItemsNode(q);
+    //                        targetList = q.ChildItemsNode.Items.ToList<BaseType>();
+    //                    }
+    //                    break;
+    //                case SectionItemType s:
+    //                    (s as IChildItemsParent<SectionItemType>).AddChildItemsNode(s);
+    //                    targetList = s.ChildItemsNode.Items.ToList<BaseType>();
+    //                    break;
+    //                case ListItemType l:
+    //                    (l as IChildItemsParent<ListItemType>).AddChildItemsNode(l);
+    //                    targetList = l.ChildItemsNode.Items.ToList<BaseType>();
+    //                    break;
+    //                default:
+    //                    return false; //error in source type
+    //            }
+    //        }
+    //        else targetList = sourceList;
+    //        if (targetList is null) return false;
+
+
+    //        var count = targetList.Count;
+    //        if (newListIndex < 0 || newListIndex > count) newListIndex = count; //add to end  of list
+
+    //        var indexSource = sourceList.IndexOf(source);  //save the original source index in case we need to replace the source node back to its origin
+    //        bool b = sourceList.Remove(source); if (!b) return false;
+    //        targetList.Insert(newListIndex, source);
+    //        if (targetList[newListIndex] == source) //check for success
+    //        {
+    //            source.TopNode.ParentNodes[source.ObjectGUID] = newParent;
+    //            return true;
+    //        }
+    //        //Error - the source item is now disconnected from the list.  Lets add it back to the end of the list.
+    //        sourceList.Insert(indexSource, source); //put source back where it came from; the move failed
+    //        return false;
+    //    }
+    //    public static bool X_MoveAfterSib<S, T>(S source, T target, int newListIndex, bool moveAbove)
+    //        where S : notnull, IdentifiedExtensionType
+    //        where T : notnull, IdentifiedExtensionType
+    //    {
+    //        //iupdate TopNode.ParentNodes
+    //        throw new Exception(String.Format("Not Implemented"));
+    //    }
     } //Empty
     public static class IQuestionItemExtensions
     {
+        public static QuestionItemType ConvertToQR_(this IQuestionItem qi, bool testOnly = false)
+        { throw new NotImplementedException(); } //abort if children present
+        public static QuestionItemType ConvertToQS_(this IQuestionItem qi, bool testOnly = false)
+        { throw new NotImplementedException(); }
+        public static QuestionItemType ConvertToQM_(this IQuestionItem qi, int maxSelections = 0, bool testOnly = false)
+        { throw new NotImplementedException(); }
+        public static DisplayedType ConvertToDI_(this IQuestionItem qi, bool testOnly = false)
+        { throw new NotImplementedException(); } //abort if LIs or children present
+        public static QuestionItemType ConvertToSection_(this IQuestionItem qi, bool testOnly = false)
+        { throw new NotImplementedException(); }
+        public static QuestionItemType ConvertToLookup_(this IQuestionItem qi, bool testOnly = false)
+        { throw new NotImplementedException(); }//abort if LIs present
 
-    } //Empty
+        public static QuestionEnum GetQuestionSubtype(this IQuestionItem qi)
+        {
+            var q = qi as QuestionItemType;
+            if (q.ResponseField_Item != null) return QuestionEnum.QuestionFill;
+            if (q.ListField_Item is null) return QuestionEnum.QuestionRaw;
+            if (q.ListField_Item.LookupEndpoint == null && q.ListField_Item?.maxSelections == 1) return QuestionEnum.QuestionSingle;
+            if (q.ListField_Item.LookupEndpoint == null && q.ListField_Item?.maxSelections != 1) return QuestionEnum.QuestionMultiple;
+            if (q.ListField_Item.LookupEndpoint != null && q.ListField_Item.maxSelections == 1) return QuestionEnum.QuestionLookupSingle;
+            if (q.ListField_Item.LookupEndpoint != null && q.ListField_Item.maxSelections != 1) return QuestionEnum.QuestionLookupMultiple;
+            if (q.ListField_Item.LookupEndpoint != null) return QuestionEnum.QuestionLookup;
+
+            return QuestionEnum.QuestionGroup;
+        }
+        public static ListItemType AddListItem(this IQuestionItem qi, string id, int insertPosition = -1)
+        {  //Check for QS/QM first!
+
+            var q = qi as QuestionItemType;
+            if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionSingle ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionRaw)
+            {
+                if (q.ListField_Item is null) AddListFieldToQuestion(qi);
+                ListType list = q.ListField_Item.List;
+                if (list is null) AddListToListField(qi, q.ListField_Item);
+
+                ListItemType li = new ListItemType(list, id);
+                var count = list.QuestionListMembers.Count;
+                if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+                list.QuestionListMembers.Insert(insertPosition, li);
+
+                return li;
+            }
+            else throw new InvalidOperationException("Can only add ListItem to QuestionSingle or QuestionMultiple");
+        }
+        public static ListItemType AddListItemResponse(this IQuestionItem qi,
+            string id,
+            int insertPosition = - 1,
+            ItemChoiceType dt = ItemChoiceType.@string, 
+            bool responseRequired = false,
+            string textAfterResponse = null,
+            string units = null,
+            dtQuantEnum dtQuant = dtQuantEnum.EQ, 
+            object valDefault = null
+            )
+        {
+            var q = qi as QuestionItemType;
+            if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionSingle ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionRaw)
+            {
+                var li = AddListItem(qi, id, insertPosition);
+
+                var lirf = new ListItemResponseFieldType(li);
+                var rsp = new DataTypes_DEType(lirf);
+                lirf.responseRequired = responseRequired;
+                if (units != null)
+                {
+                    var ru = new UnitsType(lirf);
+                    lirf.ResponseUnits = ru;
+                    ru.val = units;
+                }
+                if (textAfterResponse != null)
+                {
+                    var taf = new RichTextType(lirf);
+                    lirf.TextAfterResponse = taf;
+                }
+                rsp.DataTypeDE_Item = IDataHelpers.AddDataTypesDE(lirf, dt, dtQuant, valDefault);
+                return li;
+
+            }
+            else throw new InvalidOperationException("Can only add ListItem to QuestionSingle or QuestionMultiple");
+        }
+        public static DisplayedType AddDisplayedTypeToList(this IQuestionItem qi, 
+            string id, 
+            int insertPosition, 
+            string defTitle = null)
+        {
+            var q = qi as QuestionItemType;
+            if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionSingle ||
+                q.GetQuestionSubtype() == QuestionEnum.QuestionRaw)
+            {
+                if (q.ListField_Item is null) AddListFieldToQuestion(qi);
+                ListType list = q.ListField_Item.List;
+                if (list is null) AddListToListField(qi, q.ListField_Item);
+
+                var di = new DisplayedType(list, id) { title = defTitle };
+
+                var count = list.QuestionListMembers.Count;
+                if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+                list.QuestionListMembers.Insert(insertPosition, di);
+
+
+                return di;
+            }
+            else throw new InvalidOperationException("Can only add DisplayedItem to QuestionSingle or QuestionMultiple");
+        }
+
+        public static ResponseFieldType AddQuestionResponseField(this IQuestionItem qi, ItemChoiceType itemType, dtQuantEnum dtQuant = dtQuantEnum.EQ, object valDefault = null)
+        {
+            var qParent = qi as QuestionItemType;
+            var rf = new ResponseFieldType(qParent);
+            qParent.ResponseField_Item = rf;
+            var deType = IDataHelpers.AddDataTypesDE(rf, itemType, dtQuant, valDefault);
+            return rf;
+        }
+        public static LookupEndPointType AddEndpointToListField(this IQuestionItem qi, ListFieldType listFieldParent)
+        {
+            if (listFieldParent.List == null)
+            {
+                var lep = new LookupEndPointType(listFieldParent);
+                listFieldParent.LookupEndpoint = lep;
+                return lep;
+            }
+            else throw new InvalidOperationException("Can only add LookupEndpoint to ListField if List object is not present");
+        }
+        public static ListType AddListToListField(this IQuestionItem qi, ListFieldType listFieldParent)
+        {
+            ListType list;  //this is not the .NET List class; It's an answer list
+            if (listFieldParent.List == null)
+            {
+                list = new ListType(listFieldParent);
+                listFieldParent.List = list;
+            }
+            else list = listFieldParent.List;
+
+            //The "list" item contains a list<DisplayedType>, to which the ListItems and ListNotes (DisplayedItems) are added.
+            if (list.QuestionListMembers == null)
+
+                list.QuestionListMembers = new List<DisplayedType>();
+
+            return list;
+        }
+        public static ListFieldType AddListFieldToQuestion(this IQuestionItem qi)
+        {
+            var qParent = qi as QuestionItemType;
+            if (qParent.ListField_Item == null)
+            {
+                var listField = new ListFieldType(qParent);
+                qParent.ListField_Item = listField;
+            }
+
+            return qParent.ListField_Item;
+        } 
+    }
     public static class IQuestionListExtensions
-    {
 
-    } //Empty
+    {
+        public static ListItemType AddListItem_(this IQuestionList ql, string id = "", int insertPosition = -1)
+        { throw new NotImplementedException(); } //check that no ListItemResponseField object is present
+        public static ListItemType AddListItemResponse_(this IQuestionList ql, string id = "", int insertPosition = -1)
+        { throw new NotImplementedException(); } //check that no ListFieldType object is present
+        public static DisplayedType AddDisplayedTypeToList_(this IQuestionList ql, string id = "", int insertPosition = -1)
+        { throw new NotImplementedException(); }
+
+
+        public static ListItemType AddListItem(this IQuestionList ql, ListType lt, string id, int insertPosition = -1) //check that no ListItemResponseField object is present
+        {
+            ListItemType li = new ListItemType(lt, id);
+            var count = lt.QuestionListMembers.Count;
+            if (insertPosition < 0 || insertPosition > count) insertPosition = count;
+            lt.QuestionListMembers.Insert(insertPosition, li);
+            return li;
+        }
+        public static ListItemType AddListItemResponse_(this IQuestionList ql, ListType lt, string id, int insertPosition) //check that no ListFieldType object is present
+        { throw new NotImplementedException(); }
+        public static DisplayedType AddDisplayedItemToList_(this IQuestionList ql, ListType lt, string id, int insertPosition)
+        { throw new NotImplementedException(); }
+    } 
+
+
     public static class IListFieldExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IQuestionBaseExtensions
-    {
-
-    } //Empty
+    { } //Empty
     public static class IListItemExtensions
     {
+        public static ListItemResponseFieldType AddListItemResponseField(this IListItem ili)
+        {
+            var liParent = ili as ListItemType;
+            var liRF = new ListItemResponseFieldType(liParent);
+            liParent.ListItemResponseField = liRF;
 
-    } //Empty
+            return liRF;
+        }
+        public static EventType AddOnDeselect(this IListItem ili)
+        {
+            var li = (ListItemType)ili;
+            var ods = new EventType(li);
+            li.OnDeselect.Add(ods);
+            return ods;
+        }
+        public static EventType AddOnSelect(this IListItem ili)
+        {
+            var li = (ListItemType)ili;
+            var n = new EventType(li);
+            li.OnSelect.Add(n);
+            return n;
+        }
+        public static PredGuardType AddSelectIf(this IListItem ili)
+        {
+            var li = (ListItemType)ili;
+            var n = new PredGuardType(li);
+            li.SelectIf = n;
+            return n;
+        }
+        public static PredGuardType AddDeSelectIf(this IListItem ili)
+        {
+            var li = (ListItemType)ili;
+            var n = new PredGuardType(li);
+            li.DeselectIf = n;
+            return n;
+        }
+    }
     public static class IQuestionBuilderExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class ISectionExtensions
-    {
-
-    } //Empty
+    {    } //Empty
     public static class IButtonItemExtensions
     {
-
+        public static EventType AddOnClick_(this IButtonItem bf)
+        { throw new NotImplementedException(); }
     } //Empty
     public static class IInjectFormExtensions
-    {
+    {  //ChildItems.InjectForm - this is mainly useful for a DEF injecting items based on the InjectForm URL
+        //Item types choice under ChildItems
+        public static FormDesignType AddFormDesign_(this IInjectForm injf)
+        { throw new NotImplementedException(); }
+        public static QuestionItemType AddQuestion_(this IInjectForm injf)
+        { throw new NotImplementedException(); }
+        public static SectionItemType AddSection_(this IInjectForm injf)
+        { throw new NotImplementedException(); }
 
     } //Empty
     public static class IDisplayedTypeMemberExtensions
-    {
+    {//LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
 
     } //Empty
     public static class IBlobExtensions
     {
+        //DisplayedItem.BlobType
+        //Uses Items types choice
+        public static bool AddBinaryMedia_(this IBlob b)
+        { throw new NotImplementedException(); } //Empty
 
+        public static bool AddBlobURI_(this IBlob b)
+        { throw new NotImplementedException(); }
     } //Empty
     public static class IDisplayedTypeChangesExtensions
-    {
-
-    } //Empty
+    {    } //Empty
 
 
     public static class IExtensionBaseExtensions
@@ -2436,7 +2971,7 @@ XmlElementName: {XmlElementName}
     public static class IExtensionBaseTypeMemberExtensions
     {
         //!+TODO: Handle Dictionary updates
-        public static bool MoveI(this IExtensionBaseTypeMember iebt, ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
+        public static bool Move(this IExtensionBaseTypeMember iebt, ExtensionType extension, ExtensionBaseType ebtTarget, int newListIndex = -1)
         {
             if (extension == null) return false;
 
@@ -2449,7 +2984,7 @@ XmlElementName: {XmlElementName}
             if (ebtTarget.Extension[newListIndex] == extension) return true; //success
             return false;
         }
-        public static bool MoveI(this IExtensionBaseTypeMember iebt, CommentType comment, ExtensionBaseType ebtTarget, int newListIndex)
+        public static bool Move(this IExtensionBaseTypeMember iebt, CommentType comment, ExtensionBaseType ebtTarget, int newListIndex)
         {
             if (comment == null) return false;
 
@@ -2462,7 +2997,7 @@ XmlElementName: {XmlElementName}
             if (ebtTarget.Comment[newListIndex] == comment) return true; //success
             return false;
         }
-        public static bool MoveI(this IExtensionBaseTypeMember iebt, PropertyType property, ExtensionBaseType ebtTarget, int newListIndex)
+        public static bool Move(this IExtensionBaseTypeMember iebt, PropertyType property, ExtensionBaseType ebtTarget, int newListIndex)
         {
             if (property == null) return false;
 
@@ -2478,16 +3013,16 @@ XmlElementName: {XmlElementName}
     } 
     public static class IIdentifiedExtensionTypeExtensions
     {
-        public static bool IsParentNodeAllowed<T>(this IIdentifiedExtensionType iet, T target) where T : notnull, IdentifiedExtensionType
+        public static bool IsParentNodeAllowed_<T>(this IIdentifiedExtensionType iet, T target) where T : notnull, IdentifiedExtensionType
         { throw new NotImplementedException(); }
     } 
     public static class IMoveRemoveExtensions
     {
-        public static bool Remove(this IMoveRemove mr)
+        public static bool Remove_(this IMoveRemove mr)
         { throw new NotImplementedException(); }
-        public static bool Move(this IMoveRemove mr, BaseType targetProperty, int newListIndex = -1)
+        public static bool Move_(this IMoveRemove mr, BaseType targetProperty, int newListIndex = -1)
         { throw new NotImplementedException(); }
-        public static bool IsParentNodeAllowed(this IMoveRemove mr, BaseType targetProperty, out object pObj, int newListIndex = -1)
+        public static bool IsParentNodeAllowed_(this IMoveRemove mr, BaseType targetProperty, out object pObj, int newListIndex = -1)
         { throw new NotImplementedException(); }
     }
     public static class INavigateExtensions
@@ -2518,14 +3053,14 @@ XmlElementName: {XmlElementName}
     public static class IResponseExtensions
     {
         //UnitsType AddUnits(ResponseFieldType rfParent);
-        public static UnitsType AddUnits(this IResponse r, ResponseFieldType rfParent)
+        public static UnitsType AddUnits(this IResponse _, ResponseFieldType rfParent)
         {
             UnitsType u = new UnitsType(rfParent);
             rfParent.ResponseUnits = u;
             return u;
         }
 
-        public static void RemoveUnits(this IResponse r, ResponseFieldType rfParent) => rfParent.ResponseUnits = null;
+        public static void RemoveUnits(this IResponse _, ResponseFieldType rfParent) => rfParent.ResponseUnits.Remove();
         public static BaseType DataTypeObject { get; set; }
         public static RichTextType AddTextAfterResponse { get; set; }
     }
@@ -2553,17 +3088,17 @@ XmlElementName: {XmlElementName}
     } //Empty
     public static class IIdentifiersExtensions
     {
-        public static string GetNewCkey(this IIdentifiers i) 
+        public static string GetNewCkey_(this IIdentifiers i) 
         { throw new NotImplementedException(); }
     }
     public static class IAddCodingExtensions
     {
-        public static CodingType AddCodedValue(this IAddCoding ac, DisplayedType dt, int insertPosition)
+        public static CodingType AddCodedValue_(this IAddCoding ac, DisplayedType dt, int insertPosition)
         {
             throw new NotImplementedException();
         }
 
-        public static CodingType AddCodedValue(this IAddCoding ac, LookupEndPointType lep, int insertPosition)
+        public static CodingType AddCodedValue_(this IAddCoding ac, LookupEndPointType lep, int insertPosition)
         {
             throw new NotImplementedException();
         }
@@ -2576,9 +3111,7 @@ XmlElementName: {XmlElementName}
     }
     public static class IAddPersonExtensions    
     {
-        public static PersonType AddPerson(this IAddPerson ap)
-        { throw new NotImplementedException(); }
-        internal static PersonType AddPersonI(this IAddPerson ap, ContactType contactParent)
+        internal static PersonType AddPerson(this IAddPerson ap, ContactType contactParent)
         {
 
             var newPerson = new PersonType(contactParent);
@@ -2588,7 +3121,7 @@ XmlElementName: {XmlElementName}
 
             return newPerson;
         }
-        internal static PersonType AddPersonI(this IAddPerson ap, DisplayedType dtParent, int insertPosition)
+        internal static PersonType AddPerson(this IAddPerson ap, DisplayedType dtParent, int insertPosition)
         {
             List<ContactType> contactList;
             if (dtParent.Contact == null)
@@ -2603,11 +3136,11 @@ XmlElementName: {XmlElementName}
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
             contactList.Insert(insertPosition, newContact);
 
-            var newPerson = AddPersonI(ap, newContact);
+            var newPerson = AddPerson(ap, newContact);
 
             return newPerson;
         }
-        internal static PersonType AddContactPersonI(this IAddPerson ap, OrganizationType otParent, int insertPosition)
+        internal static PersonType AddContactPerson(this IAddPerson ap, OrganizationType otParent, int insertPosition)
         {
             List<PersonType> contactPersonList;
             if (otParent.ContactPerson == null)
@@ -2667,8 +3200,8 @@ XmlElementName: {XmlElementName}
             if (insertPosition < 0 || insertPosition > count) insertPosition = count;
             c.Contact.Insert(insertPosition, ct);
             //TODO: Need to be able to add multiple people/orgs by reading the data source or ORM
-            var p = (ac as IAddPerson).AddPersonI(ct);
-            var org = (ac as IAddOrganization).AddOrganizationI(ct);
+            var p = (ac as IAddPerson).AddPerson(ct);
+            var org = (ac as IAddOrganization).AddOrganization(ct);
 
             return ct;
         }
@@ -2683,24 +3216,24 @@ XmlElementName: {XmlElementName}
     }
     public static class IAddOrganizationExtension
     {
-        public static OrganizationType AddOganization(this IAddOrganization ao)
+        public static OrganizationType AddOganization_(this IAddOrganization ao)
         { throw new NotImplementedException(); }
 
-        public static  OrganizationType AddOrganizationI(this IAddOrganization ao, ContactType contactParent)
+        public static  OrganizationType AddOrganization(this IAddOrganization ao, ContactType contactParent)
         {
             var ot = new OrganizationType(contactParent);
             contactParent.Organization = ot;
 
             return ot;
         }
-        public static OrganizationType AddOrganizationI(this IAddOrganization ao, JobType jobParent)
+        public static OrganizationType AddOrganization(this IAddOrganization ao, JobType jobParent)
         {
             var ot = new OrganizationType(jobParent);
             jobParent.Organization = ot;
 
             return ot;
         }
-        public static OrganizationType AddOrganizationItemsI(this IAddOrganization ao, OrganizationType ot)
+        public static OrganizationType AddOrganizationItems_(this IAddOrganization ao, OrganizationType ot)
         { throw new NotImplementedException(); }
     }
 
@@ -2713,20 +3246,20 @@ XmlElementName: {XmlElementName}
             pgt.Items.Add(av);
             return av;
         }
-        public static ScriptBoolFuncActionType AddScriptBoolFunc(this IEvent ae)
+        public static ScriptBoolFuncActionType AddScriptBoolFunc_(this IEvent ae)
         { throw new NotImplementedException(); }
-        public static CallFuncBoolActionType AddCallBoolFunction(this IEvent ae)
+        public static CallFuncBoolActionType AddCallBoolFunction_(this IEvent ae)
         { throw new NotImplementedException(); }
-        public static MultiSelectionsActionType AddMultiSelections(this IEvent ae)
+        public static MultiSelectionsActionType AddMultiSelections_(this IEvent ae)
         { throw new NotImplementedException(); }
-        public static SelectionSetsActionType AddSelectionSets(this IEvent ae)
+        public static SelectionSetsActionType AddSelectionSets_(this IEvent ae)
         { throw new NotImplementedException(); }
-        public static PredSelectionTestType AddSelectionTest(this IEvent ae)
+        public static PredSelectionTestType AddSelectionTest_(this IEvent ae)
         { throw new NotImplementedException(); }
         //PredAlternativesType AddItemAlternatives();
-        public static RuleSelectMatchingListItemsType SelectMatchingListItems(this IEvent ae)
+        public static RuleSelectMatchingListItemsType SelectMatchingListItems_(this IEvent ae)
         { throw new NotImplementedException(); }
-        public static PredGuardType AddGroup(this IEvent ae)
+        public static PredGuardType AddGroup_(this IEvent ae)
         { throw new NotImplementedException(); }
     }
     public static class IPredGuardExtensions //used by Guards on ListItem, Button, e.g., SelectIf, DeselectIf
@@ -2738,62 +3271,62 @@ XmlElementName: {XmlElementName}
             pgt.Items.Add(av);
             return av;
         }
-        public static ScriptBoolFuncActionType AddScriptBoolFunc(this IPredGuard ipg)
+        public static ScriptBoolFuncActionType AddScriptBoolFunc_(this IPredGuard ipg)
         { throw new NotImplementedException(); }
-        public static CallFuncBoolActionType AddCallBoolFunction(this IPredGuard ipg) 
+        public static CallFuncBoolActionType AddCallBoolFunction_(this IPredGuard ipg) 
         { throw new NotImplementedException(); }
-        public static MultiSelectionsActionType AddMultiSelections(this IPredGuard ipg) 
+        public static MultiSelectionsActionType AddMultiSelections_(this IPredGuard ipg) 
         { throw new NotImplementedException(); }
-        public static PredSelectionTestType AddSelectionTest(this IPredGuard ipg) 
+        public static PredSelectionTestType AddSelectionTest_(this IPredGuard ipg) 
         { throw new NotImplementedException(); }
-        public static PredGuardTypeSelectionSets AddSelectionSets(this IPredGuard ipg) 
+        public static PredGuardTypeSelectionSets AddSelectionSets_(this IPredGuard ipg) 
         { throw new NotImplementedException(); }
-        public static PredAlternativesType AddItemAlternatives(this IPredGuard ipg) 
+        public static PredAlternativesType AddItemAlternatives_(this IPredGuard ipg) 
         { throw new NotImplementedException(); }
-        public static PredGuardType AddGroup(this IPredGuard ipg) 
+        public static PredGuardType AddGroup_(this IPredGuard ipg) 
         { throw new NotImplementedException(); }
 
 
     }
     public static class IRuleExtensions
     {
-        public static RuleAutoActivateType AddAutoActivation(this IRule r)
+        public static RuleAutoActivateType AddAutoActivation_(this IRule r)
         { throw new NotImplementedException(); }
-        public static RuleAutoSelectType AddAutoSelection(this IRule r)
+        public static RuleAutoSelectType AddAutoSelection_(this IRule r)
         { throw new NotImplementedException(); }
-        public static PredActionType AddConditionalActions(this IRule r)
+        public static PredActionType AddConditionalActions_(this IRule r)
         { throw new NotImplementedException(); }
-        public static CallFuncActionType AddExternalRule(this IRule r)
+        public static CallFuncActionType AddExternalRule_(this IRule r)
         { throw new NotImplementedException(); }
-        public static ScriptCodeAnyType AddScriptedRule(this IRule r)
+        public static ScriptCodeAnyType AddScriptedRule_(this IRule r)
         { throw new NotImplementedException(); }
-        public static RuleSelectMatchingListItemsType AddSelectMatchingListItems(this IRule r)
+        public static RuleSelectMatchingListItemsType AddSelectMatchingListItems_(this IRule r)
         { throw new NotImplementedException(); }
-        public static ValidationType AddValidation(this IRule r)
+        public static ValidationType AddValidation_(this IRule r)
         { throw new NotImplementedException(); }
     } 
     public static class IHasConditionalActionsNodeExtensions
     {
-        public static PredActionType AddConditionalActionsNode(this IHasConditionalActionsNode hcan)
+        public static PredActionType AddConditionalActionsNode_(this IHasConditionalActionsNode hcan)
         { throw new NotImplementedException();   }
     }
     public static class IHasParameterGroupExtensions
     {
-        public static ParameterItemType AddParameterRefNode(this IHasParameterGroup hpg)
+        public static ParameterItemType AddParameterRefNode_(this IHasParameterGroup hpg)
         {throw new NotImplementedException();}
-        public static ListItemParameterType AddListItemParameterRefNode(this IHasParameterGroup hpg)
+        public static ListItemParameterType AddListItemParameterRefNode_(this IHasParameterGroup hpg)
         { throw new NotImplementedException(); }
-        public static ParameterValueType AddParameterValueNode(IHasParameterGroup hpg)
+        public static ParameterValueType AddParameterValueNode_(IHasParameterGroup hpg)
         { throw new NotImplementedException(); }
     } 
     public static class IHasDataType_STypeExtensions
     {
-        public static DataTypes_SType AddDataTypes_SType(this DataTypes_SType S)
+        public static DataTypes_SType AddDataTypes_SType_(this DataTypes_SType S)
         { throw new NotImplementedException(); }
     } 
     public static class IHasDataType_DETypeExtensions
     {
-        public static DataTypes_DEType AddDataTypes_DEType(this DataTypes_DEType DE)
+        public static DataTypes_DEType AddDataTypes_DEType_(this DataTypes_DEType DE)
         { throw new NotImplementedException(); }
     }
     public static class IHasActionsNodeExtensions
@@ -2857,27 +3390,27 @@ XmlElementName: {XmlElementName}
     {
         //List<ExtensionBaseType> Items
         //Supports ActSendMessageType and ActSendReportType
-        public static EmailAddressType AddEmail(this ISendMessage_Report smr)
+        public static EmailAddressType AddEmail_(this ISendMessage_Report smr)
         { throw new NotImplementedException(); }
-        public static PhoneNumberType AddFax(this ISendMessage_Report smr)
+        public static PhoneNumberType AddFax_(this ISendMessage_Report smr)
         { throw new NotImplementedException(); }
-        public static CallFuncActionType AddWebService(this ISendMessage_Report smr)
+        public static CallFuncActionType AddWebService_(this ISendMessage_Report smr)
         { throw new NotImplementedException(); }
     }
     public static class ICallFuncBaseExtensions
     {
         //anyURI_Stype Item (choice)
-        public static anyURI_Stype AddFunctionURI(this ICallFuncBase cfb)
+        public static anyURI_Stype AddFunctionURI_(this ICallFuncBase cfb)
         { throw new NotImplementedException(); }
-        public static anyURI_Stype AddLocalFunctionName(this ICallFuncBase cfb)
+        public static anyURI_Stype AddLocalFunctionName_(this ICallFuncBase cfb)
         { throw new NotImplementedException(); }
 
         //List<ExtensionBaseType> Items
-        public static ListItemParameterType AddListItemParameterRef(this ICallFuncBase cfb)
+        public static ListItemParameterType AddListItemParameterRef_(this ICallFuncBase cfb)
         { throw new NotImplementedException(); }
-        public static ParameterItemType AddParameterRef(this ICallFuncBase cfb)
+        public static ParameterItemType AddParameterRef_(this ICallFuncBase cfb)
         { throw new NotImplementedException(); }
-        public static ParameterValueType AddParameterValue(this ICallFuncBase cfb)
+        public static ParameterValueType AddParameterValue_(this ICallFuncBase cfb)
         { throw new NotImplementedException(); }
     }
     public static class IScriptBoolFuncActionExtensions
@@ -2895,30 +3428,30 @@ XmlElementName: {XmlElementName}
         //ExtensionBaseType[] Items1
         //see IScriptBoolFuncAction, which is identical except that this interface implementation must use "Item1", not "Item"
         //Implementations using Item1:
-        public static ActionsType AddActionsI(this ICallFuncBoolAction cfba)
+        public static ActionsType AddActions_(this ICallFuncBoolAction cfba)
         { throw new NotImplementedException(); }
-        public static PredActionType AddConditionalActionsI(this ICallFuncBoolAction cfba)
+        public static PredActionType AddConditionalActions_(this ICallFuncBoolAction cfba)
         { throw new NotImplementedException(); }
-        public static PredActionType AddElseI(this ICallFuncBoolAction cfba)
+        public static PredActionType AddElse_(this ICallFuncBoolAction cfba)
         { throw new NotImplementedException(); }
     }
     public static class IValidationTestsExtensions
     {
-        public static PredAlternativesType AddItemAlternatives(this IValidationTests vt)
+        public static PredAlternativesType AddItemAlternatives_(this IValidationTests vt)
         { throw new NotImplementedException(); }
-        public static ValidationTypeSelectionSets AddSelectionSets(this IValidationTests vt)
+        public static ValidationTypeSelectionSets AddSelectionSets_(this IValidationTests vt)
         { throw new NotImplementedException(); }
-        public static ValidationTypeSelectionTest AddSelectionTest(this IValidationTests vt)
+        public static ValidationTypeSelectionTest AddSelectionTest_(this IValidationTests vt)
         { throw new NotImplementedException(); }
     }
     public static class ICloneExtensions// Probably belongs on IBaseType 
     {
-        public static BaseType CloneSubtree(this IClone c, BaseType top)
+        public static BaseType CloneSubtree_(this IClone c, BaseType top)
         { throw new NotImplementedException(); }
     }
     public static class IHtmlPackageExtensions
     {
-        public static base64Binary_Stype AddHTMLbase64(this IHtmlPackage hp)
+        public static base64Binary_Stype AddHTMLbase64_(this IHtmlPackage hp)
         { throw new NotImplementedException(); }
     }
     public static class IRegistrySummaryExtensions
@@ -2926,19 +3459,19 @@ XmlElementName: {XmlElementName}
         //BaseType[] Items
         //Attach to Admin.RegistryData as OriginalRegistry and/or CurrentRegistry
 
-        public static ContactType AddContact(this IRegistrySummary rs)
+        public static ContactType AddContact_(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
-        public static FileType AddManual(this IRegistrySummary rs)
+        public static FileType AddManual_(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
-        public static string_Stype AddReferenceStandardIdentifier(this IRegistrySummary rs)
+        public static string_Stype AddReferenceStandardIdentifier_(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
-        public static InterfaceType AddRegistryInterfaceType(this IRegistrySummary rs)
+        public static InterfaceType AddRegistryInterfaceType_(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
-        public static string_Stype AddRegistryName(this IRegistrySummary rs)
+        public static string_Stype AddRegistryName_(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
-        public static FileType AddRegistryPurpose(this IRegistrySummary rs)
+        public static FileType AddRegistryPurpose_(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
-        public static FileType AddServiceLevelAgreement(this IRegistrySummary rs)
+        public static FileType AddServiceLevelAgreement_(this IRegistrySummary rs)
         { throw new NotImplementedException(); }
     } 
 
