@@ -22,17 +22,19 @@ namespace SDC.Schema
         //bool RemoveFormFromPackage(RetrieveFormPackageType pkg, FormDesignType form);
     } //Empty 
     public interface IPackage : ITopNode //TODO:
-    { } //Empty 
+    {   //FormDesignType CreateForm(bool addHeader, bool addFooter, string formID, string lineage, string version, string fullURI);
+        //FormDesignType CreateFormFromTemplatePath(string path, string formID, string lineage, string version, string fullURI);
+        //FormDesignType CreateFormFromTemplateXML(string xml, string formID, string lineage, string version, string fullURI);
+        //bool RemoveFormFromPackage(RetrieveFormPackageType pkg, FormDesignType form); 
+    } //Empty 
     public interface IDataElement : ITopNode //TODO:
     { } //Empty 
     public interface IDemogForm : ITopNode //TODO:
     { } //Empty 
     public interface IMap : ITopNode //TODO:
     { } //Empty 
-    public interface IFormDesign : ITopNode, IMoveRemove //TODO:
-    {
-
-    } //Empty 
+    public interface IFormDesign : ITopNode //TODO:
+    { } //Empty 
     public interface IRetrieveFormPackage
     {
 
@@ -49,170 +51,7 @@ namespace SDC.Schema
         where T : BaseType, IChildItemsParent<T>
     {
         public ChildItemsType ChildItemsNode { get; set; }
-        //public SectionItemType AddChildSection(string id, int insertPosition);
-        //internal static SectionItemType AddChildSectionI(T T_Parent, string id, int insertPosition)
-        //{
-        //    var childItems = AddChildItemsNode(T_Parent as T);
-        //    var childItemsList = childItems.ChildItemsList;
-        //    var sNew = new SectionItemType(childItems, id);
-        //    var count = childItemsList.Count;
-        //    if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-        //    childItemsList.Insert(insertPosition, sNew);
-
-        //    return sNew;
-        //}
-        //public QuestionItemType AddChildQuestion(QuestionEnum qType, string id, int insertPosition = -1);
-        //internal static QuestionItemType AddChildQuestionI(T T_Parent, QuestionEnum qType, string id, int insertPosition = -1)
-        //{
-        //    var childItems = AddChildItemsNode(T_Parent);
-        //    var childItemsList = childItems.ChildItemsList;
-        //    var qNew = new QuestionItemType(childItems, id);
-        //    ListFieldType lf;
-        //    var count = childItemsList.Count;
-        //    if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-        //    childItemsList.Insert(insertPosition, qNew);
-
-        //    switch (qType)
-        //    {
-        //        case QuestionEnum.QuestionSingle:
-        //            AddListToListField(AddListFieldToQuestion(qNew));
-        //            break;
-        //        case QuestionEnum.QuestionMultiple:
-        //            AddListToListField(AddListFieldToQuestion(qNew));
-        //            qNew.ListField_Item.maxSelections = 0;
-        //            break;
-        //        case QuestionEnum.QuestionFill:
-        //            AddQuestionResponseField(qNew);
-        //            break;
-        //        case QuestionEnum.QuestionLookupSingle:
-        //            lf = AddListFieldToQuestion(qNew);
-        //            AddEndpointToListField(lf);
-        //            break;
-        //        case QuestionEnum.QuestionLookupMultiple:
-        //            lf = AddListFieldToQuestion(qNew);
-        //            AddEndpointToListField(lf);
-        //            break;
-        //        default:
-        //            throw new NotSupportedException($"{qType} is not supported");
-        //    }
-
-        //    return qNew;
-        //}
-        //public DisplayedType AddChildDisplayedItem(string id, int insertPosition = -1);
-        //internal static DisplayedType AddChildDisplayedItemI(T T_Parent, string id, int insertPosition = -1)
-        //{
-        //    var childItems = AddChildItemsNode(T_Parent);
-        //    var childItemsList = childItems.ChildItemsList;
-        //    var dNew = new DisplayedType(childItems, id);
-        //    var count = childItemsList.Count;
-        //    if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-        //    childItemsList.Insert(insertPosition, dNew);
-
-        //    return dNew;
-        //}
-        //public ButtonItemType AddChildButtonAction(string id, int insertPosition = -1);
-        //internal static ButtonItemType AddChildButtonActionI(T T_Parent, string id, int insertPosition = -1)
-        //{
-        //    var childItems = AddChildItemsNode(T_Parent);
-        //    var childItemsList = childItems.ChildItemsList;
-        //    var btnNew = new ButtonItemType(childItems, id);
-        //    var count = childItemsList.Count;
-        //    if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-        //    childItemsList.Insert(insertPosition, btnNew);
-
-        //    // TODO: Add AddButtonActionTypeItems(btnNew);
-        //    return btnNew;
-        //}
-        //public InjectFormType AddChildInjectedForm(string id, int insertPosition = -1);
-        //internal static InjectFormType AddChildInjectedFormI(T T_Parent, string id, int insertPosition = -1)
-        //{
-        //    var childItems = AddChildItemsNode(T_Parent);
-        //    var childItemsList = childItems.ChildItemsList;
-        //    var injForm = new InjectFormType(childItems, id);
-        //    var count = childItemsList.Count;
-        //    if (insertPosition < 0 || insertPosition > count) insertPosition = count;
-        //    childItemsList.Insert(insertPosition, injForm);
-        //    //TODO: init this InjectForm object
-
-        //    return injForm;
-        //}
-        //internal static bool HasChildItems(T T_Parent)
-        //{
-        //    {
-        //        if (T_Parent?.ChildItemsNode?.ChildItemsList != null)
-        //        {
-        //            foreach (var n in T_Parent.ChildItemsNode.ChildItemsList)
-        //            { if (n != null) return true; }
-        //        }
-        //    }
-        //    return false;
-        //}
-        //internal static ChildItemsType AddChildItemsNode(T T_Parent)
-        //{
-        //    ChildItemsType childItems = null;  //this class contains an "Items" list
-        //    if (T_Parent == null)
-        //        throw new ArgumentNullException("The T_Parent object was null");
-        //    //return childItems; 
-        //    else if (T_Parent.ChildItemsNode == null)
-        //    {
-        //        childItems = new ChildItemsType(T_Parent);
-        //        T_Parent.ChildItemsNode = childItems;  //This may be null for the Header, Body and Footer  - need to check this
-        //    }
-        //    else //(T_Parent.ChildItemsNode != null)
-        //        childItems = T_Parent.ChildItemsNode;
-
-        //    if (childItems.ChildItemsList == null)
-        //        childItems.ChildItemsList = new List<IdentifiedExtensionType>();
-
-        //    return childItems;
-        //}
-
-        //internal static ResponseFieldType AddQuestionResponseField(QuestionItemType qParent)
-        //{
-        //    var rf = new ResponseFieldType(qParent);
-        //    qParent.ResponseField_Item = rf;
-
-        //    return rf;
-        //}
-        //internal static LookupEndPointType AddEndpointToListField(ListFieldType listFieldParent)
-        //{
-        //    if (listFieldParent.List == null)
-        //    {
-        //        var lep = new LookupEndPointType(listFieldParent);
-        //        listFieldParent.LookupEndpoint = lep;
-        //        return lep;
-        //    }
-        //    else throw new InvalidOperationException("Can only add LookupEndpoint to ListField if List object is not present");
-        //}
-        //internal static ListType AddListToListField(ListFieldType listFieldParent)
-        //{
-        //    ListType list;  //this is not the .NET List class; It's an answer list
-        //    if (listFieldParent.List == null)
-        //    {
-        //        list = new ListType(listFieldParent);
-        //        listFieldParent.List = list;
-        //    }
-        //    else list = listFieldParent.List;
-
-        //    //The "list" item contains a list<DisplayedType>, to which the ListItems and ListNotes (DisplayedItems) are added.
-        //    if (list.QuestionListMembers == null)
-
-        //        list.QuestionListMembers = new List<DisplayedType>();
-
-        //    return list;
-        //}
-        //internal static ListFieldType AddListFieldToQuestion(QuestionItemType qParent)
-        //{
-        //    if (qParent.ListField_Item == null)
-        //    {
-        //        var listField = new ListFieldType(qParent);
-        //        qParent.ListField_Item = listField;
-        //    }
-
-        //    return qParent.ListField_Item;
-        //}
-
-
+       
         //Remove all child nodes 
 
 
@@ -220,11 +59,11 @@ namespace SDC.Schema
         //QS AddChildQS(string id = "", int insertPosition = -1);
         //QM AddChildQM(string id = "", int insertPosition = -1);
         //QL AddChildQL(string id = "", int insertPosition = -1);
-
     } 
-    public interface IChildItemsMember<Tchild>  //Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType
+    public interface IChildItemsMember<Tchild>  
             where Tchild : IdentifiedExtensionType, IChildItemsMember<Tchild>
-    {    } //Empty 
+    {//Marks SectionItemType, QuestionItemType, DisplayedType, ButtonItemType, InjectFormType    
+    } //Empty 
     public interface IQuestionItem : IQuestionList
     { } //Empty 
 
@@ -236,8 +75,6 @@ namespace SDC.Schema
     //Convert QR to QM    (delete ResponseField, add List, set maxSelections)
     //LookupEndPointType AddLookupEndpoint(ListFieldType lfParent);  //should be part of AddChildQL code;
     //CanConvert (to Type)
-
-
     public interface IQuestionList //may be implemented by Q, List, LI and perhaps DI (if inside a list)
     { } //Empty 
 
@@ -394,9 +231,8 @@ namespace SDC.Schema
 //} //Implemented on ListItem and DisplayedItem
 public interface IListField
 {
-    ListType List { get; set; }
-    LookupEndPointType LookupEndpoint { get; set; }
-
+        ListType List { get; set; }
+        LookupEndPointType LookupEndpoint { get; set; }
 }
 public interface IQuestionBase
 {
@@ -406,8 +242,8 @@ public interface IListItem
     { } //Empty 
 public interface IQuestionBuilder
     {   } //Empty 
-public interface ISection //may delete the change types
-    {
+public interface ISection 
+    {//may delete the change types
     //QuestionItemType ChangeToQuestionMultiple();
     //QuestionItemType ChangeToQuestionSingle();
     //QuestionItemType ChangeToQuestionResponse();
@@ -424,45 +260,15 @@ public interface IDisplayedTypeMember
 public interface IBlob
 { }//Empty
 public interface IDisplayedTypeChanges
-{
-    // use these as part of a static DisplayedTypeChanges utility class; Do not add them to DisplayedType, since they would be inherited by Section, Question andd InjectForm
-    QuestionItemType ChangeToQuestionMultiple(DisplayedType source);
-    QuestionItemType ChangeToQuestionSingle(DisplayedType source);
-    QuestionItemType ChangeToQuestionResponse(DisplayedType source);
-    QuestionItemType ChangeToQuestionLookup(DisplayedType source);
-    SectionItemType ChangeToSection(DisplayedType source);
-    ButtonItemType ChangeToButtonAction(DisplayedType source);
-    InjectFormType ChangeToInjectForm(DisplayedType source);
-
-    DisplayedType ChangeToDisplayedItem(SectionItemType source);
-    QuestionItemType ChangeToQuestionMultiple(SectionItemType source);
-    QuestionItemType ChangeToQuestionSingle(SectionItemType source);
-    QuestionItemType ChangeToQuestionResponse(SectionItemType source);
-    QuestionItemType ChangeToQuestionLookup(SectionItemType source);
-    ButtonItemType ChangeToButtonAction(SectionItemType source);
-    InjectFormType ChangeToInjectForm(SectionItemType source);
-
-
-    DisplayedType ChangeToDisplayedItem(ListItemType source);
-
-    //ListItemType ChangeToListItem
-    //ListItemType ChangeToListItemResponse
-    //SectionItemType ChangeToSection()
-    //ChangeToButtonAction
-    //ChangeToInjectForm
-    //etc.
-
-
-    //Question
-    SectionItemType ChangeToSection(QuestionItemType source);
-    DisplayedType ChangeToDisplayedItem(QuestionItemType source);
-
-
-} //may delete this
+{    //Use this as part of a static DisplayedTypeChanges utility class; 
+    //Do NOT add them to DisplayedType, since they would be inherited by Section, Question andd InjectForm
+//may delete this
+} //Empty
 public interface IExtensionBase
 { }//Empty
-public interface IExtensionBaseTypeMember : IMoveRemove //Used on Extension, Property, Comment
-{ }//Empty
+public interface IExtensionBaseTypeMember  
+{//Used on Extension, Property, Comment 
+    }//Empty
 public interface IIdentifiedExtensionType
 { }//Empty
 public interface IMoveRemove
@@ -476,18 +282,19 @@ public interface IResponse : IVal //marks LIR and QR
 public interface IResponseField : IVal
 { }//Empty
 
-
-public interface IVal
-{
-    //Implemented by data types, which have a strongly-typed val attribute.  Not implemented by anyType, XML, or HTML  
-    object Val { get; set; }
-    string ValString { get; }
-}
-public interface IValNumeric : IVal { decimal ValDec { get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.
-public interface IValDateTime : IVal { } //Implemented by DateTime data types, which have a strongly-type val attribute.
-public interface IValInteger : IVal { long ValLong { get; set; } } //Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
-
-
+    #region Values    
+    public interface IVal
+    {
+        //Implemented by data types, which have a strongly-typed val attribute.  Not implemented by anyType, XML, or HTML  
+        object Val { get; set; }
+        string ValString { get; }
+    }
+    public interface IValNumeric : IVal { decimal ValDec { get; set; } } //Implemented by numeric data types, which have a strongly-type val attribute.
+    public interface IValDateTime : IVal { } //Implemented by DateTime data types, which have a strongly-type val attribute.
+    public interface IValInteger : IVal
+    { long ValLong { get; set; } } //Implemented by Integer data types, which have a strongly-type val attribute.  Includes byte, short, long, positive, no-positive, negative and non-negative types
+    #endregion
+    
 public interface IIdentifiers
 { }//Empty
 public interface IAddCoding
@@ -499,8 +306,9 @@ public interface IAddOrganization
 }//Empty
 public interface IAddPerson
 { }//Empty
-public interface IEvent : IHasActionElseGroup  //Used for events (PredActionType)
-{ }//Empty
+public interface IEvent : IHasActionElseGroup  
+{//Used for events (PredActionType) 
+}//Empty
 public interface IPredGuard
 {   //used by Guards on ListItem, Button 
 }//Empty
@@ -525,9 +333,9 @@ public interface IHasElseNode
 { }//Empty
 public interface IActions
 { } //Empty
-public interface IActionsMember : IMoveRemove
-//used from within an individual action object; "this" refers to the action object itself.  Its parent is the Actions element (ActionsType)
-{
+public interface IActionsMember
+
+{//used from within an individual action object; "this" refers to the action object itself.  Its parent is the Actions element (ActionsType)
 
     /// <summary>
     /// Helper function to change the order of actions (e.g., ActSendMessage) inside the Actions element
@@ -579,7 +387,7 @@ public interface IClone
 public interface IHtmlPackage
 {//On SDCPackage.HTMLPackage
 
-}
+}//Empty
 public interface IRegistrySummary
 {
     //BaseType[] Items

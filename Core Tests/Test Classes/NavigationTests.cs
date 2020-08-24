@@ -53,7 +53,7 @@ namespace SDC.Schema.Tests
                 else content = "";
 
                 Debug.Print(n.ObjectID.ToString().PadLeft(4) + ": " + i.ToString().PadLeft(4) + ": " + (n.name ?? "").PadRight(20) + ": " + (n.ElementName ?? "").PadRight(25) + content);
-                n = SdcUtil.NextElement(n);
+                n = SdcUtil.ReflectNextElement(n);
                 i++;
             }
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
@@ -73,7 +73,7 @@ namespace SDC.Schema.Tests
                 else content = "";
 
                 Debug.Print(n.ObjectID.ToString().PadLeft(4) + ": " + i.ToString().PadLeft(4) + ": " + (n.name ?? "").PadRight(20) + ": " + (n.ElementName ?? "").PadRight(25) + content);
-                n = SdcUtil.ReflectNextElement(n);
+                n = SdcUtil.ReflectNextElement2(n);
                 i++;
             }
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
@@ -239,7 +239,7 @@ namespace SDC.Schema.Tests
 
                     Debug.Print(n.ObjectID.ToString().PadLeft(4) + ": " + i.ToString().PadLeft(4) + ": " + (n.name ?? "").PadRight(20) + ": " + (n.ElementName ?? "").PadRight(25) + content);
 
-                    n = SdcUtil.NextElement2(n);
+                    n = SdcUtil.GetNextElement(n);
                     i++;
                 }
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
@@ -262,7 +262,7 @@ namespace SDC.Schema.Tests
 
                 Debug.Print(n.ObjectID.ToString().PadLeft(4) + ": " + i.ToString().PadLeft(4) + ": " + (n.name ?? "").PadRight(20) + ": " + (n.ElementName ?? "").PadRight(25) + content);
 
-                n = SdcUtil.PrevElement(n);
+                n = SdcUtil.GetPrevElement(n);
                 i--;
             }
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
@@ -287,7 +287,7 @@ namespace SDC.Schema.Tests
             while (n != null)
             {
                 sortedNodes[i] = n;
-                n = SdcUtil.NextElement(n);
+                n = SdcUtil.ReflectNextElement(n);
                 i++;
             }
 
@@ -519,7 +519,7 @@ namespace SDC.Schema.Tests
         {
             Setup.TimerStart($"==>{Setup.CallerName()} Started");
                 var lst = Setup.FD.TopNode.GetItemByName("S_57219")
-                    .GetXmlAttributeAll();
+                    .GetXmlAttributesAll();
                 foreach (var n in lst) Debug.Print($"{n.Name}");
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
         }

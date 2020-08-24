@@ -50,16 +50,15 @@ namespace SDC.Schema.Tests
                 List<BaseType> lst2;
                 List<BaseType> lst3;
 
-                lst1 = SdcUtil.ReflectChildList(Setup.FD.TopNode.GetListItem("51689.100004300"));
-                lst2 = SdcUtil.ReflectChildList(Setup.FD.TopNode.GetListItem("38493.100004300"));
-                lst3 = SdcUtil.ReflectChildList(Setup.FD.TopNode.GetItemByName("lst_44135_3"));
+                lst1 = SdcUtil.ReflectChildList(Setup.FD.GetListItemByID("51689.100004300"));
+                lst2 = SdcUtil.ReflectChildList(Setup.FD.GetListItemByID("38493.100004300"));
+                lst3 = SdcUtil.ReflectChildList(Setup.FD.GetItemByName("lst_44135_3"));
 
-                lst3 = SdcUtil.ReflectSubtree(Setup.FD.TopNode.GetSection("43969.100004300"));
+                lst3 = SdcUtil.ReflectSubtree(Setup.FD.GetSectionByID("43969.100004300"));
                 //foreach (var n in lst3) Debug.Print(n.name);
                 var tc = new TreeComparer();
                 lst3.Sort(tc);
                 foreach (var n in lst3) Debug.Print(n.name + ": " + n.ElementName + ", " + n.ObjectID);
-
 
                 var lst4 = Setup.FD.Nodes.Values.ToList();
                 var res = lst4[0].GetType().GetProperties()

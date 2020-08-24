@@ -17,14 +17,14 @@ namespace SDC.Schema.Tests
         public void AssignXmlNames()
         {
             Setup.TimerStart($"==>{Setup.CallerName()} Started");
-            Setup.FD.AssignXmlNamesByReflection();
+            Setup.FD.AssignElementNamesByReflection();
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
         }
         [TestMethod]
         public void AssignNamesFromXmlDoc()
         {
             Setup.TimerStart($"==>{Setup.CallerName()} Started");
-            Setup.FD.AssignXmlElementNamesFromXmlDoc(Setup.GetXml());
+            Setup.FD.AssignElementNamesFromXmlDoc(Setup.GetXml());
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
         }
         [TestMethod]

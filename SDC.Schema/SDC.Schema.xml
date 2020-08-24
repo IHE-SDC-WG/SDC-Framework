@@ -7774,14 +7774,21 @@
         <!-- Badly formed XML comment ignored for member "M:SDC.Schema.SdcUtil.GetPropertyInfo(SDC.Schema.BaseType,System.String@,System.Int32@,System.Collections.Generic.IEnumerable{SDC.Schema.BaseType}@,System.Int32@,System.Int32@,System.String@,System.Boolean)" -->
         <!-- Badly formed XML comment ignored for member "M:SDC.Schema.SdcUtil.ReflectPropertyInfoAttributes(System.Reflection.TypeInfo)" -->
         <!-- Badly formed XML comment ignored for member "M:SDC.Schema.SdcUtil.ReflectXmlAttributesFilled(SDC.Schema.BaseType)" -->
-        <!-- Badly formed XML comment ignored for member "M:SDC.Schema.BaseTypeExtensions.GetXmlAttributesFilled(SDC.Schema.BaseType)" -->
-        <!-- Badly formed XML comment ignored for member "M:SDC.Schema.BaseTypeExtensions.GetXmlAttributeAll(SDC.Schema.BaseType)" -->
-        <member name="M:SDC.Schema.ITopNodeExtensions.CanRemoveNode(SDC.Schema.ITopNode,System.String)">
-             <summary>
-             Not yet supported
-             </summary>
-             <returns></returns>
-            public static byte[] GetMsgPack(this ITopNode itn);
+        <member name="M:SDC.Schema.BaseTypeExtensions.GetXmlAttributesFilled(SDC.Schema.BaseType)">
+            <summary>
+            Provides PropertyInfo (PI) definitions for all bt attributes that will be serialized to XML
+            Each PI can be used t  obtain the type, name and other features of each attribute
+            Also, each PI can be used to create an instance of the object by calling PI.GetValue(parentObject)
+            </summary>
+            <param name="bt"></param>
+            <returns>List&lt;PropertyInfo></returns>
+        </member>
+        <member name="M:SDC.Schema.BaseTypeExtensions.GetXmlAttributeAll(SDC.Schema.BaseType)">
+            <summary>
+            Provides PropertyInfo (PI) definitions for all XML attributes of an SDC node
+            </summary>
+            <param name="bt"></param>
+            <returns><b>List&lt;PropertyInfo></b> </returns>
         </member>
         <member name="M:SDC.Schema.SdcSerializerJson`1.SerializeJson``1(``0)">
             <summary>

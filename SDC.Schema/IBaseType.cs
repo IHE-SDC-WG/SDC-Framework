@@ -60,13 +60,11 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ItemTypeEnum NodeType { get; }
-        [System.Xml.Serialization.XmlIgnore]
-        [JsonIgnore]
-        public Boolean IsLeafNode { get; }
-
         //[System.Xml.Serialization.XmlIgnore]
         //[JsonIgnore]
-        //public string ParentIETypeID { get => ParentIETypeNode?.ID; }
+        //public Boolean IsLeafNode { get; }
+
+
         /// <summary>
         /// Returns the ID of the parent object (representing the parent XML element)
         /// This is the ObjectID, which is a sequentially assigned integer value.
