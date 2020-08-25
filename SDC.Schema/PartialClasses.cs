@@ -1374,30 +1374,30 @@ namespace SDC.Schema
         }
 
         #region IDisplayedType
-        IDisplayedType idt { get => this as IDisplayedType; }
-        public LinkType AddLink(int insertPosition = -1)
-        { return idt.AddLinkI(insertPosition); }
-        public BlobType AddBlob(int insertPosition = -1)
-        { return idt.AddBlobI(insertPosition); }
-        public ContactType AddContact(int insertPosition = -1)
-        { return idt.AddContactI(insertPosition); }
-        public CodingType AddCodedValue(int insertPosition = -1)
-        { return idt.AddCodedValueI(insertPosition); }
+        //IDisplayedType idt { get => this as IDisplayedType; }
+        //public LinkType AddLink(int insertPosition = -1)
+        //{ return idt.AddLinkI(insertPosition); }
+        //public BlobType AddBlob(int insertPosition = -1)
+        //{ return idt.AddBlobI(insertPosition); }
+        //public ContactType AddContact(int insertPosition = -1)
+        //{ return idt.AddContactI(insertPosition); }
+        //public CodingType AddCodedValue(int insertPosition = -1)
+        //{ return idt.AddCodedValueI(insertPosition); }
         #endregion
 
         #region DisplayedType Events
-        public OnEventType AddOnEvent()
-        { return idt.AddOnEventI(); }
-        public EventType AddOnEnter()
-        { return idt.AddOnEnterI(); }
-        public EventType AddOnExit()
-        { return idt.AddOnExitI(); }
-        public PredGuardType AddActivateIf()
-        { return idt.AddActivateIfI(); }
-        public PredGuardType AddDeActivateIf()
-        { return idt.AddDeActivateIfI(); }
-        public bool MoveEvent(EventType ev, List<EventType> targetList = null, int index = -1)
-        { return idt.MoveEventI(ev, targetList, index); }
+        //public OnEventType AddOnEvent()
+        //{ return idt.AddOnEventI(); }
+        //public EventType AddOnEnter()
+        //{ return idt.AddOnEnterI(); }
+        //public EventType AddOnExit()
+        //{ return idt.AddOnExitI(); }
+        //public PredGuardType AddActivateIf()
+        //{ return idt.AddActivateIfI(); }
+        //public PredGuardType AddDeActivateIf()
+        //{ return idt.AddDeActivateIfI(); }
+        //public bool MoveEvent(EventType ev, List<EventType> targetList = null, int index = -1)
+        //{ return idt.MoveEventI(ev, targetList, index); }
         #endregion
 
         //#region IChildItemMember
@@ -1476,8 +1476,6 @@ namespace SDC.Schema
     }
 
     #region Coding
-
-
     public partial class CodingType : IDisplayedTypeMember
     {
         protected CodingType() { }

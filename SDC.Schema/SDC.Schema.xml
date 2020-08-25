@@ -55,7 +55,7 @@
             For eCC, this is the Parent node's ID, which is derived from  the parent node's CTI_Ckey, a.k.a. ParentItemCkey.
             </summary>
         </member>
-        <member name="T:SDC.Schema.IChildItemsParent`1">
+        <member name="T:SDC.Schema.IChildItemsMember`1">
             <summary>
             This interface is applied to the partial classes that can have a ChildItems element.
             These are Section, Question and ListItem.  
@@ -7783,7 +7783,7 @@
             <param name="bt"></param>
             <returns>List&lt;PropertyInfo></returns>
         </member>
-        <member name="M:SDC.Schema.BaseTypeExtensions.GetXmlAttributeAll(SDC.Schema.BaseType)">
+        <member name="M:SDC.Schema.BaseTypeExtensions.GetXmlAttributesAll(SDC.Schema.BaseType)">
             <summary>
             Provides PropertyInfo (PI) definitions for all XML attributes of an SDC node
             </summary>

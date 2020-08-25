@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 namespace SDC.Schema
 
 {
-    public interface IBaseType: IMoveRemove, INavigate
+    public interface IBaseType : IMoveRemove, INavigate
     {
         #region Public Members
         [System.Xml.Serialization.XmlIgnore]
@@ -96,14 +92,14 @@ namespace SDC.Schema
 
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public IdentifiedExtensionType ParentIETypeNode {get;}
+        public IdentifiedExtensionType ParentIETypeNode { get; }
         /// <summary>
         /// Returns the ID property of the closest ancestor of type IdentifiedExtensionType.  
         /// For eCC, this is the Parent node's ID, which is derived from  the parent node's CTI_Ckey, a.k.a. ParentItemCkey.
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public string ParentIETypeID { get;}
+        public string ParentIETypeID { get; }
 
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
