@@ -53,12 +53,12 @@ namespace SDC.Schema
         #endregion
 
         #region IFormDesign
-        public SectionItemType AddBody()
-        { return (this as IFormDesign).AddBody(); }
-        public SectionItemType AddFooter()
-        { return (this as IFormDesign).AddFooter(); }
-        public SectionItemType AddHeader()
-        { return (this as IFormDesign).AddHeader(); }
+        //public SectionItemType AddBody()
+        //{ return (this as IFormDesign).AddBody(); }
+        //public SectionItemType AddFooter()
+        //{ return (this as IFormDesign).AddFooter(); }
+        //public SectionItemType AddHeader()
+        //{ return (this as IFormDesign).AddHeader(); }
         public RulesType AddRules()
         { throw new NotImplementedException(); }
         #endregion
@@ -634,7 +634,7 @@ namespace SDC.Schema
 
     }
 
-    public partial class ListItemType : IChildItemsParent<ListItemType>, IListItem //, IQuestionListMember
+    public partial class ListItemType : IChildItemsParent<ListItemType> //, IListItem //, IQuestionListMember
     {
         protected ListItemType() { }
         public ListItemType(ListType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
@@ -1359,7 +1359,7 @@ namespace SDC.Schema
 
     #region DisplayedType and Members
 
-    public partial class DisplayedType : IDisplayedType, IChildItemsMember<DisplayedType> //, IQuestionListMember
+    public partial class DisplayedType : IChildItemsMember<DisplayedType> //, IQuestionListMember
     {
         protected DisplayedType() { }
         public DisplayedType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)

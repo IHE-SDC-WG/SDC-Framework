@@ -16,6 +16,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;using System.Text.RegularExpressions;
@@ -408,7 +409,7 @@ XmlElementName: {XmlElementName}
         }
     }
 
-        public static class SdcUtil
+    public static class SdcUtil
     {
         #region ArrayHelpers
         public static bool IsGenericList(object o)
@@ -758,7 +759,7 @@ XmlElementName: {XmlElementName}
 
             var lst = ReflectChildList(par);
             var myIndex = lst?.IndexOf(item) ?? -1;
-            if (myIndex < 0 || myIndex == lst?.Count()-1) return null;
+            if (myIndex < 0 || myIndex == lst?.Count() - 1) return null;
             return lst[myIndex + 1];
         }
         public static BaseType GetPrevSib(BaseType item)
@@ -852,7 +853,7 @@ XmlElementName: {XmlElementName}
         public static BaseType ReflectLastDescendant(BaseType bt, BaseType stopNode = null)
         {
             if (bt is null) return null;
-            BaseType lastKid =  null;
+            BaseType lastKid = null;
 
             FindLastKid(bt);
             //!+-------Local Method--------------------------
@@ -1094,7 +1095,7 @@ XmlElementName: {XmlElementName}
 
         }
 
-        public static List<PropertyInfoOrdered> ReflectPropertyInfoList( BaseType bt)
+        public static List<PropertyInfoOrdered> ReflectPropertyInfoList(BaseType bt)
         {
             return ReflectPropertyInfoElements(bt.GetType().GetTypeInfo());
         }
@@ -1105,7 +1106,7 @@ XmlElementName: {XmlElementName}
             foreach (var p in ti.GetProperties())
             {
                 var att = p.GetCustomAttributes<XmlElementAttribute>().FirstOrDefault();
-                if (att !=null)
+                if (att != null)
 
                     props.Add(new PropertyInfoOrdered(p, att.Order));
             }
@@ -1146,8 +1147,8 @@ XmlElementName: {XmlElementName}
             var attProps = new List<PropertyInfo>();
             foreach (var p in ReflectXmlAttributesAll(bt))
             {
-                    if ((bool)ti.GetMethod("ShouldSerialize" + p.Name).Invoke(bt, null))
-                        attProps.Add(p);
+                if ((bool)ti.GetMethod("ShouldSerialize" + p.Name).Invoke(bt, null))
+                    attProps.Add(p);
             }
             return attProps;
         }
@@ -1213,7 +1214,7 @@ XmlElementName: {XmlElementName}
         }
 
         public static List<BaseType> GetSortedNodeList(ITopNode tn)
-        {            
+        {
             return GetSubtreeList(tn.TopNode as BaseType);
             //var n = tn.TopNode as BaseType;
             // var nodes = tn.Nodes;
@@ -1289,7 +1290,7 @@ XmlElementName: {XmlElementName}
                 {
                     if (childList != null)
                         foreach (var child in childList)
-                        MoveNext(child);
+                            MoveNext(child);
                 }
             }
             return sortedList;
@@ -1360,7 +1361,7 @@ XmlElementName: {XmlElementName}
                         lastNode = childList.Last();
                         MoveNext(lastNode);
                     }
-                }            
+                }
             }
             return lastNode;
         }
@@ -1434,7 +1435,7 @@ XmlElementName: {XmlElementName}
             return false;
         }
 
-        static bool IsParentNodeAllowed(PropertyInfo piNewParentProperty, BaseType item, string itemName = null )
+        static bool IsParentNodeAllowed(PropertyInfo piNewParentProperty, BaseType item, string itemName = null)
         {
             //We want to know if the itemName is allowed to be atttached at a hypothetical property defined by piNewParent
             //piNewParent 
@@ -1444,7 +1445,7 @@ XmlElementName: {XmlElementName}
             Type itemType = item.GetType();
             if (itemName.IsEmpty()) itemName = item.GetPropertyInfo().XmlElementName;
 
-                var pAtts = piNewParentProperty.GetCustomAttributes<XmlElementAttribute>();
+            var pAtts = piNewParentProperty.GetCustomAttributes<XmlElementAttribute>();
 
             if (pAtts.Count() > 0)
             {
@@ -1474,13 +1475,13 @@ XmlElementName: {XmlElementName}
                 }
                 //if none of the XmlElementAttributes had a matching Type an ElementName, perhaps the property Type will match directly
                 if (piNewParentProperty.Name == itemName)
-                { 
+                {
                     if (piNewParentProperty.PropertyType == itemType)
                         return true;
 
                     if (piNewParentProperty.PropertyType.IsGenericType &&
                         piNewParentProperty.PropertyType.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)) &&
-                        piNewParentProperty.PropertyType.GetGenericArguments()[0] == itemType 
+                        piNewParentProperty.PropertyType.GetGenericArguments()[0] == itemType
                         )
                         return true;
 
@@ -1868,8 +1869,6 @@ XmlElementName: {XmlElementName}
             throw new NotImplementedException();
 
         }
-
-
 
     }
     public static class ActionsTypeExtensions
@@ -2345,23 +2344,17 @@ XmlElementName: {XmlElementName}
         #endregion       
     }
 
-
-    public static class INewTopLevelExtensions
-    {    } //Empty
-    public static class IPackageExtensions
-    {    } //Empty
-    public static class IDataElementExtensions
-    {    } //Empty
-    public static class IDemogFormExtensions
-    {    } //Empty
-    public static class IMapExtensions
-    {    } //Empty
-    public static class IFormDesignExtensions
+    public static class INewTopLevelExtensions { } //Empty
+    public static class IPackageExtensions { } //Empty
+    public static class IDataElementExtensions { } //Empty
+    public static class IDemogFormExtensions { } //Empty
+    public static class IMapExtensions { } //Empty
+    public static class FormDesignTypeExtensions
     {
         //Default Implementations
-        public static SectionItemType AddHeader(this IFormDesign ifd)
+        public static SectionItemType AddHeader(this FormDesignType fd)
         {
-            var fd = (ifd as FormDesignType);
+           // var fd = (ifd as FormDesignType);
             if (fd.Header == null)
             {
                 fd.Header = new SectionItemType(fd, fd.ID + "_Header");  //Set a default ID, in case the database template does not have a body
@@ -2369,9 +2362,9 @@ XmlElementName: {XmlElementName}
             }
             return fd.Header;
         }
-        public static SectionItemType AddBody(this IFormDesign ifd)
+        public static SectionItemType AddBody(this FormDesignType fd)
         {
-            var fd = (ifd as FormDesignType);
+            //var fd = (ifd as FormDesignType);
             if (fd.Body == null)
             {
                 fd.Body = new SectionItemType(fd, fd.ID + "_Body");  //Set a default ID, in case the database template does not have a body
@@ -2379,9 +2372,9 @@ XmlElementName: {XmlElementName}
             }
             return fd.Body;
         }
-        public static SectionItemType AddFooter(this IFormDesign ifd)
+        public static SectionItemType AddFooter(this FormDesignType fd)
         {
-            var fd = (ifd as FormDesignType);
+            //var fd = (ifd as FormDesignType);
             if (fd.Footer == null)
             {
                 fd.Footer = new SectionItemType(fd, fd.ID + "_Footer");  //Set a default ID, in case the database template does not have a body
@@ -2390,16 +2383,16 @@ XmlElementName: {XmlElementName}
             return fd.Footer;
         }
 
-    } //Empty
-    public static class IRetrieveFormPackageExtensions
+    } 
+    public static class RetrieveFormPackageTypeExtensions
     {
-        public static LinkType AddFormURL_(this IRetrieveFormPackage rfp)
+        public static LinkType AddFormURL_(this RetrieveFormPackageType rfp)
         { throw new NotImplementedException();  }
-        public static HTMLPackageType AddHTMLPackage_(this IRetrieveFormPackage rfp)
+        public static HTMLPackageType AddHTMLPackage_(this RetrieveFormPackageType rfp)
         { throw new NotImplementedException(); }
-        public static XMLPackageType AddXMLPackage_(this IRetrieveFormPackage rfp)
+        public static XMLPackageType AddXMLPackage_(this RetrieveFormPackageType rfp)
         { throw new NotImplementedException(); }
-    } //Empty
+    } 
     public static class IChildItemsParentExtensions
     {        
         public static SectionItemType AddChildSection<T>(this IChildItemsParent<T> T_Parent, string id, string defTitle = null, int insertPosition = -1) where T : BaseType, IChildItemsParent<T>
@@ -2689,7 +2682,7 @@ XmlElementName: {XmlElementName}
     //        throw new Exception(String.Format("Not Implemented"));
     //    }
     } //Empty
-    public static class IQuestionItemExtensions
+    public static class QuestionItemTypeExtensions
     {
         public static QuestionItemType ConvertToQR_(this QuestionItemType q, bool testOnly = false)
         { throw new NotImplementedException(); } //abort if children present
@@ -2800,7 +2793,6 @@ XmlElementName: {XmlElementName}
             }else throw new Exception("A Question subtype has already been assigned to the Question.");
         }
 
-
         public static ListFieldType AddListFieldToQuestion(this QuestionItemType q)
         {
             if (q.ListField_Item == null)
@@ -2811,7 +2803,7 @@ XmlElementName: {XmlElementName}
             return q.ListField_Item;
         } 
     }
-    public static class IQuestionListExtensions
+    public static class ListTypeExtensions
 
     {
         public static ListItemType AddListItem(this ListType lt, string id, string defTitle = null, int insertPosition = -1) //check that no ListItemResponseField object is present
@@ -2855,8 +2847,7 @@ XmlElementName: {XmlElementName}
         }
     } 
 
-
-    public static class IListFieldExtensions
+    public static class ListFieldTypeExtensions
     {
         public static LookupEndPointType AddEndpoint(this ListFieldType lf)
         {
@@ -2886,8 +2877,8 @@ XmlElementName: {XmlElementName}
         }
 
     }
-    public static class IQuestionBaseExtensions  { } //Empty
-    public static class IListItemExtensions
+    public static class IQuestionBaseExtensions { } //Empty
+    public static class ListItemTypeExtensions
     {
         public static ListItemResponseFieldType AddListItemResponseField(this ListItemType li)
         {
@@ -2921,28 +2912,27 @@ XmlElementName: {XmlElementName}
             return n;
         }
     }
-    public static class ISectionExtensions  { } //Empty
-    public static class IButtonItemExtensions
+    //public static class ISectionExtensions { } //Empty
+    public static class ButtonItemTypeExtensions
     {
-        public static EventType AddOnClick_(this IButtonItem bf)
+        public static EventType AddOnClick_(this ButtonItemType bf)
         { throw new NotImplementedException(); }
     }
-    public static class IInjectFormExtensions
+    public static class InjectFormTypeExtensions
     {  //ChildItems.InjectForm - this is mainly useful for a DEF injecting items based on the InjectForm URL
         //Item types choice under ChildItems
-        public static FormDesignType AddFormDesign_(this IInjectForm injf)
+        public static FormDesignType AddFormDesign_(this InjectFormType ijt)
         { throw new NotImplementedException(); }
-        public static QuestionItemType AddQuestion_(this IInjectForm injf)
+        public static QuestionItemType AddQuestion_(this InjectFormType ijt)
         { throw new NotImplementedException(); }
-        public static SectionItemType AddSection_(this IInjectForm injf)
+        public static SectionItemType AddSection_(this InjectFormType ijt)
         { throw new NotImplementedException(); }
 
     }
-    public static class IDisplayedTypeExtensions
+    public static class DisplayedTypeExtensions
     {//LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
         public static BlobType AddBlob(this DisplayedType dtParent, int insertPosition = -1)
         {
-            //var dtParent = this as DisplayedType;
             var blob = new BlobType(dtParent);
             if (dtParent.BlobContent == null) dtParent.BlobContent = new List<BlobType>();
             var count = dtParent.BlobContent.Count;
@@ -2952,7 +2942,6 @@ XmlElementName: {XmlElementName}
         }
         public static LinkType AddLink(this DisplayedType dtParent, int insertPosition = -1)
         {
-            //var dtParent = this as DisplayedType;
             var link = new LinkType(dtParent);
 
             if (dtParent.Link == null) dtParent.Link = new List<LinkType>();
@@ -2967,7 +2956,6 @@ XmlElementName: {XmlElementName}
         }
         public static ContactType AddContact(this DisplayedType dtParent, int insertPosition = -1)
         {
-            //var dtParent = this as DisplayedType;
             if (dtParent.Contact == null) dtParent.Contact = new List<ContactType>();
             var ct = new ContactType(dtParent);
             var count = dtParent.Contact.Count;
@@ -2977,7 +2965,6 @@ XmlElementName: {XmlElementName}
         }
         public static CodingType AddCodedValue(this DisplayedType dtParent, int insertPosition = -1)
         {
-            //var dtParent = this as DisplayedType;
             if (dtParent.CodedValue == null) dtParent.CodedValue = new List<CodingType>();
             var ct = new CodingType(dtParent);
             var count = dtParent.CodedValue.Count;
@@ -2989,35 +2976,30 @@ XmlElementName: {XmlElementName}
 
         public static PredGuardType AddActivateIf(this DisplayedType dt)
         {
-            //var dt = this as DisplayedType;
             var pg = new PredGuardType(dt, "ActivateIf", "acif");
             dt.ActivateIf = pg;
             return pg;
         }
         public static PredGuardType AddDeActivateIf(this DisplayedType dt)
         {
-            //var dt = this as DisplayedType;
             var pg = new PredGuardType(dt, "DeActivateIf", "deif");
             dt.DeActivateIf = pg;
             return pg;
         }
         public static EventType AddOnEnter(this DisplayedType dt)
         {
-            //var dt = this as DisplayedType;
             var ev = new EventType(dt, "OnEnter", "onen");
             dt.OnEnter.Add(ev);
             return ev;
         }
         public static OnEventType AddOnEvent(this DisplayedType dt)
         {
-            //var dt = this as DisplayedType;
             var oe = new OnEventType(dt, "OnEvent", "onev");
             dt.OnEvent.Add(oe);
             return oe;
         }
         public static EventType AddOnExit(this DisplayedType dt)
         {
-            //var dt = this as DisplayedType;
             var oe = new EventType(dt, "OnExit", "onex");
             dt.OnEnter.Add(oe);
             return oe;
@@ -3027,7 +3009,7 @@ XmlElementName: {XmlElementName}
             throw new NotImplementedException();
         }
     }
-    public static class IDisplayedTypeChangesExtensions
+    public static class DisplayedTypeChangesExtensions
     {
         public static QuestionItemType ChangeToQuestionMultiple_(DisplayedType source)
         { throw new NotImplementedException(); }
@@ -3077,22 +3059,22 @@ XmlElementName: {XmlElementName}
         public static DisplayedType ChangeToDisplayedType_(QuestionItemType source)
         { throw new NotImplementedException(); }
     }
-    public static class IDisplayedTypeMemberExtensions { }//Empty; for LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
-    public static class IBlobExtensions
+    //public static class IDisplayedTypeMemberExtensions { }//Empty; for LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
+    public static class BlobExtensions
     {
         //DisplayedItem.BlobType
         //Uses Items types choice
-        public static bool AddBinaryMedia_(this IBlob b)
+        public static bool AddBinaryMedia_(this BlobType b)
         { throw new NotImplementedException(); } //Empty
 
-        public static bool AddBlobURI_(this IBlob b)
+        public static bool AddBlobURI_(this BlobType b)
         { throw new NotImplementedException(); }
     }
-    public static class IExtensionBaseExtensions
+    public static class ExtensionBaseTypeExtensions
     {
-        public static bool HasExtensionBaseMembers(this IExtensionBase ieb) //Has Extension, Property or Comment sub-elements
+        public static bool HasExtensionBaseMembers(this ExtensionBaseType ebt) //Has Extension, Property or Comment sub-elements
         {
-            var ebt = ieb as ExtensionBaseType;
+            //var ebt = ieb as ExtensionBaseType;
             if (ebt?.Property?.Count() > 0)
             {
                 foreach (var n in ebt.Property)
@@ -3110,9 +3092,9 @@ XmlElementName: {XmlElementName}
             }
             return false;
         }
-        public static ExtensionType AddExtension(this IExtensionBase ieb, int insertPosition = -1)
+        public static ExtensionType AddExtension(this ExtensionBaseType ebtParent, int insertPosition = -1)
         {
-            var ebtParent = ieb as ExtensionBaseType;
+            //var ebtParent = ieb as ExtensionBaseType;
             var e = new ExtensionType(ebtParent);
             if (ebtParent.Extension == null) ebtParent.Extension = new List<ExtensionType>();
             var count = ebtParent.Extension.Count;
@@ -3120,9 +3102,9 @@ XmlElementName: {XmlElementName}
             ebtParent.Extension.Insert(insertPosition, e);
             return e;
         }
-        public static CommentType AddComment(this IExtensionBase ieb, int insertPosition = -1)
+        public static CommentType AddComment(this ExtensionBaseType ebtParent, int insertPosition = -1)
         {
-            var ebtParent = ieb as ExtensionBaseType;
+            //var ebtParent = ieb as ExtensionBaseType;
             if (ebtParent.Comment == null) ebtParent.Comment = new List<CommentType>();
             CommentType ct = null;
             var count = ebtParent.Comment.Count;
@@ -3130,9 +3112,9 @@ XmlElementName: {XmlElementName}
             ebtParent.Comment.Insert(insertPosition, ct);  //return new empty Comment object for caller to fill
             return ct;
         }
-        public static PropertyType AddProperty(this IExtensionBase ieb, int insertPosition = -1)
+        public static PropertyType AddProperty(this ExtensionBaseType ebtParent, int insertPosition = -1)
         {
-            var ebtParent = ieb as ExtensionBaseType;
+            //var ebtParent = ieb as ExtensionBaseType;
             var prop = new PropertyType(ebtParent);
             if (ebtParent.Property == null) ebtParent.Property = new List<PropertyType>();
             var count = ebtParent.Property.Count;
@@ -3185,9 +3167,9 @@ XmlElementName: {XmlElementName}
             return false;
         }
     } 
-    public static class IIdentifiedExtensionTypeExtensions
+    public static class IdentifiedExtensionTypeExtensions
     {
-        public static string GetNewCkey_(this IIdentifiedExtensionType i) 
+        public static string GetNewCkey_(this IdentifiedExtensionType i) 
         { throw new NotImplementedException(); }
     }
     public static class IMoveRemoveExtensions
@@ -3379,12 +3361,12 @@ XmlElementName: {XmlElementName}
     public static class IResponseExtensions
     {
         //UnitsType AddUnits(ResponseFieldType rfParent);
-        public static UnitsType AddUnits(this IResponse _, ResponseFieldType rfParent)
-        {
-            UnitsType u = new UnitsType(rfParent);
-            rfParent.ResponseUnits = u;
-            return u;
-        }
+        //public static UnitsType AddUnits(this IResponse _, ResponseFieldType rfParent)
+        //{
+        //    UnitsType u = new UnitsType(rfParent);
+        //    rfParent.ResponseUnits = u;
+        //    return u;
+        //}
         public static RichTextType AddTextAfterResponse_()
         { throw new NotImplementedException(); }
         public static BaseType GetDataTypeObject_()
@@ -3700,8 +3682,7 @@ XmlElementName: {XmlElementName}
             throw new InvalidCastException("The parent node must be of type EventType or PredActionType");
         }
     } 
-    public static class IHasActionElseGroupExtensions
-    {    } //Empty
+    public static class IHasActionElseGroupExtensions { } //Empty
     public static class IHasElseNodeExtensions
     {
         public static PredActionType AddElseNode(this IHasElseNode hen)
@@ -3732,55 +3713,61 @@ XmlElementName: {XmlElementName}
             //return new Els
         }
     }
-    public static class IActionsMemberExtensions
-    {    } //Empty
-    public static class ISendMessage_ReportExtensions
+    public static class IActionsMemberExtensions { } //Empty
+    public static class ActSendMessageTypeExtensions
     {
         //List<ExtensionBaseType> Items
         //Supports ActSendMessageType and ActSendReportType
-        public static EmailAddressType AddEmail_(this ISendMessage_Report smr)
+        public static EmailAddressType AddEmail_(this ActSendMessageType smr)
         { throw new NotImplementedException(); }
-        public static PhoneNumberType AddFax_(this ISendMessage_Report smr)
+        public static PhoneNumberType AddFax_(this ActSendMessageType smr)
         { throw new NotImplementedException(); }
-        public static CallFuncActionType AddWebService_(this ISendMessage_Report smr)
+        public static CallFuncActionType AddWebService_(this ActSendMessageType smr)
         { throw new NotImplementedException(); }
     }
-    public static class ICallFuncBaseExtensions
+    public static class CallFuncBaseTypeExtensions
     {
         //anyURI_Stype Item (choice)
-        public static anyURI_Stype AddFunctionURI_(this ICallFuncBase cfb)
+        public static anyURI_Stype AddFunctionURI_(this CallFuncBaseType cfb)
         { throw new NotImplementedException(); }
-        public static anyURI_Stype AddLocalFunctionName_(this ICallFuncBase cfb)
+        public static anyURI_Stype AddLocalFunctionName_(this CallFuncBaseType cfb)
         { throw new NotImplementedException(); }
 
         //List<ExtensionBaseType> Items
-        public static ListItemParameterType AddListItemParameterRef_(this ICallFuncBase cfb)
+        public static ListItemParameterType AddListItemParameterRef_(this CallFuncBaseType cfb)
         { throw new NotImplementedException(); }
-        public static ParameterItemType AddParameterRef_(this ICallFuncBase cfb)
+        public static ParameterItemType AddParameterRef_(this CallFuncBaseType cfb)
         { throw new NotImplementedException(); }
-        public static ParameterValueType AddParameterValue_(this ICallFuncBase cfb)
+        public static ParameterValueType AddParameterValue_(this CallFuncBaseType cfb)
         { throw new NotImplementedException(); }
     }
-    public static class IScriptBoolFuncActionExtensions
+
+
+    public static class CallFuncActionTypeExtensions
+    {
+        public static anyURI_Stype AddConnditionalActions_(this CallFuncActionType cfat)
+        { throw new NotImplementedException(); }
+    }
+    public static class ScriptBoolFuncActionTypeExtensions
     {
         //ExtensionBaseType[] Items 
-        public static ActionsType AddActions(this IScriptBoolFuncAction sbfa)
+        public static ActionsType AddActions_(this ScriptBoolFuncActionType sbfa)
         { throw new NotImplementedException(); }
-        public static PredActionType AddConditionalActions(this IScriptBoolFuncAction sbfa)
+        public static PredActionType AddConditionalActions_(this ScriptBoolFuncActionType sbfa)
         { throw new NotImplementedException(); }
-        public static PredActionType AddElse(this IScriptBoolFuncAction sbfa)
+        public static PredActionType AddElse_(this ScriptBoolFuncActionType sbfa)
         { throw new NotImplementedException(); }
     } 
-    public static class ICallFuncBoolActionExtensions
+    public static class CallFuncBoolActionTypeExtensions
     {
         //ExtensionBaseType[] Items1
         //see IScriptBoolFuncAction, which is identical except that this interface implementation must use "Item1", not "Item"
         //Implementations using Item1:
-        public static ActionsType AddActions_(this ICallFuncBoolAction cfba)
+        public static ActionsType AddActions_(this CallFuncBoolActionType cfba)
         { throw new NotImplementedException(); }
-        public static PredActionType AddConditionalActions_(this ICallFuncBoolAction cfba)
+        public static PredActionType AddConditionalActions_(this CallFuncBoolActionType cfba)
         { throw new NotImplementedException(); }
-        public static PredActionType AddElse_(this ICallFuncBoolAction cfba)
+        public static PredActionType AddElse_(this CallFuncBoolActionType cfba)
         { throw new NotImplementedException(); }
     }
     public static class IValidationTestsExtensions
@@ -3802,24 +3789,24 @@ XmlElementName: {XmlElementName}
         public static base64Binary_Stype AddHTMLbase64_(this IHtmlPackage hp)
         { throw new NotImplementedException(); }
     }
-    public static class IRegistrySummaryExtensions
+    public static class RegistrySummaryTypeExtensions
     {
         //BaseType[] Items
         //Attach to Admin.RegistryData as OriginalRegistry and/or CurrentRegistry
 
-        public static ContactType AddContact_(this IRegistrySummary rs)
+        public static ContactType AddContact_(this RegistrySummaryType rs)
         { throw new NotImplementedException(); }
-        public static FileType AddManual_(this IRegistrySummary rs)
+        public static FileType AddManual_(this RegistrySummaryType rs)
         { throw new NotImplementedException(); }
-        public static string_Stype AddReferenceStandardIdentifier_(this IRegistrySummary rs)
+        public static string_Stype AddReferenceStandardIdentifier_(this RegistrySummaryType rs)
         { throw new NotImplementedException(); }
-        public static InterfaceType AddRegistryInterfaceType_(this IRegistrySummary rs)
+        public static InterfaceType AddRegistryInterfaceType_(this RegistrySummaryType rs)
         { throw new NotImplementedException(); }
-        public static string_Stype AddRegistryName_(this IRegistrySummary rs)
+        public static string_Stype AddRegistryName_(this RegistrySummaryType rs)
         { throw new NotImplementedException(); }
-        public static FileType AddRegistryPurpose_(this IRegistrySummary rs)
+        public static FileType AddRegistryPurpose_(this RegistrySummaryType rs)
         { throw new NotImplementedException(); }
-        public static FileType AddServiceLevelAgreement_(this IRegistrySummary rs)
+        public static FileType AddServiceLevelAgreement_(this RegistrySummaryType rs)
         { throw new NotImplementedException(); }
     } 
 

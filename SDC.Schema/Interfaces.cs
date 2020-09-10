@@ -87,7 +87,7 @@ namespace SDC.Schema
     //CanConvert (to Type)
     public interface IQuestionList { } //may be implemented by Q, List, LI and perhaps DI (if inside a list) 
 
-    //public interface IQuestionListMember : IQuestionBuilder //decorates LI/LIR and DI
+    //!public interface IQuestionListMember : IQuestionBuilder //decorates LI/LIR and DI
     //{
     //    //for DI, make sure parent is a ListType object
     //    //bool Remove(bool removeDecendants = false);
@@ -99,8 +99,8 @@ namespace SDC.Schema
 
 
     //    //for DI, make sure parent is a ListType object
-    //    bool Remove(bool removeDecendants); 
-    //    bool RemoveI(bool removeDecendants) 
+    //!   bool Remove(bool removeDecendants); 
+    //!    bool RemoveI(bool removeDecendants) 
     //    { throw new NotImplementedException(); }
     //    //bool Move(QuestionItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
     //    //bool Move(ListItemType target, bool moveAbove, bool testOnly) { throw new NotImplementedException(); }
@@ -109,14 +109,14 @@ namespace SDC.Schema
     //    /// </summary>
     //    /// <returns>returns true if operation succeeded    
     //    /// </returns>
-    //    bool MoveInList(out string err, int newListIndex = -1);
-    //    bool MoveInListI(out string err, int newListIndex = -1)
+    //!    bool MoveInList(out string err, int newListIndex = -1);
+    //!    bool MoveInListI(out string err, int newListIndex = -1)
     //    {
     //        var qlm = this as BaseType;  //"this" is either a DI or LI
     //        var list = (ListType)(qlm)?.ParentNode;
     //        return qlm.Move(list, out err, 6);
     //    }
-    //    //bool Move(List<BaseType> targetProperty, out List<string> errList, int newListIndex = -1) //DI and LI must have a parent property of ListType (DI or LI) of ChildItems (DI)
+    //!    //bool Move(List<BaseType> targetProperty, out List<string> errList, int newListIndex = -1) //DI and LI must have a parent property of ListType (DI or LI) of ChildItems (DI)
     //    //{
     //    //    var qlm = this as BaseType;  //"this" is either a DI or LI
     //    //    var list = (ListType)(qlm)?.ParentNode;
@@ -130,8 +130,8 @@ namespace SDC.Schema
     //    /// <param name="errList"></param>
     //    /// <param name="newListIndex"></param>
     //    /// <returns>returns true if operation succeeded    </returns>
-    //    bool MoveToList(ListType targetList, out string err, int newListIndex = -1);
-    //    bool MoveToListI(ListType targetList, out string err, int newListIndex = -1)
+    //!    bool MoveToList(ListType targetList, out string err, int newListIndex = -1);
+    //!    bool MoveToListI(ListType targetList, out string err, int newListIndex = -1)
     //    {
     //        var qlm = this as BaseType;  //"this" is either a DI or LI
     //        return qlm.Move(targetList, out err, newListIndex);
@@ -146,8 +146,8 @@ namespace SDC.Schema
     //    ListItemType ConvertToLIR(bool testOnly);
     //    ListItemType ConvertToLIR_I(bool testOnly)
     //    { throw new NotImplementedException(); }
-    //    bool IsMoveAllowedToList(QuestionItemType target, out string error);
-    //    bool IsMoveAllowedToListI(QuestionItemType target, out string error)
+    //!    bool IsMoveAllowedToList(QuestionItemType target, out string error);
+    //!    bool IsMoveAllowedToListI(QuestionItemType target, out string error)
     //    {
     //        error = "";
 
@@ -159,8 +159,8 @@ namespace SDC.Schema
 
     //        return true;
     //    }
-    //    bool MoveInList(DisplayedType source, QuestionItemType target, bool moveAbove);
-    //    bool MoveInListI(DisplayedType source, QuestionItemType target, bool moveAbove)
+    //!    bool MoveInList(DisplayedType source, QuestionItemType target, bool moveAbove);
+    //!    bool MoveInListI(DisplayedType source, QuestionItemType target, bool moveAbove)
     //    {
     //        if (source is null) return false;
     //        if (source is RepeatingType) return false; //S, Q are illegal in the list
@@ -192,8 +192,8 @@ namespace SDC.Schema
     //        return false;
 
     //    }
-    //    bool MoveInList(DisplayedType source, DisplayedType target, bool moveAbove);
-    //    bool MoveInListI(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType); need to address Nodes dictionary updates
+    //!    bool MoveInList(DisplayedType source, DisplayedType target, bool moveAbove);
+    //!    bool MoveInListI(DisplayedType source, DisplayedType target, bool moveAbove) //target must be a LI or DI (not a RepeatingType); need to address Nodes dictionary updates
     //    {
     //        //this function allows dropping items inside a QS o QM list to rearrange the list
     //        //prevent illegal operationss
@@ -238,13 +238,13 @@ namespace SDC.Schema
 
 
     //} //Implemented on ListItem and DisplayedItem
-    public interface IListItem { }
-    public interface ISection { }
-    public interface IButtonItem { }
-    public interface IInjectForm { }
-    public interface IDisplayedType { }
+    //!public interface IListItem { }    
+    //!public interface ISection { }
+    //!public interface IButtonItem { }
+    //!public interface IInjectForm { }
+    //!public interface IDisplayedType { }
     public interface IDisplayedTypeMember { }//LinkType, BlobType, ContactType, CodingType, EventType, OnEventType, PredGuardType
-    public interface IBlob { }
+    //public interface IBlob { }
     public interface IExtensionBase { }
     public interface IExtensionBaseTypeMember { }//Used on Extension, Property, Comment 
     public interface IIdentifiedExtensionType { }
@@ -269,19 +269,9 @@ namespace SDC.Schema
     public interface IHasElseNode { }
     public interface IActions { }
     public interface IActionsMember { }//used from within an individual action object; "this" refers to the action object itself.  Its parent is the Actions element (ActionsType)
-    public interface ISendMessage_Report { }
-    public interface ICallFuncBase { }
-    public interface IScriptBoolFuncAction { }
-    public interface ICallFuncBoolAction : ICallFuncBase, IScriptBoolFuncAction
-    {   //ExtensionBaseType[] Items1
-        //see IScriptBoolFuncAction, which is identical except that this interface implementation must use "Item1", not "Item"
-        //Implementations using Item1:
-    }
     public interface IValidationTests { }
     public interface IClone { }
     public interface IHtmlPackage { }//On SDCPackage.HTMLPackage
-    public interface IRegistrySummary { }//BaseType[] Item;  //Attach to Admin.RegistryData as OriginalRegistry and/or CurrentRegistry     
-
     #endregion
 
 }
