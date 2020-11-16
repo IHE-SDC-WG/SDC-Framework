@@ -18,7 +18,7 @@ namespace SDC.Schema
     /// Used by FormDesignType, DemogFormDesignType, DataElementType, RetrieveFormPackageType, and PackageListType
     /// The interface provides a common way to fill the above object trees using a single set of shared code.
     /// It also provdes a set of consistent, type-specific, public utilities for working with SDC objects
-    public interface ITopNode : IBaseType
+    public interface ITopNode: IBaseType
     {
         /// <summary>
         /// Dictionary.  Given an Node ID (int), returns the node's object reference.

@@ -413,7 +413,11 @@
             Dictionary.  Given an Node ID (int), returns the Node's object reference.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:SDC.Schema.DataElementType.ParentNodes" -->
+        <member name="P:SDC.Schema.DataElementType.ParentNodes">
+            <summary>
+            Dictionary.  Given a NodeID, return the *parent* Node's object reference
+            </summary>
+        </member>
         <member name="P:SDC.Schema.DataElementType.Items">
             <summary>
             May hold one  or more of the following:
@@ -1309,6 +1313,11 @@
             <summary>
             Field to hold the ordinal position of an object (XML element) under an IdentifiedExtensionType (IET)-derived object.
             This number is used for creating the name attribute suffix.
+            </summary>
+        </member>
+        <member name="P:SDC.Schema.BaseType.DotLevel">
+            <summary>
+             Hierarchical level using nested dot notation
             </summary>
         </member>
         <member name="P:SDC.Schema.BaseType.BaseName">
@@ -4883,7 +4892,11 @@
             types. The default datatype for messages is string.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:SDC.Schema.ActSendMessageType.Email_Phone_WebSvc_List" -->
+        <member name="P:SDC.Schema.ActSendMessageType.Email_Phone_WebSvc_List">
+            <summary>
+            List&lt;BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
+            </summary>
+        </member>
         <member name="P:SDC.Schema.ActSendMessageType.Items">
             <summary>
             May hold one or more of:
@@ -7771,9 +7784,36 @@
             Name of the XML element that is used to represent the requested object
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:SDC.Schema.SdcUtil.GetPropertyInfo(SDC.Schema.BaseType,System.String@,System.Int32@,System.Collections.Generic.IEnumerable{SDC.Schema.BaseType}@,System.Int32@,System.Int32@,System.String@,System.Boolean)" -->
-        <!-- Badly formed XML comment ignored for member "M:SDC.Schema.SdcUtil.ReflectPropertyInfoAttributes(System.Reflection.TypeInfo)" -->
-        <!-- Badly formed XML comment ignored for member "M:SDC.Schema.SdcUtil.ReflectXmlAttributesFilled(SDC.Schema.BaseType)" -->
+        <member name="M:SDC.Schema.SdcUtil.GetPropertyInfo(SDC.Schema.BaseType,System.String@,System.Int32@,System.Collections.Generic.IEnumerable{SDC.Schema.BaseType}@,System.Int32@,System.Int32@,System.String@,System.Boolean)">
+            <summary>
+            Get the PropertyInfo object that represents the "item" property in the item's ParentNode
+            This PropertyInfo object may be decorated with important XML annnotations such as XmlElementAttribute
+            The returned PropertyInfo object may refer to a BaseType or the IEnumerables List&lt;BaseType> and Array&lt;BaseType> 
+            If a wrapper property was created in an SDC parrtial class, only the inner property (i.e., the one with XML attributes) is returned
+            </summary>
+            <param name="item"></param>
+            <param name="getNames">if true, element names will be determined</param>
+            <returns>
+            propName: name of the property is returned as an out parameter
+            ieItems: if the property is IEnumerable&lt;BaseType>, the IEnumerable property object is returned as an out parameter, otherwise it is null
+            itemIndex: the index of "item" in "ieItems" is returned as an out parameter, otherwise it is -1
+            </returns>
+        </member>
+        <member name="M:SDC.Schema.SdcUtil.ReflectPropertyInfoAttributes(System.Reflection.TypeInfo)">
+            <summary>
+            Uses reflection to determine XML attributes that are eligible to be serialized.
+            </summary>
+            <param name="ti"></param>
+            <returns>List&lt;PropertyInfo></returns>
+        </member>
+        <member name="M:SDC.Schema.SdcUtil.ReflectXmlAttributesFilled(SDC.Schema.BaseType)">
+            <summary>
+            Uses reflection to determine XML attributes that will be serialized, based on the passed parameter object.
+            These attributes are determined by innvoking the "ShouldSerialize[Attribute Name]" methods in the passed parameter
+            </summary>
+            <param name="bt">A non-null SDC object derrived from BaseType</param>
+            <returns>List&lt;PropertyInfo></returns>
+        </member>
         <member name="M:SDC.Schema.BaseTypeExtensions.GetXmlAttributesFilled(SDC.Schema.BaseType)">
             <summary>
             Provides PropertyInfo (PI) definitions for all bt attributes that will be serialized to XML

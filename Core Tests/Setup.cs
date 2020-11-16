@@ -32,6 +32,7 @@ namespace SDC.Schema.Tests
         static Setup()
         {
             Reset();
+            //Reset();
         }
         public static string FormDesignXml { get; set; }
 

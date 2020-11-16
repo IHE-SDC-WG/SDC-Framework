@@ -39,6 +39,20 @@ namespace SDC.Schema.Tests
             }
         }
         [TestMethod]
+        public void ReflectNodes()
+        {
+            Setup.TimerStart($"==>{Setup.CallerName()} Started");
+            SdcUtil.ReflectNodeDictionaries(Setup.FD);
+            Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
+
+            
+            Setup.TimerStart($"==>{Setup.CallerName()} Started");
+            var s = SdcUtil.ReflectNodeDictionariesOrdered(Setup.FD, 0, true);
+            Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
+            Debug.Print(s);
+
+        }
+        [TestMethod]
         public void MoveNext()
         {
             Setup.TimerStart($"==>{Setup.CallerName()} Started");

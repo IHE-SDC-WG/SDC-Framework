@@ -132,7 +132,7 @@ namespace SDC.Schema
     public enum PropTypeEnum
     {
 
-    }
+    } //Empty
     public enum PropClassEnum
     {
 

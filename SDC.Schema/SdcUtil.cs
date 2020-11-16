@@ -14,7 +14,7 @@ using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 using System.Resources;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
+//using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Xml;
@@ -559,6 +559,124 @@ XmlElementName: {XmlElementName}
             return null;
         }
 
+
+
+
+        private static int counter;
+        private static int indent;
+        private static StringBuilder treeText = new StringBuilder();
+        public static void ReflectNodeDictionaries(BaseType node, int start = 0)
+        {
+            if (start == 0)
+            {
+                counter = 1;
+                node.TopNode.ParentNodes.Clear();
+                node.TopNode.ChildNodes.Clear();
+            }
+            foreach (var p in node.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p=> p.IsDefined(typeof(XmlElementAttribute))))
+            {
+                    var prop = p.GetValue(node);
+
+                if (prop != null)
+                {
+
+                    if (prop is BaseType btProp)
+                    {
+                        btProp.RegisterParent(node);
+                        //Debug.Print($"#{counter}; OID: {btProp.ObjectID}; name: {btProp.name}");
+                        ReflectNodeDictionaries(btProp, ++counter);                        
+                    }
+                    else if (prop is IEnumerable<BaseType> ieProp)
+                    {
+                        foreach (BaseType btItem in ieProp)
+                        {
+                            btItem.RegisterParent(node);
+                            //Debug.Print($"#{counter}; OID: {btItem.ObjectID}; name: {btItem.name}");
+                            ReflectNodeDictionaries(btItem, ++counter);                            
+                        }
+                    }
+                }
+            }
+        }
+        public static string ReflectNodeDictionariesOrdered(BaseType node, int start = 0, bool print = false)
+        {
+            indent++;
+            if (start == 0)
+            {
+                counter = 1;
+                indent = 0;
+                treeText = new StringBuilder();
+                node.TopNode.ParentNodes.Clear();
+                node.TopNode.ChildNodes.Clear();
+            }
+            else if (print)
+            { 
+                treeText.Append("\r\n");
+            }
+            
+            //Create a LIFO stack of the targetNode inheritance hierarchy.  The stack's top level type will always be BaseType
+            //For most non-datatype SDC objects, it could be a bit more efficient to use ExtensionBaseType - we can test this another time
+            Type t = node.GetType();
+            var s = new Stack<Type>();
+            s.Push(t);
+
+            do
+            {//build the stack of inherited types
+                t = t.BaseType;
+                if (t.IsSubclassOf(typeof(BaseType))) s.Push(t);
+                else break; //quit when we hit a non-BaseType type
+            } while (true);
+            
+            while (s.Count > 0)
+            {
+                var props = s.Pop().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                    .Where(p => p.IsDefined(typeof(XmlElementAttribute)));
+                //.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().First().Order);
+                foreach (var p in props)
+                {
+                    var prop = p.GetValue(node);
+                    if (prop != null)
+                    {
+                        
+                        if (prop is BaseType btProp)
+                        {
+                            btProp.RegisterParent(node);
+                            if (print) treeText.Append($"{"".PadRight(indent, '.')}({btProp.DotLevel})#{counter}; OID: {btProp.ObjectID}; name: {btProp.name}{content(btProp)}");
+                            //Debug.Assert(btProp.ObjectID == counter);
+                            ReflectNodeDictionariesOrdered(btProp, ++counter, print);
+
+                            indent--;
+                        }
+                        else if (prop is IEnumerable<BaseType> ieProp)
+                        {
+                            foreach (BaseType btItem in ieProp)
+                            {                                
+                                btItem.RegisterParent(node);
+                                if (print) treeText.Append($"{"".PadRight(indent, '.')}({btItem.DotLevel})#{counter}; OID: {btItem.ObjectID}; name: {btItem.name}{content(btItem)}");
+                                //Debug.Assert(btItem.ObjectID == counter);
+                                ReflectNodeDictionariesOrdered(btItem, ++counter, print);
+                                indent--;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            string content(BaseType n)
+                {
+                string s;
+                if (n is DisplayedType) s = "; title: " + (n as DisplayedType).title;
+                else if (n is PropertyType) s = "; " + (n as PropertyType).propName + ": " + (n as PropertyType).val;
+                else s = $"; type: {n.GetType().Name}";
+                return s;
+            }
+            //dotText.Append((++sibCount).ToString());
+            if (start == 0 && print) return treeText.ToString();
+            return "";
+        }
         public static BaseType ReflectNextElement(BaseType item)
         {
             int xmlOrder = -1;
@@ -679,6 +797,7 @@ XmlElementName: {XmlElementName}
                 return null;
             }
         }
+
         public static BaseType ReflectNextElement2(BaseType item)
         {
             if (item is null) return null;
@@ -918,14 +1037,14 @@ XmlElementName: {XmlElementName}
         /// <summary>
         /// Get the PropertyInfo object that represents the "item" property in the item's ParentNode
         /// This PropertyInfo object may be decorated with important XML annnotations such as XmlElementAttribute
-        /// The returned PropertyInfo object may refer to a BaseType or the IEnumerables List<BaseType> and Array<BaseType> 
+        /// The returned PropertyInfo object may refer to a BaseType or the IEnumerables List&lt;BaseType> and Array&lt;BaseType> 
         /// If a wrapper property was created in an SDC parrtial class, only the inner property (i.e., the one with XML attributes) is returned
-        /// </summarout i
+        /// </summary>
         /// <param name="item"></param>
         /// <param name="getNames">if true, element names will be determined</param>
         /// <returns>
         /// propName: name of the property is returned as an out parameter
-        /// ieItems: if the property is IEnumerable<BaseType>, the IEnumerable property object is returned as an out parameter, otherwise it is null
+        /// ieItems: if the property is IEnumerable&lt;BaseType>, the IEnumerable property object is returned as an out parameter, otherwise it is null
         /// itemIndex: the index of "item" in "ieItems" is returned as an out parameter, otherwise it is -1
         /// </returns>
         private static PropertyInfo GetPropertyInfo(
@@ -1119,7 +1238,7 @@ XmlElementName: {XmlElementName}
         /// Uses reflection to determine XML attributes that are eligible to be serialized.
         /// </summary>
         /// <param name="ti"></param>
-        /// <returns>List<PropertyInfo></returns>
+        /// <returns>List&lt;PropertyInfo></returns>
         public static List<PropertyInfo> ReflectPropertyInfoAttributes(TypeInfo ti)
         {
             if (ti is null) return null;
@@ -1139,7 +1258,7 @@ XmlElementName: {XmlElementName}
         /// These attributes are determined by innvoking the "ShouldSerialize[Attribute Name]" methods in the passed parameter
         /// </summary>
         /// <param name="bt">A non-null SDC object derrived from BaseType</param>
-        /// <returns>List<PropertyInfo></returns>
+        /// <returns>List&lt;PropertyInfo></returns>
         public static List<PropertyInfo> ReflectXmlAttributesFilled(BaseType bt)
         {
             TypeInfo ti = bt.GetType().GetTypeInfo();
@@ -3261,6 +3380,7 @@ XmlElementName: {XmlElementName}
         internal static void RegisterParent<T>(this BaseType btSource, T inParentNode) where T : BaseType
         {
             btSource.ParentNode = inParentNode;
+
             try
             {
                 if (inParentNode != null)
@@ -3275,7 +3395,6 @@ XmlElementName: {XmlElementName}
                         btSource.TopNode.ChildNodes.Add(inParentNode.ObjectGUID, kids);
                     }
                     kids.Add(btSource);
-
                     //inParentNode.IsLeafNode = false; //the parent node has a child node, so it can't be a leaf node
                 }
             }

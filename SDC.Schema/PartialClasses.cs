@@ -223,7 +223,7 @@ namespace SDC.Schema
         public Dictionary<Guid, BaseType> Nodes { get; private set; } = new Dictionary<Guid, BaseType>();
         /// <summary>
         /// Dictionary.  Given a NodeID, return the *parent* Node's object reference
-        /// </summary
+        /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public Dictionary<Guid, BaseType> ParentNodes { get; private set; } = new Dictionary<Guid, BaseType>();
@@ -863,6 +863,42 @@ namespace SDC.Schema
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public ITopNode TopNode { get; private set; }
+        /// <summary>
+        ///  Hierarchical level using nested dot notation
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public string DotLevel {
+            get 
+            {
+                //Walk up parent node tree and place each parent in a stack.
+                //pop each node off the stack and determine its position (seq) in its parent object
+                BaseType par = ParentNode;
+                var s = new Stack<BaseType>();
+                s.Push(this);
+                while ( par != null)
+                {
+                    s.Push(par);
+                    par = par.ParentNode;
+                }
+                int level = 0;
+                var sb = new StringBuilder("0");
+                int seq;
+                s.Pop();  //pop off the top node, which has no parent.
+                while (s.Count > 0)
+                {
+                    var n = s.Pop();
+
+                    if (n.TopNode.ChildNodes.TryGetValue(n.ParentNode.ObjectGUID, out List<BaseType> lst))
+                    { seq = lst.IndexOf(n) + 1; }
+                    else { seq = 0; }
+                    sb.Append('.').Append(seq); ;
+                    level++;
+                }
+                return sb.ToString();
+            }
+}
+
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
         public bool AutoNameFlag { get; set; } = false;
@@ -969,7 +1005,7 @@ namespace SDC.Schema
         {
             get
             {
-                return _ParentNode;  //this works for objects that were created with the parentNode constructor
+                //return _ParentNode;  //this works for objects that were created with the parentNode constructor
                 
                 TopNode.ParentNodes.TryGetValue(this.ObjectGUID, out BaseType outParentNode);
                 return outParentNode;
@@ -1196,7 +1232,8 @@ namespace SDC.Schema
 
 
         //TODO: why are these internal static methods in BaseType?  Should they be in SdcUtil or another helper class?
-        //Answer: Because they operate on the SDC Type itself, not on an object instance.  If they are in the BaseType class, they don't need to be copied into all the ITopNode classes.
+        //Answer: Because they operate on the SDC Type itself, not on an object instance.  
+        //If they are in the BaseType class, they don't need to be copied into all the ITopNode classes.
         #region Serialization
 
         //!+XML
@@ -2821,7 +2858,7 @@ namespace SDC.Schema
         { ElementName = "SendMessage"; } //"SendMessage111" in Schema
 
         /// <summary>
-        /// List<BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
+        /// List&lt;BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
         /// </summary>
         internal List<ExtensionBaseType> Email_Phone_WebSvc_List
         {
