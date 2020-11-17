@@ -21,7 +21,7 @@ namespace SDC.Schema.Tests
             //previous test runs change locations of some SDC nodes 
             //This can cause some Assert methods, whch depend on the order of ObjectIDs, to fail.
             //So we Reset the source SDC xml before starting this test suite
-            Setup.Reset();  
+            //Setup.Reset();  
         }
         /// <summary>
         ///Gets or sets the test context which provides
@@ -39,15 +39,18 @@ namespace SDC.Schema.Tests
             }
         }
         [TestMethod]
-        public void ReflectNodes()
+        public void ReflectNodeDictionariesOrdered()
         {
             Setup.TimerStart($"==>{Setup.CallerName()} Started");
-            SdcUtil.ReflectNodeDictionaries(Setup.FD);
+            SdcUtil.ReflectNodeDictionariesOrdered(Setup.FD);
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
 
-            
             Setup.TimerStart($"==>{Setup.CallerName()} Started");
-            var s = SdcUtil.ReflectNodeDictionariesOrdered(Setup.FD, 0, true);
+            SdcUtil.ReflectNodeDictionariesOrdered(Setup.FD);
+            Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
+
+            Setup.TimerStart($"==>{Setup.CallerName()} Started");
+            var s = SdcUtil.ReflectNodeDictionariesOrdered(Setup.FD, true);
             Setup.TimerPrintSeconds("  seconds: ", $"\r\n<=={Setup.CallerName()} Complete");
             Debug.Print(s);
 

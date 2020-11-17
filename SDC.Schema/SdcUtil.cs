@@ -559,112 +559,73 @@ XmlElementName: {XmlElementName}
             return null;
         }
 
-
-
-
-        private static int counter;
-        private static int indent;
-        private static StringBuilder treeText = new StringBuilder();
-        public static void ReflectNodeDictionaries(BaseType node, int start = 0)
+        public static string ReflectNodeDictionariesOrdered(ITopNode topNode, bool print = false)
         {
-            if (start == 0)
-            {
-                counter = 1;
-                node.TopNode.ParentNodes.Clear();
-                node.TopNode.ChildNodes.Clear();
-            }
-            foreach (var p in node.GetType()
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p=> p.IsDefined(typeof(XmlElementAttribute))))
-            {
-                    var prop = p.GetValue(node);
+            int counter = 0;
+            int indent = 0;
+            var treeText = new StringBuilder();
+            BaseType node = topNode as BaseType;
+            topNode.ParentNodes.Clear();
+            topNode.ChildNodes.Clear();
+            if (print) treeText.Append($"({node.DotLevel})#{counter}; OID: {node.ObjectID}; name: {node.name}{content(node)}");
 
-                if (prop != null)
+            DoTree(topNode as BaseType);
+
+            void DoTree(BaseType node)
+            {
+                indent++;  //indentation level of the node for output formatting
+                counter++; //simple integer counter, incremented with each node; should match the ObjectID assigned during XML deserialization
+                if (print) treeText.Append("\r\n");
+
+                //Create a LIFO stack of the targetNode inheritance hierarchy.  The stack's top level type will always be BaseType
+                //For most non-datatype SDC objects, it could be a bit more efficient to use ExtensionBaseType - we can test this another time
+                Type t = node.GetType();
+                var s = new Stack<Type>();
+                s.Push(t);
+
+                do
+                {//build the stack of inherited types
+                    t = t.BaseType;
+                    if (t.IsSubclassOf(typeof(BaseType))) s.Push(t);
+                    else break; //quit when we hit a non-BaseType type
+                } while (true);
+
+                while (s.Count > 0)
                 {
-
-                    if (prop is BaseType btProp)
+                    var props = s.Pop().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                        .Where(p => p.IsDefined(typeof(XmlElementAttribute)));
+                    //.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().First().Order);
+                    foreach (var p in props)
                     {
-                        btProp.RegisterParent(node);
-                        //Debug.Print($"#{counter}; OID: {btProp.ObjectID}; name: {btProp.name}");
-                        ReflectNodeDictionaries(btProp, ++counter);                        
-                    }
-                    else if (prop is IEnumerable<BaseType> ieProp)
-                    {
-                        foreach (BaseType btItem in ieProp)
+                        var prop = p.GetValue(node);
+                        if (prop != null)
                         {
-                            btItem.RegisterParent(node);
-                            //Debug.Print($"#{counter}; OID: {btItem.ObjectID}; name: {btItem.name}");
-                            ReflectNodeDictionaries(btItem, ++counter);                            
-                        }
-                    }
-                }
-            }
-        }
-        public static string ReflectNodeDictionariesOrdered(BaseType node, int start = 0, bool print = false)
-        {
-            indent++;
-            if (start == 0)
-            {
-                counter = 1;
-                indent = 0;
-                treeText = new StringBuilder();
-                node.TopNode.ParentNodes.Clear();
-                node.TopNode.ChildNodes.Clear();
-            }
-            else if (print)
-            { 
-                treeText.Append("\r\n");
-            }
-            
-            //Create a LIFO stack of the targetNode inheritance hierarchy.  The stack's top level type will always be BaseType
-            //For most non-datatype SDC objects, it could be a bit more efficient to use ExtensionBaseType - we can test this another time
-            Type t = node.GetType();
-            var s = new Stack<Type>();
-            s.Push(t);
-
-            do
-            {//build the stack of inherited types
-                t = t.BaseType;
-                if (t.IsSubclassOf(typeof(BaseType))) s.Push(t);
-                else break; //quit when we hit a non-BaseType type
-            } while (true);
-            
-            while (s.Count > 0)
-            {
-                var props = s.Pop().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                    .Where(p => p.IsDefined(typeof(XmlElementAttribute)));
-                //.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().First().Order);
-                foreach (var p in props)
-                {
-                    var prop = p.GetValue(node);
-                    if (prop != null)
-                    {
-                        
-                        if (prop is BaseType btProp)
-                        {
-                            btProp.RegisterParent(node);
-                            if (print) treeText.Append($"{"".PadRight(indent, '.')}({btProp.DotLevel})#{counter}; OID: {btProp.ObjectID}; name: {btProp.name}{content(btProp)}");
-                            //Debug.Assert(btProp.ObjectID == counter);
-                            ReflectNodeDictionariesOrdered(btProp, ++counter, print);
-
-                            indent--;
-                        }
-                        else if (prop is IEnumerable<BaseType> ieProp)
-                        {
-                            foreach (BaseType btItem in ieProp)
-                            {                                
-                                btItem.RegisterParent(node);
-                                if (print) treeText.Append($"{"".PadRight(indent, '.')}({btItem.DotLevel})#{counter}; OID: {btItem.ObjectID}; name: {btItem.name}{content(btItem)}");
-                                //Debug.Assert(btItem.ObjectID == counter);
-                                ReflectNodeDictionariesOrdered(btItem, ++counter, print);
-                                indent--;
+                            if (prop is BaseType btProp)
+                            {
+                                btProp.RegisterParent(node);
+                                if (print) treeText.Append($"{"".PadRight(indent, '.')}({btProp.DotLevel})#{counter}; OID: {btProp.ObjectID}; name: {btProp.name}{content(btProp)}");
+                                //Debug.Assert(btProp.ObjectID == counter);                                
+                                DoTree(btProp);
                             }
+                            else if (prop is IEnumerable<BaseType> ieProp)
+                            {
+                                foreach (BaseType btItem in ieProp)
+                                {
+                                    btItem.RegisterParent(node);
+                                    if (print) treeText.Append($"{"".PadRight(indent, '.')}({btItem.DotLevel})#{counter}; OID: {btItem.ObjectID}; name: {btItem.name}{content(btItem)}");
+                                    //Debug.Assert(btItem.ObjectID == counter);                                    
+                                    DoTree(btItem);
+                                }
+                            }
+                            
                         }
                     }
                 }
-
+                indent--;
             }
 
+            //This is a temporary kludge to generate printable output.  
+            //It should be easy to create a tree walker to create any desired output by visiting eacch node.
             string content(BaseType n)
                 {
                 string s;
@@ -673,8 +634,8 @@ XmlElementName: {XmlElementName}
                 else s = $"; type: {n.GetType().Name}";
                 return s;
             }
-            //dotText.Append((++sibCount).ToString());
-            if (start == 0 && print) return treeText.ToString();
+
+            if (print) return treeText.ToString();
             return "";
         }
         public static BaseType ReflectNextElement(BaseType item)
@@ -789,8 +750,8 @@ XmlElementName: {XmlElementName}
                         return false;
                     });
 
-                    var piIeOrdered = piIE?.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().FirstOrDefault()?.Order); //sort pi list by XmlElementAttribute.Order
-                    PropertyInfo piFirst = GetObjectFromIEnumerableIndex(piIeOrdered, 0) as PropertyInfo; //Get the property whose XmlElementAttribute has the smallest order
+                    //var piIeOrdered = piIE?.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().FirstOrDefault()?.Order); //sort pi list by XmlElementAttribute.Order
+                    //PropertyInfo piFirst = GetObjectFromIEnumerableIndex(piIeOrdered, 0) as PropertyInfo; //Get the property whose XmlElementAttribute has the smallest order
 
                     if (nextNode != null) return nextNode;
                 }
@@ -1069,7 +1030,7 @@ XmlElementName: {XmlElementName}
             {
                 par = item;  //we are at the top node
                 var t = item.GetType();
-                var pi = t.GetProperties();
+                //var pi = t.GetProperties();
                 xmlElementName = t.GetCustomAttribute<XmlRootAttribute>()?.ElementName;
                 //maxXmlOrder = GetMaxOrderFromXmlElementAttributes(item);
                 xmlOrder = -1; //-1 is a special case indicating root node
@@ -1108,7 +1069,13 @@ XmlElementName: {XmlElementName}
 
             PropertyInfo tempPI = null;
             //Find all IEnumerable PropertyInfo objects in par
-            var ieProps = par.GetType().GetProperties().Where(n => n.GetValue(par) is IEnumerable<BaseType>);
+            //var ieProps = par.GetType().GetProperties().Where(n => n.GetValue(par) is IEnumerable<BaseType>);  //GetValue can cause infinite recursion if we are evaluating the calling object.
+            var ieProps
+                = par.GetType().GetProperties().Where(n => {
+                return typeof(IEnumerable<BaseType>).IsAssignableFrom(n.PropertyType);
+
+            });
+
 
             foreach (var propInfo in ieProps) //loop through IEnumerable PropertyInfo objects in par
             {
@@ -2075,7 +2042,7 @@ XmlElementName: {XmlElementName}
         {
             var p = at;
             var lst = (IList<BaseType>)p.Items;
-            int c = lst.Count();
+            int c = lst.Count;
             if (insertPosition > -1 && (insertPosition < c)) lst.Insert(insertPosition, action);
             else lst.Insert(c, action);
             return action;

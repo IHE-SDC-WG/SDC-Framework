@@ -928,12 +928,12 @@ namespace SDC.Schema
         {
             get
             {
-               // if (_elementName.IsEmpty() && !cycleGuarded)
+                if (_elementName.IsEmpty() && !cycleGuarded)
                 {
-                    //cycleGuarded = true;
-                    //_elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
+                    cycleGuarded = true;
+                    _elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
                 }
-                //cycleGuarded = false;
+                cycleGuarded = false;
                 return _elementName;
             }
             set
@@ -1245,7 +1245,9 @@ namespace SDC.Schema
         protected static T GetSdcObjectFromXml<T>(string sdcXml) where T : ITopNode
         {
             T obj = SdcSerializer<T>.Deserialize(sdcXml);
-            return InitParentNodesFromXml<T>(sdcXml, obj); ;
+            //return InitParentNodesFromXml<T>(sdcXml, obj);
+            SdcUtil.ReflectNodeDictionariesOrdered(obj);
+            return obj;
         }
         //!+JSON
         protected static ITopNode GetSdcObjectFromJsonPath<T>(string path) where T : ITopNode
@@ -1256,8 +1258,9 @@ namespace SDC.Schema
         protected static ITopNode GetSdcObjectFromJson<T>(string sdcJson) where T : ITopNode
         {
             T obj = SdcSerializerJson<T>.DeserializeJson<T>(sdcJson);
-            //InitParentNodesFromXml<T>(obj.GetXml(), obj);
-            return InitParentNodesFromXml<T>(obj.GetXml(), obj); ;
+            //return InitParentNodesFromXml<T>(sdcXml, obj);
+            SdcUtil.ReflectNodeDictionariesOrdered(obj);
+            return obj;
         }
         //!+MsgPack
         protected static ITopNode GetSdcObjectFromMsgPackPath<T>(string path) where T : ITopNode
@@ -1268,7 +1271,9 @@ namespace SDC.Schema
         protected static ITopNode GetSdcObjectFromMsgPack<T>(byte[] sdcMsgPack) where T : ITopNode
         {
             T obj = SdcSerializerMsgPack<T>.DeserializeMsgPack(sdcMsgPack);
-            return InitParentNodesFromXml<T>(obj.GetXml(), obj);
+            //return InitParentNodesFromXml<T>(sdcXml, obj);
+            SdcUtil.ReflectNodeDictionariesOrdered(obj);
+            return obj;
         }
 
 
