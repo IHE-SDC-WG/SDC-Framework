@@ -2851,12 +2851,12 @@ XmlElementName: {XmlElementName}
         { throw new NotImplementedException(); }
         public static QuestionItemType ConvertToQM_(this QuestionItemType q, int maxSelections = 0, bool testOnly = false)
         { throw new NotImplementedException(); }
-        public static DisplayedType ConvertToDI_(this QuestionItemType q, bool testOnly = false)
-        { throw new NotImplementedException(); } //abort if LIs or children present
-        public static QuestionItemType ConvertToSection_(this QuestionItemType q, bool testOnly = false)
-        { throw new NotImplementedException(); }
-        public static QuestionItemType ConvertToLookup_(this QuestionItemType q, bool testOnly = false)
-        { throw new NotImplementedException(); }//abort if LIs present
+        //public static DisplayedType ConvertToDI_(this QuestionItemType q, bool testOnly = false)
+        //{ throw new NotImplementedException(); } //abort if LIs or children present
+        //public static QuestionItemType ConvertToSection_(this QuestionItemType q, bool testOnly = false)
+        //{ throw new NotImplementedException(); }
+        //public static QuestionItemType ConvertToLookup_(this QuestionItemType q, bool testOnly = false)
+        //{ throw new NotImplementedException(); }//abort if LIs present
 
         public static QuestionEnum GetQuestionSubtype(this QuestionItemType q)
         {
@@ -2905,7 +2905,7 @@ XmlElementName: {XmlElementName}
         {
             if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
                 q.GetQuestionSubtype() == QuestionEnum.QuestionSingle ||
-                q.GetQuestionSubtype() == QuestionEnum.QuestionRaw)
+                q.GetQuestionSubtype() == QuestionEnum.QuestionRaw) //TODO: handle the last case
             {
                 var li = q.AddListItem(id, defTitle, insertPosition);
                 var lirf = li.AddListItemResponseField();
@@ -2928,7 +2928,7 @@ XmlElementName: {XmlElementName}
         {
             if (q.GetQuestionSubtype() == QuestionEnum.QuestionMultiple ||
                 q.GetQuestionSubtype() == QuestionEnum.QuestionSingle ||
-                q.GetQuestionSubtype() == QuestionEnum.QuestionRaw)
+                q.GetQuestionSubtype() == QuestionEnum.QuestionRaw)//TODO: handle the last case
             {
                 if (q.ListField_Item is null) q.AddListFieldToQuestion();
                 ListType list = q.ListField_Item.List;
@@ -2961,7 +2961,7 @@ XmlElementName: {XmlElementName}
                 var listField = new ListFieldType(q);
                 q.ListField_Item = listField;
             }
-            return q.ListField_Item;
+            return q.ListField_Item; //TODO: handle error if not Qraw
         } 
     }
     public static class ListTypeExtensions
