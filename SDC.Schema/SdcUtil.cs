@@ -575,6 +575,7 @@ XmlElementName: {XmlElementName}
             {
                 indent++;  //indentation level of the node for output formatting
                 counter++; //simple integer counter, incremented with each node; should match the ObjectID assigned during XML deserialization
+                BaseType btProp = null;  //holds the current property
                 if (print) treeText.Append("\r\n");
 
                 //Create a LIFO stack of the targetNode inheritance hierarchy.  The stack's top level type will always be BaseType
@@ -596,13 +597,15 @@ XmlElementName: {XmlElementName}
                         .Where(p => p.IsDefined(typeof(XmlElementAttribute)));
                     //.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().First().Order);
                     foreach (var p in props)
-                    {
+                    {                        
                         var prop = p.GetValue(node);
                         if (prop != null)
                         {
-                            if (prop is BaseType btProp)
+                            if (prop is BaseType)
                             {
+                                btProp = prop as BaseType;
                                 btProp.RegisterParent(node);
+                                AssignSdcProperties(p);
                                 if (print) treeText.Append($"{"".PadRight(indent, '.')}({btProp.DotLevel})#{counter}; OID: {btProp.ObjectID}; name: {btProp.name}{content(btProp)}");
                                 //Debug.Assert(btProp.ObjectID == counter);                                
                                 DoTree(btProp);
@@ -611,21 +614,38 @@ XmlElementName: {XmlElementName}
                             {
                                 foreach (BaseType btItem in ieProp)
                                 {
-                                    btItem.RegisterParent(node);
-                                    if (print) treeText.Append($"{"".PadRight(indent, '.')}({btItem.DotLevel})#{counter}; OID: {btItem.ObjectID}; name: {btItem.name}{content(btItem)}");
+                                    btProp = btItem;
+                                    btProp.RegisterParent(node);
+                                    AssignSdcProperties(p);
+                                    if (print) treeText.Append($"{"".PadRight(indent, '.')}({btProp.DotLevel})#{counter}; OID: {btProp.ObjectID}; name: {btProp.name}{content(btItem)}");
                                     //Debug.Assert(btItem.ObjectID == counter);                                    
-                                    DoTree(btItem);
+                                    DoTree(btProp);
                                 }
                             }
-                            
                         }
                     }
                 }
                 indent--;
+                //-------------------------------------------------
+                void AssignSdcProperties(PropertyInfo p)
+                {
+                    string elementName;
+                    int elementOrder = -1;
+                    //Fill some useful properties, while it's efficient to do so, 
+                    //because we have the PropertyInfo object (p) and the actual property object (btProp) already available.
+                    elementName = SdcUtil.ReflectSdcElement(p, btProp, out elementOrder);
+                    btProp.ElementName = elementName;
+                    btProp.ElementOrder = elementOrder;
+                }
+
             }
 
+
+ 
+
+
             //This is a temporary kludge to generate printable output.  
-            //It should be easy to create a tree walker to create any desired output by visiting eacch node.
+            //It should be easy to create a tree walker to create any desired output by visiting each node.
             string content(BaseType n)
                 {
                 string s;
@@ -707,8 +727,8 @@ XmlElementName: {XmlElementName}
                 while (s.Count() > 0)
                 {
                     lowestOrder = 10000;
-                    piIE = s.Pop().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-                    piIE = piIE.Where(p =>
+                    piIE = s.Pop().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                        .Where(p =>
                     {
                         var atts = (XmlElementAttribute[])p.GetCustomAttributes<XmlElementAttribute>();
                         if (atts.Count() == 0) return false;
@@ -748,7 +768,7 @@ XmlElementName: {XmlElementName}
                             }
                         }
                         return false;
-                    });
+                    }).ToList();
 
                     //var piIeOrdered = piIE?.OrderBy(p => p.GetCustomAttributes<XmlElementAttribute>().FirstOrDefault()?.Order); //sort pi list by XmlElementAttribute.Order
                     //PropertyInfo piFirst = GetObjectFromIEnumerableIndex(piIeOrdered, 0) as PropertyInfo; //Get the property whose XmlElementAttribute has the smallest order
@@ -1059,7 +1079,7 @@ XmlElementName: {XmlElementName}
                     if (a1?.Count() > 0)
                     {
                         propName = propInfo.Name;
-                        xmlElementName = GetElementName(propInfo, out xmlOrder);
+                        xmlElementName = ReflectElementName(propInfo, out xmlOrder);
                         return propInfo;
                     }
                 }
@@ -1093,7 +1113,7 @@ XmlElementName: {XmlElementName}
 
                     if (xmlAtts.Count() > 0) //we found the correct PropertyInfo object, which has XmlElementAttributes
                     {
-                        xmlElementName = GetElementName(propInfo, out xmlOrder, itemIndex);
+                        xmlElementName = ReflectElementName(propInfo, out xmlOrder, itemIndex);
                         return propInfo;
                     }
                     else tempPI = propInfo;  //save , just in case we can't find a better match in ieItems
@@ -1106,7 +1126,7 @@ XmlElementName: {XmlElementName}
 
             //!+---------------------Local Methods------------------------------
 
-            string GetElementName(PropertyInfo pi, out int xmlOrder, int itemIndex = -1)
+            string ReflectElementName(PropertyInfo pi, out int xmlOrder, int itemIndex = -1)
             {
                 //pi is the propertyInfo object on the parent object's class
                 //it either holds a direct reference to the item or it is an IEnumerable that contains a reference to the item
@@ -1146,25 +1166,77 @@ XmlElementName: {XmlElementName}
                     return pi.Name;
                 }
                 return "";
-            }
+                //!+---------------------------------------
 
-            string ItemChoiceEnumName(PropertyInfo pi)
-            {
-                XmlChoiceIdentifierAttribute xci = (XmlChoiceIdentifierAttribute)pi.GetCustomAttribute(typeof(XmlChoiceIdentifierAttribute));
-                if (xci is null) return null;
-                return xci.MemberName;
-            }
+                string ElementNameFromEnum(BaseType item, object choiceIdentifierObject, int arrayIndex = -1)
+                {
+                    if (choiceIdentifierObject is Enum)
+                        return ((Enum)choiceIdentifierObject).ToString();
 
-            object ItemChoiceEnum(PropertyInfo pi)
-            {
-                string enumName = ItemChoiceEnumName(pi);
-                if (enumName == null) return null;
+                    if (choiceIdentifierObject is IEnumerable && arrayIndex > -1)
+                    {
+                        var ie = ((IEnumerable)choiceIdentifierObject);
+                        return ((Enum)GetObjectFromIEnumerableIndex(ie, arrayIndex)).ToString();
+                    }
+                    return null;
+                }
+                //!+---------------------------------------
+                object ItemChoiceEnum(PropertyInfo pi)
+                {
+                    string enumName = ItemChoiceEnumName(pi);
+                    if (enumName == null) return null;
 
-                var enumObj = par.GetType().GetProperty(enumName).GetValue(par);
-                if (enumObj is Enum) return (Enum)enumObj;
-                if (enumObj is IEnumerable[]) return (IEnumerable<Enum>[])enumObj;
-                return null;
+                    var enumObj = par.GetType().GetProperty(enumName).GetValue(par);
+                    if (enumObj is Enum) return (Enum)enumObj;
+                    if (enumObj is IEnumerable[]) return (IEnumerable<Enum>[])enumObj;
+                    return null;
+                    //!+---------------------------------------
+                    string ItemChoiceEnumName(PropertyInfo pi)
+                    {
+                        XmlChoiceIdentifierAttribute xci = (XmlChoiceIdentifierAttribute)pi.GetCustomAttribute(typeof(XmlChoiceIdentifierAttribute));
+                        if (xci is null) return null;
+                        return xci.MemberName;
+                    }
+                }
             }
+        }
+
+        public static string ReflectSdcElement(PropertyInfo piItem, BaseType item, out int xmlOrder, int itemIndex = -1)
+        {
+            //pi is the propertyInfo object on the parent object's class
+            //it either holds a direct reference to the item or it is an IEnumerable that contains a reference to the item
+            //in either case, pi holds XmlElementAttributes that we need to reflect to extract ElementName and Order.
+            //ElementName is not always present, and DataType is not always present in the XmlElementAttribute
+            //  so ElementName ultimately may need to be obtained from the pi.Name property, 
+            //  which is the name of property (the one that references item) in the parent (par) class.
+            xmlOrder = 0;
+            if (piItem is null) return null;
+            //Debug.Print("item.GetType(): " + item.GetType().Name);
+
+            var dtAtts = (XmlElementAttribute[])Attribute.GetCustomAttributes(piItem, typeof(XmlElementAttribute));
+
+            if (dtAtts != null && dtAtts.Count() > 0)
+                xmlOrder = dtAtts.ToArray()[0].Order;
+                string elementName = ElementNameFromEnum(item, ItemChoiceEnum(piItem), itemIndex);
+                if (elementName != null)
+                    return elementName;
+
+
+                //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
+                if (dtAtts.Count() == 1)
+                {
+                    return dtAtts.ToArray()[0].ElementName;
+                }
+
+                dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
+                if (dtAtts.Count() == 1)
+                {
+                    //return ElementName based on data type match in the XMLAttribute
+                    return dtAtts.ToArray()[0].ElementName;
+                }
+                //There was no ElementName to extract from an XmlElementAttribute, so we get it directly from the propName.
+                return piItem.Name;
+            //!+---------Local Function------------------------------
 
             string ElementNameFromEnum(BaseType item, object choiceIdentifierObject, int arrayIndex = -1)
             {
@@ -1178,8 +1250,26 @@ XmlElementName: {XmlElementName}
                 }
                 return null;
             }
+            //!+--------Local Function-------------------------------
+            object ItemChoiceEnum(PropertyInfo pi)
+            {
+                string enumName = ItemChoiceEnumName(pi);
+                if (enumName == null) return null;
 
+                var enumObj = item.ParentNode.GetType().GetProperty(enumName).GetValue(item.ParentNode);
+                if (enumObj is Enum) return (Enum)enumObj;
+                if (enumObj is IEnumerable[]) return (IEnumerable<Enum>[])enumObj;
+                return null;
+                //!+---------Local Function------------------------------
+                string ItemChoiceEnumName(PropertyInfo pi)
+                {
+                    XmlChoiceIdentifierAttribute xci = (XmlChoiceIdentifierAttribute)pi.GetCustomAttribute(typeof(XmlChoiceIdentifierAttribute));
+                    if (xci is null) return null;
+                    return xci.MemberName;
+                }
+            }
         }
+
 
         public static List<PropertyInfoOrdered> ReflectPropertyInfoList(BaseType bt)
         {

@@ -305,6 +305,7 @@ namespace SDC.Schema.Tests
             {
                 sortedNodes[i] = n;
                 n = SdcUtil.ReflectNextElement(n);
+                //if (n is null) Debugger.Break();
                 i++;
             }
 

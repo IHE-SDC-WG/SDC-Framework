@@ -750,6 +750,9 @@ namespace SDC.Schema
         ///// </summary>
         //protected ITreeBuilder sdcTreeBuilder; //TODO: convert to static field
 
+        object propertyName;
+        int elementIndex;
+        int elementOrder;
         private string _elementName = "";
         private string _elementPrefix = "";
         private SdcTopNodeTypesEnum sdcTopType; //Enum that stores the type of the top level node in the node tree
@@ -868,15 +871,16 @@ namespace SDC.Schema
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
-        public string DotLevel {
-            get 
+        public string DotLevel
+        {
+            get
             {
                 //Walk up parent node tree and place each parent in a stack.
                 //pop each node off the stack and determine its position (seq) in its parent object
                 BaseType par = ParentNode;
                 var s = new Stack<BaseType>();
                 s.Push(this);
-                while ( par != null)
+                while (par != null)
                 {
                     s.Push(par);
                     par = par.ParentNode;
@@ -897,7 +901,7 @@ namespace SDC.Schema
                 }
                 return sb.ToString();
             }
-}
+        }
 
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
@@ -928,22 +932,64 @@ namespace SDC.Schema
         {
             get
             {
-                if (_elementName.IsEmpty() && !cycleGuarded)
-                {
-                    cycleGuarded = true;
-                    _elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
-                }
-                cycleGuarded = false;
+                //if (_elementName.IsEmpty() ) //&& !cycleGuarded)
+                //{
+                //    cycleGuarded = true;
+                //    _elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
+                //}
+                //cycleGuarded = false;
                 return _elementName;
             }
-            set
+            set  //TODO: remove this seetter from IBase interface and/or make it protected internal, or just internal.
             {
-                //cycleGuarded = true;
                 _elementName = value;
+                //cycleGuarded = true;
                 //_elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
                 //Debug.Print(this.name + ", ID: " + this.ObjectID.ToString() + ", ElName: " + _elementName);
                 //cycleGuarded = false;
             }
+        }
+
+
+        /// <summary>
+        /// NEW
+        /// For the SDC property's XML element, returns the Order value from the property's XMLElementAttribute
+        /// Assigned by reflection at the time of object creation.
+        /// TODO: Add to IBaseType
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public int ElementOrder
+        {
+            get => elementOrder;
+            set
+            {
+                if (elementOrder == value)
+                    return;
+                elementOrder = value;
+            }
+        }
+
+        /// <summary>
+        /// NEW
+        /// For the SDC property's XML element, if the property is found inside a List object.
+        /// Return -1 if this object is not found inside a List object.
+        /// TODO: Add to IBaseType
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnore]
+        [JsonIgnore]
+        public int ElementIndex
+        {
+            get
+            {
+                var par = this.ParentNode;
+                if (par is null) return -1;
+                TopNode.ChildNodes.TryGetValue(par.ObjectGUID, out List<BaseType> kids);
+                if (kids is null || kids.Count == 0) return -1;
+
+                return kids.IndexOf(this);
+            }
+
         }
 
         /// <summary>

@@ -1338,6 +1338,22 @@
             through this property after the object is instantiated
             </summary>
         </member>
+        <member name="P:SDC.Schema.BaseType.ElementOrder">
+            <summary>
+            NEW
+            For the SDC property's XML element, returns the Order value from the property's XMLElementAttribute
+            Assigned by reflection at the time of object creation.
+            TODO: Add to IBaseType
+            </summary>
+        </member>
+        <member name="P:SDC.Schema.BaseType.ElementIndex">
+            <summary>
+            NEW
+            For the SDC property's XML element, if the property is found inside a List object.
+            Return -1 if this object is not found inside a List object.
+            TODO: Add to IBaseType
+            </summary>
+        </member>
         <member name="P:SDC.Schema.BaseType.ElementPrefix">
             <summary>
             The prefix used 
