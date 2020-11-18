@@ -1079,7 +1079,8 @@ XmlElementName: {XmlElementName}
                     if (a1?.Count() > 0)
                     {
                         propName = propInfo.Name;
-                        xmlElementName = ReflectElementName(propInfo, out xmlOrder);
+                        //xmlElementName = ReflectElementName(propInfo, out xmlOrder);
+                        xmlElementName = ReflectSdcElement(propInfo, item, out xmlOrder, itemIndex);
                         return propInfo;
                     }
                 }
@@ -1113,7 +1114,9 @@ XmlElementName: {XmlElementName}
 
                     if (xmlAtts.Count() > 0) //we found the correct PropertyInfo object, which has XmlElementAttributes
                     {
-                        xmlElementName = ReflectElementName(propInfo, out xmlOrder, itemIndex);
+                        //xmlElementName = ReflectElementName(propInfo, out xmlOrder, itemIndex);
+                        xmlElementName = ReflectSdcElement(propInfo, item, out xmlOrder, itemIndex);
+
                         return propInfo;
                     }
                     else tempPI = propInfo;  //save , just in case we can't find a better match in ieItems
@@ -1140,28 +1143,20 @@ XmlElementName: {XmlElementName}
 
                 var dtAtts = (XmlElementAttribute[])Attribute.GetCustomAttributes(pi, typeof(XmlElementAttribute));
 
-                if (dtAtts != null && dtAtts.Count() > 0)
-                    xmlOrder = dtAtts.ToArray()[0].Order;
+                if (dtAtts != null && dtAtts.Count() > 0) xmlOrder = dtAtts.ToArray()[0].Order;
 
                 if (getNames)
                 {
                     string elementName = ElementNameFromEnum(item, ItemChoiceEnum(pi), itemIndex);
-                    if (elementName != null)
-                        return elementName;
-
+                    if (elementName != null) return elementName;
 
                     //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
-                    if (dtAtts.Count() == 1)
-                    {
-                        return dtAtts.ToArray()[0].ElementName;
-                    }
+                    if (dtAtts.Count() == 1) return dtAtts.ToArray()[0].ElementName;
 
                     dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
-                    if (dtAtts.Count() == 1)
-                    {
-                        //return ElementName based on data type match in the XMLAttribute
-                        return dtAtts.ToArray()[0].ElementName;
-                    }
+                    //return ElementName based on data type match in the XMLAttribute
+                    if (dtAtts.Count() == 1) return dtAtts.ToArray()[0].ElementName;
+
                     //There was no ElementName to extract from an XmlElementAttribute, so we get it directly from the propName.
                     return pi.Name;
                 }
@@ -1215,29 +1210,19 @@ XmlElementName: {XmlElementName}
 
             var dtAtts = (XmlElementAttribute[])Attribute.GetCustomAttributes(piItem, typeof(XmlElementAttribute));
 
-            if (dtAtts != null && dtAtts.Count() > 0)
-                xmlOrder = dtAtts.ToArray()[0].Order;
-                string elementName = ElementNameFromEnum(item, ItemChoiceEnum(piItem), itemIndex);
-                if (elementName != null)
-                    return elementName;
+            if (dtAtts != null && dtAtts.Count() > 0) xmlOrder = dtAtts.ToArray()[0].Order;
+            string elementName = ElementNameFromEnum(item, ItemChoiceEnum(piItem), itemIndex);
+            if (elementName != null) return elementName;
 
-
-                //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
-                if (dtAtts.Count() == 1)
-                {
-                    return dtAtts.ToArray()[0].ElementName;
-                }
-
-                dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
-                if (dtAtts.Count() == 1)
-                {
-                    //return ElementName based on data type match in the XMLAttribute
-                    return dtAtts.ToArray()[0].ElementName;
-                }
-                //There was no ElementName to extract from an XmlElementAttribute, so we get it directly from the propName.
-                return piItem.Name;
+            //There was no ElementName to extract from an ItemChoiceEnum, so we get it directly from the attribute.
+            if (dtAtts.Count() == 1) return dtAtts.ToArray()[0].ElementName;
+            //return ElementName based on data type match in the XMLAttribute
+            dtAtts = dtAtts.Where(a => a.Type == item.GetType()).ToArray();
+            
+            if (dtAtts.Count() == 1) return dtAtts.ToArray()[0].ElementName;
+            //There was no ElementName to extract from an XmlElementAttribute, so we get it directly from the propName.
+            return piItem.Name;
             //!+---------Local Function------------------------------
-
             string ElementNameFromEnum(BaseType item, object choiceIdentifierObject, int arrayIndex = -1)
             {
                 if (choiceIdentifierObject is Enum)
