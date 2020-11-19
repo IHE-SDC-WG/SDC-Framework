@@ -18,10 +18,10 @@ namespace SDC.Schema.Tests
 
         public NavigationTests()
         {            
-            //previous test runs change locations of some SDC nodes 
+            //previous test runs in MoveTests will change locations of some SDC nodes 
             //This can cause some Assert methods, whch depend on the order of ObjectIDs, to fail.
             //So we Reset the source SDC xml before starting this test suite
-            //Setup.Reset();  
+            Setup.Reset();  
         }
         /// <summary>
         ///Gets or sets the test context which provides
@@ -98,7 +98,7 @@ namespace SDC.Schema.Tests
 
         [TestMethod]
         public void MoveNextNodes()
-        {          
+        {            
             Setup.TimerStart($"==>{Setup.CallerName()} Started");
             int i = 0;
             BaseType n = Setup.FD;

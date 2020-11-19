@@ -919,9 +919,8 @@ namespace SDC.Schema
         /// The name of XML element that is output from this class instance.
         /// Some SDC types are used in conjunction with multiple element names.  
         /// The auto-generated classes do not provide a way to determine the element name form the class instance.
-        /// This property allows the code whichj creates each object to specify the element names that it is adding 
-        /// as each object is creeated in code.  Although it may be possible to achieve this effect by reflection of 
-        /// attributes, this ElementName approach provides more flexibility and is probably more efficient.
+        /// However, it is possible to achieve this effect by reflection of 
+        /// attributes at the time of creating each node, and also after hydrating the SDC object tree from XML.
         /// ElementName will be most useful for auto-generating @name attributes for some elements.
         /// In many cases, ElementName will be assigned through class constructors, but it can also be assigned 
         /// through this property after the object is instantiated
@@ -932,21 +931,11 @@ namespace SDC.Schema
         {
             get
             {
-                //if (_elementName.IsEmpty() ) //&& !cycleGuarded)
-                //{
-                //    cycleGuarded = true;
-                //    _elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
-                //}
-                //cycleGuarded = false;
                 return _elementName;
             }
-            set  //TODO: remove this seetter from IBase interface and/or make it protected internal, or just internal.
+            set  //TODO: remove this setter from IBaseType interface and/or make it protected internal, or just internal.
             {
                 _elementName = value;
-                //cycleGuarded = true;
-                //_elementName = SdcUtil.GetPropertyInfo(this).XmlElementName;
-                //Debug.Print(this.name + ", ID: " + this.ObjectID.ToString() + ", ElName: " + _elementName);
-                //cycleGuarded = false;
             }
         }
 
