@@ -24,11 +24,16 @@ namespace SDC.Schema
         #region ctor
 
         protected FormDesignType() : base()
-        { }
+        { init(); }
         public FormDesignType(BaseType parentNode = null, string id = "")
         : base(parentNode, id)
         //TODO: add ID, lineage, baseURI, version, etc to this constructor? (only ID is required)
-        { }
+        { init(); }
+        private void init()
+        {
+
+        }
+
         public void Clear()
         {
             //reset and clean up some items that might hold references to this object, keeping it alive
@@ -202,10 +207,16 @@ namespace SDC.Schema
     public partial class DataElementType : ITopNode
     {
         protected DataElementType() : base()
-        { }
+        { init(); }
         public DataElementType(string id = "") : base(null)
-        { //TODO:Add dictionaries for nodes etc
+        {
+            init();
+            //TODO:Add dictionaries for nodes etc
             //TODO:Make sure BaseType constructor functions work
+        }
+        private void init()
+        {
+
         }
 
         #region ITopNode
@@ -269,10 +280,14 @@ namespace SDC.Schema
     public partial class RetrieveFormPackageType : ITopNode
     {
         protected RetrieveFormPackageType() : base()
-        { }
+        { init(); }
         public RetrieveFormPackageType(string id = "") //: base(null, false)
         {
-            //TODO:Make sure BaseType constructor functions work
+            init();//TODO:Make sure BaseType constructor functions work
+        }
+        private void init()
+        {
+
         }
 
         #region ITopNode
@@ -329,10 +344,14 @@ namespace SDC.Schema
     public partial class PackageListType : ITopNode
     {
         protected PackageListType() : base()
-        { }
+        { init(); }
         public PackageListType(string id = "") //: base( null, false)
         {
-            //TODO:Make sure BaseType constructor functions work
+            init();//TODO:Make sure BaseType constructor functions work
+        }
+        private void init()
+        {
+
         }
         #region ITopNode
         [System.Xml.Serialization.XmlIgnore]
@@ -442,49 +461,65 @@ namespace SDC.Schema
     public partial class ButtonItemType
         : IChildItemsMember<ButtonItemType>
     {
-        protected ButtonItemType() { }
+        protected ButtonItemType() { init(); }
         public ButtonItemType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode)
+        {
+            init(); 
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             ElementName = "ButtonAction";
             ElementPrefix = "B";
-            //SetNames(elementName, elementPrefix);
         }
 
     }
 
     public partial class InjectFormType : IChildItemsMember<InjectFormType>
     {
-        protected InjectFormType() { }
+        protected InjectFormType() { init(); }
         public InjectFormType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode, id)
+        {
+            init();
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._repeat = "0";
             ElementName = "InjectForm";
             ElementPrefix = "Inj";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class SectionBaseType
     {
-        public SectionBaseType() { }
+        public SectionBaseType() { init(); }
         internal SectionBaseType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode, id)
+        {
+            init();
+            
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._ordered = true;
             ElementName = "Section";
             ElementPrefix = "S";
-            //SetNames(elementName, elementPrefix);
         }
 
-        //!+Replaced in original class: protected SectionBaseType() { }
         //public void FillSectionBaseType()
         //{ sdcTreeBuilder.FillSectionBase(this); }
     }
 
     public partial class SectionItemType : IChildItemsParent<SectionItemType>, IChildItemsMember<SectionItemType>
     {
-        protected SectionItemType() { } //change back to protected
+        protected SectionItemType() { init(); } //change back to protected
         public SectionItemType(BaseType parentNode, string id = "", string elementPrefix = "") : base(parentNode, id)
-        { }
+        { init(); }
+        private void init()
+        {
+
+        }
 
         #region IChildItemsParent Implementation
         private IChildItemsParent<SectionItemType> ci => this as IChildItemsParent<SectionItemType>;
@@ -503,14 +538,19 @@ namespace SDC.Schema
 
     public partial class QuestionItemType : IChildItemsParent<QuestionItemType>, IChildItemsMember<QuestionItemType>, IQuestionItem, IQuestionList
     {
-        protected QuestionItemType() { }  //need public parameterless constructor to support generics
+        protected QuestionItemType() { init(); }  //need public parameterless constructor to support generics
         public QuestionItemType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
         {
+            init();
             this.readOnly = false;
             ElementName = "Question";
             ElementPrefix = "Q";
             SetNames(elementName, elementPrefix);
             //this.Conv
+        }
+        private void init()
+        {
+
         }
 
         #region IChildItemsParent
@@ -528,10 +568,15 @@ namespace SDC.Schema
 
     public partial class QuestionItemBaseType : IQuestionBase
     {
-        protected QuestionItemBaseType() { }
+        protected QuestionItemBaseType() { init(); }
         public QuestionItemBaseType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
         {
+            init();
             this._readOnly = false;
+        }
+        private void init()
+        {
+
         }
 
         [System.Xml.Serialization.XmlIgnore]
@@ -568,11 +613,15 @@ namespace SDC.Schema
 
     public partial class ListType : IQuestionList
     {
-        protected ListType() { }
+        protected ListType() { init(); }
         public ListType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "lst";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "lst";
         }
 
         /// <summary>
@@ -587,21 +636,25 @@ namespace SDC.Schema
         }
     }
 
-    public partial class ListFieldType : IListField
-    {
-        protected ListFieldType() { }
+    public partial class ListFieldType : IListField 
+
+    {// #NeedsTest
+        protected ListFieldType() { init(); }
         public ListFieldType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();            
+            SetNames(elementName, elementPrefix);
+        }
+
+        private void init()
+        {
+            ElementPrefix = "lf";
             this._colTextDelimiter = "|";
             this._numCols = ((byte)(1));
             this._storedCol = ((byte)(1));
             this._minSelections = ((ushort)(1));
             this._maxSelections = ((ushort)(1));
             this._ordered = true;
-
-
-            ElementPrefix = "lf";
-            SetNames(elementName, elementPrefix);
         }
 
         [System.Xml.Serialization.XmlIgnore]
@@ -636,11 +689,15 @@ namespace SDC.Schema
 
     public partial class ListItemType : IChildItemsParent<ListItemType> //, IListItem //, IQuestionListMember
     {
-        protected ListItemType() { }
+        protected ListItemType() { init(); }
         public ListItemType(ListType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
         {
-            ElementPrefix = "LI";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "LI";
         }
 
         #region IChildItemsParent
@@ -668,8 +725,12 @@ namespace SDC.Schema
 
     public partial class ListItemBaseType
     {
-        protected ListItemBaseType() { }
+        protected ListItemBaseType() { init(); }
         public ListItemBaseType(ListType parentNode, string id = "") : base(parentNode, id)
+        {
+            init();
+        }
+        private void init()
         {
             this._selected = false;
             this._selectionDisablesChildren = false;
@@ -677,18 +738,20 @@ namespace SDC.Schema
             this._omitWhenSelected = false;
             this._repeat = "0";
         }
-
-
     }
 
     public partial class LookupEndPointType  //TODO: fix base class in Schema update
     {
-        protected LookupEndPointType() { }
+        protected LookupEndPointType() { init(); }
         public LookupEndPointType(ListFieldType parentNode, string elementName = "", string elementPrefix = "") : base()
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._includesHeaderRow = false;
             ElementPrefix = "LEP";
-            SetNames(elementName, elementPrefix);
         }
     }
 
@@ -698,36 +761,48 @@ namespace SDC.Schema
 
     public partial class ListItemResponseFieldType
     {
-        protected ListItemResponseFieldType() { }
+        protected ListItemResponseFieldType() { init(); }
         public ListItemResponseFieldType(ListItemBaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this._responseRequired = false;
+            init();
             //if (fillData) AddFillDataTypesDE(parentNode);
-
-            ElementPrefix = "lirf";
             SetNames(elementName, elementPrefix); //this was already called by the superType ResponseField.
+        }
+        private void init()
+        {
+            this._responseRequired = false;
+            ElementPrefix = "lirf";
         }
     }
 
     public partial class ResponseFieldType
     {
-        protected ResponseFieldType() { }
+        protected ResponseFieldType() { init(); }
         public ResponseFieldType(IdentifiedExtensionType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "rf";
+            init();
             SetNames(elementName, elementPrefix);
-            this.Item = null;
+        }
+        private void init()
+        {
+            ElementPrefix = "rf";            
+            this.Item = null; // #NeedsTest
         }
     }
 
     public partial class UnitsType
     {
-        protected UnitsType() { }
+        protected UnitsType() { init(); }
         public UnitsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             _unitSystem = "UCUM";
             ElementPrefix = "un";
-            SetNames(elementName, elementPrefix);
         }
     }
 
@@ -768,6 +843,9 @@ namespace SDC.Schema
         /// <summary>
         /// Field to hold the ordinal position of an object (XML element) under an IdentifiedExtensionType (IET)-derived object.
         /// This number is used for creating the name attribute suffix.
+        /// //TODO: this will be a problem when moving nodes in the tree, since the counter will be incorrect; 
+        /// this will need to be calculated by walking up the parent tree to the closest IET ancestor.  
+        /// It should not have a setter
         /// </summary>
         [System.Xml.Serialization.XmlIgnore]
         [JsonIgnore]
@@ -786,77 +864,6 @@ namespace SDC.Schema
                 else { throw new Exception("TopNode has already been assigned.  A call to ResetSdcImport() is required before this object can be set for importing a new SDC template;"); }
             }
         }
-
-        #region Base Types
-        //internal void RegisterParent<T>(T inParentNode) where T : BaseType
-        //{
-        //    _ParentNode = inParentNode;
-        //    try
-        //    {
-        //        if (inParentNode != null)
-        //        {   //Register parent node
-        //            TopNode.ParentNodes.Add(ObjectGUID, inParentNode);  
-
-        //            List<BaseType> kids;
-        //            TopNode.ChildNodes.TryGetValue(inParentNode.ObjectGUID, out kids);
-        //            if (kids is null)
-        //            {
-        //                kids = new List<BaseType>();
-        //                TopNode.ChildNodes.Add(inParentNode.ObjectGUID, kids);
-        //            }
-        //            kids.Add(this); 
-
-        //            //inParentNode.IsLeafNode = false; //the parent node has a child node, so it can't be a leaf node
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    { Debug.WriteLine(ex.Message + "/n  ObjectID:" + this.ObjectID.ToString()); }
-        //}
-
-        //internal void UnRegisterParent()
-        //{
-        //    var par = this.ParentNode;
-        //    try
-        //    {
-        //        bool success = false;
-        //        if (par != null)
-        //        {   if (TopNode.ParentNodes.ContainsKey(this.ObjectGUID))
-        //                success = TopNode.ParentNodes.Remove(this.ObjectGUID);
-        //           // if (!success) throw new Exception($"Could not remove object from ParentNodes dictionary: name: {this.name ?? "(none)"} , ObjectID: {this.ObjectID}");
-
-        //            if (TopNode.ChildNodes.ContainsKey(par.ObjectGUID))
-        //                success = TopNode.ChildNodes[par.ObjectGUID].Remove(this); //Returns a List<BaseType> and removes "item" from that list
-        //            //if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
-
-        //            //if (TopNode.ChildNodes.ContainsKey(this.ObjectGUID))
-        //            //    success = TopNode.ChildNodes[this.ObjectGUID].Remove(this);
-        //            //if (!success) throw new Exception($"Could not remove object from ChildNodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
-
-        //            //if(TopNode.ChildNodes[par.ObjectGUID] is null || par.TopNode.ChildNodes[par.ObjectGUID].Count() == 0)
-        //            //par.IsLeafNode = true; //the parent node has no child nodes, so it is a leaf node
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    { Debug.WriteLine(ex.Message + "/n  ObjectID:" + this.ObjectID.ToString()); }
-
-        //    this.ParentNode = null;
-        //    
-        //} //!not tested
-        //internal void UnRegisterThis()
-        //{
-        //    bool success = TopNode.Nodes.Remove(this.ObjectGUID);
-        //    if (!success) throw new Exception($"Could not remove object from Nodes dictionary: name: {this.name ?? "(none)"}, ObjectID: {this.ObjectID}");
-        //    UnRegisterParent();
-        //} //!not tested
-
-        #endregion
-
-
-
-
-
-
-
 
         #endregion
 
@@ -1097,7 +1104,7 @@ namespace SDC.Schema
             {
                 if (elementName.Length > 0)
                     ElementName = elementName;
-                else if (ElementName.Length == 0) ElementName = GetType().ToString().Replace("Type", "").Replace("type", ""); //assign default ElementName from the type.
+                else if (ElementName.IsEmpty()) ElementName = GetType().ToString().Replace("Type", "").Replace("type", ""); //assign default ElementName from the type.
 
                 if (elementPrefix.Length > 0)
                     ElementPrefix = elementPrefix;
@@ -1115,7 +1122,7 @@ namespace SDC.Schema
         public static void ResetSdcImport() //This really should be only on the TopNode object (e.g., FormDesign)
         {
             topNodeTemp = null;
-            IETresetCounter = 0;
+            IETresetCounter = 0; //TODO: this will be a problem when moving nodes in the tree, since the counter will be incorrect
         }
 
         #endregion
@@ -1137,18 +1144,21 @@ namespace SDC.Schema
         #endregion
 
         protected BaseType()
-        {   //Parent Nodes cannot be assigned through this constructor.  
+        {
+            init();
+            //Parent Nodes cannot be assigned through this constructor.  
             //After the object tree is created, Parent Nodes can be assigned by using InitNodes<T>
-            ObjectGUID = Guid.NewGuid();
-            InitBaseType();   
         }
 
         protected BaseType(BaseType parentNode) //: this()
         {
+            init();
+            this.RegisterParent(parentNode);            
+        }
+        private void init()
+        {
             ObjectGUID = Guid.NewGuid();
             InitBaseType();
-            this.RegisterParent(parentNode);
-            
         }
 
         #region     Init Methods
@@ -1319,18 +1329,26 @@ namespace SDC.Schema
 
     public partial class ExtensionBaseType : IExtensionBase
     {
-        protected ExtensionBaseType() { }
+        protected ExtensionBaseType() { init();  }
         public ExtensionBaseType(BaseType parentNode) : base(parentNode)
-        {  }
+        { init();  }
+        private void init()
+        {
 
+        }
     }
 
     #region IExtensionBaseTypeMember
     public partial class ExtensionType : IExtensionBaseTypeMember
     {
         private IExtensionBaseTypeMember Iebtm { get => (IExtensionBaseTypeMember)this; }
-        protected ExtensionType() { }
-        public ExtensionType(BaseType parentNode) : base(parentNode) { }
+        protected ExtensionType() { init(); }
+        public ExtensionType(BaseType parentNode) : base(parentNode) { init(); }
+        private void init()
+        {
+
+        }
+
         #region IExtensionBaseTypeMember
         //public bool Remove() => Iebtm.Remove();
         //public bool Move(ExtensionBaseType ebtTarget, int newListIndex = -1) => Iebtm.MoveI(this, ebtTarget, newListIndex);
@@ -1340,12 +1358,16 @@ namespace SDC.Schema
     public partial class PropertyType : IExtensionBaseTypeMember, IHtmlHelpers
     {
         private IExtensionBaseTypeMember Iebtm { get => (IExtensionBaseTypeMember)this; }
-        protected PropertyType() { }
+        protected PropertyType() { init(); }
         public PropertyType(ExtensionBaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             ElementName = "Property";
             ElementPrefix = "p";
-            SetNames(elementName, elementPrefix);
         }
 
         public HTML_Stype AddHTML()
@@ -1365,11 +1387,15 @@ namespace SDC.Schema
     public partial class CommentType : IExtensionBaseTypeMember
     {
         private IExtensionBaseTypeMember Iebtm { get => (IExtensionBaseTypeMember)this; }
-        protected CommentType() { }
+        protected CommentType() { init(); }
         public CommentType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "cmt";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "cmt";
         }
 
         #region IExtensionBaseTypeMember
@@ -1382,16 +1408,21 @@ namespace SDC.Schema
 
     public partial class IdentifiedExtensionType: IIdentifiedExtensionType
     {
-        protected IdentifiedExtensionType() { }
+        protected IdentifiedExtensionType() { init(); }
         protected IdentifiedExtensionType(BaseType parentNode, string id = "") : base(parentNode)
         {
-            if (!string.IsNullOrWhiteSpace(id))
-                this.ID = id;
-            else if (this.ObjectGUID != null)
-                this.ID = this.ObjectGUID.ToString();
+            this.ID = id;
+            init();
+            //if (!string.IsNullOrWhiteSpace(id)) // #IsThisCorrect
+            //    this.ID = id;
+            //else if (this.ObjectGUID != null)
+            //    this.ID = this.ObjectGUID.ToString();
         }
-
-       
+        private void init()
+        {   //The ID may be assigned later by a deserializer (using the protected consructor) after this runs, but that should be OK
+            if (string.IsNullOrWhiteSpace(ID))
+                this.ID = this.ObjectGUID.ToString();// #IsThisCorrect 
+        }
     }
 
     public partial class RepeatingType //this is an SDC abstract class
@@ -1408,11 +1439,15 @@ namespace SDC.Schema
 
     public partial class ChildItemsType
     {
-        protected ChildItemsType() { }
+        protected ChildItemsType() { init(); }
         public ChildItemsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "ch";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "ch";
         }
 
         [System.Xml.Serialization.XmlIgnore]
@@ -1438,8 +1473,13 @@ namespace SDC.Schema
 
     public partial class DisplayedType : IChildItemsMember<DisplayedType> //, IQuestionListMember
     {
-        protected DisplayedType() { }
+        protected DisplayedType() { init(); }
         public DisplayedType(BaseType parentNode, string id = "", string elementName = "", string elementPrefix = "") : base(parentNode, id)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._enabled = true;
             this._visible = true;
@@ -1447,9 +1487,7 @@ namespace SDC.Schema
             this._showInReport = DisplayedTypeShowInReport.True;
             ElementName = "DisplayedItem";
             ElementPrefix = "DI";
-            SetNames(elementName, elementPrefix);
         }
-
         #region IDisplayedType
         //IDisplayedType idt { get => this as IDisplayedType; }
         //public LinkType AddLink(int insertPosition = -1)
@@ -1533,59 +1571,79 @@ namespace SDC.Schema
 
     public partial class BlobType : IDisplayedTypeMember
     {
-        protected BlobType() { }
+        protected BlobType() { init(); }
         public BlobType(DisplayedType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             ElementName = "Blob";
             ElementPrefix = "blob";
-            SetNames(elementName, elementPrefix);
         }
     }
+
     public partial class LinkType : IDisplayedTypeMember
     {
-        protected LinkType() { }
+        protected LinkType() { init(); }
         public LinkType(DisplayedType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             ElementName = "Link";
             ElementPrefix = "link";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     #region Coding
     public partial class CodingType : IDisplayedTypeMember
     {
-        protected CodingType() { }
+        protected CodingType() { init(); }
         public CodingType(ExtensionBaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementName = "CodedValed";
-            ElementPrefix = "cval";
+            init();
             SetNames(elementName, elementPrefix);
 
+        }
+        private void init()
+        {
+            ElementName = "Coding";
+            ElementPrefix = "cod";
         }
     }
 
     public partial class CodeMatchType
     {
-        protected CodeMatchType() { }
+        protected CodeMatchType() { init(); }
         public CodeMatchType(CodingType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._codeMatchEnum = CodeMatchTypeCodeMatchEnum.ExactCodeMatch;
             ElementName = "CodeMatch";
             ElementPrefix = "cmat";
-            SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected CodeMatchType() { }
     }
 
     public partial class CodeSystemType
     {
-        protected CodeSystemType() { }
+        protected CodeSystemType() { init(); }
         public CodeSystemType(ExtensionBaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             ElementName = "CodeSystem";
             ElementPrefix = "csys";
-            SetNames(elementName, elementPrefix);
         }
     }
 
@@ -1599,13 +1657,17 @@ namespace SDC.Schema
     #region DataTypes
     public partial class DataTypes_DEType
     {
-        protected DataTypes_DEType() { }
+        protected DataTypes_DEType() { init(); }
         public DataTypes_DEType(ResponseFieldType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+            //if (fillData) sdcTreeBuilder.AddFillDataTypesDE(parentNode);
+        }
+        private void init()
         {
             ElementName = "Response"; //response element
             ElementPrefix = "rsp";  //response element            
-            SetNames(elementName, elementPrefix);
-            //if (fillData) sdcTreeBuilder.AddFillDataTypesDE(parentNode);
         }
 
         /// <summary>
@@ -1621,22 +1683,31 @@ namespace SDC.Schema
 
     public partial class anyType_DEtype
     {
-        protected anyType_DEtype() { }
+        protected anyType_DEtype() { init(); }
         public anyType_DEtype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "any";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "any";
         }
     }
 
 
     public partial class DataTypes_SType
     {
-        protected DataTypes_SType() { }
+        protected DataTypes_SType() { init(); }
         public DataTypes_SType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             ElementPrefix = "DataTypes";
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+
         }
 
         /// <summary>
@@ -1653,44 +1724,59 @@ namespace SDC.Schema
 
     public partial class anyURI_DEtype
     {
-        protected anyURI_DEtype() { }
+        protected anyURI_DEtype() { init(); }
         public anyURI_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "uri";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "uri";
         }
     }
 
     public partial class anyURI_Stype
     {
-        protected anyURI_Stype() { }
+        protected anyURI_Stype() { init(); }
         public anyURI_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "uri";
+            init();
             SetNames(elementName, elementPrefix);
 
+        }
+        private void init()
+        {
+            ElementPrefix = "uri";
         }
     }
 
     public partial class base64Binary_DEtype
     {
-        protected base64Binary_DEtype() { }
+        protected base64Binary_DEtype() { init(); }
         public base64Binary_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             //ElementPrefix = "b64";
             //SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
 
         }
     }
 
     public partial class base64Binary_Stype
     {
-        protected base64Binary_Stype() { }
+        protected base64Binary_Stype() { init(); }
         public base64Binary_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "b64";
+            init();
             SetNames(elementName, elementPrefix);
-
+        }
+        private void init()
+        {
+            ElementPrefix = "b64";
         }
 
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "string")] //changed to string
@@ -1699,410 +1785,531 @@ namespace SDC.Schema
 
     public partial class boolean_DEtype
     {
-        protected boolean_DEtype() { }
+        protected boolean_DEtype() { init(); }
         public boolean_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             //ElementPrefix = "bool";
             //SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
 
         }
     }
 
     public partial class boolean_Stype
     {
-        protected boolean_Stype() { }
+        protected boolean_Stype() { init(); }
         public boolean_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "bool";
+            init();
             SetNames(elementName, elementPrefix);
-
+        }
+        private void init()
+        {
+            ElementPrefix = "bool";
         }
     }
 
     public partial class byte_DEtype
     {
-        protected byte_DEtype() { }
+        protected byte_DEtype() { init(); }
         public byte_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "byte";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "byte";
-            //SetNames(elementName, elementPrefix);
-
         }
     }
 
     public partial class byte_Stype
     {
-        protected byte_Stype() { }
+        protected byte_Stype() { init(); }
         public byte_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "byte";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class date_DEtype
     {
-        protected date_DEtype() { }
+        protected date_DEtype() { init(); }
         public date_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "date";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "date";
-            //SetNames(elementName, elementPrefix);
-
         }
     }
 
     public partial class date_Stype
     {
-        protected date_Stype() { }
+        protected date_Stype() { init(); }
         public date_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "date";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class dateTime_DEtype
     {
-        protected dateTime_DEtype() { }
+        protected dateTime_DEtype() { init(); }
         public dateTime_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "dt";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "dt";
-            //SetNames(elementName, elementPrefix);
-
         }
     }
 
     public partial class dateTime_Stype
     {
-        protected dateTime_Stype() { }
+        protected dateTime_Stype() { init(); }
         public dateTime_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "dt";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class dateTimeStamp_DEtype
     {
-        protected dateTimeStamp_DEtype() { }
+        protected dateTimeStamp_DEtype() { init(); }
         public dateTimeStamp_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             //ElementPrefix = "dts";
             //SetNames(elementName, elementPrefix);
+        }        
+        private void init()
+        {
+
         }
     }
 
     public partial class dateTimeStamp_Stype
     {
-        protected dateTimeStamp_Stype() { }
+        protected dateTimeStamp_Stype() { init(); }
         public dateTimeStamp_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "dts";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "dts";
         }
     }
 
     public partial class dayTimeDuration_DEtype
     {
-        protected dayTimeDuration_DEtype() { }
+        protected dayTimeDuration_DEtype() { init(); }
         public dayTimeDuration_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "dtdur";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "dtdur";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class dayTimeDuration_Stype
     {
-        protected dayTimeDuration_Stype() { }
+        protected dayTimeDuration_Stype() { init(); }
         public dayTimeDuration_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "dtdur";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class decimal_DEtype
     {
-        protected decimal_DEtype() { }
+        protected decimal_DEtype() { init(); }
         public decimal_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "dec";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "dec";
-            //SetNames(elementName, elementPrefix);
-
         }
     }
 
     public partial class decimal_Stype
     {
-        protected decimal_Stype() { }
+        protected decimal_Stype() { init(); }
         public decimal_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "dec";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class double_DEtype
     {
-        protected double_DEtype() { }
+        protected double_DEtype() { init(); }
         public double_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "dbl";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "dbl";
-            //SetNames(elementName, elementPrefix);
-
         }
     }
 
     public partial class double_Stype
     {
-        protected double_Stype() { }
+        protected double_Stype() { init(); }
         public double_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "dbl";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class duration_DEtype
     {
-        protected duration_DEtype() { }
+        protected duration_DEtype() { init(); }
         public duration_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "dur";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "dur";
-            //SetNames(elementName, elementPrefix);
-
         }
     }
 
     public partial class duration_Stype
     {
-        protected duration_Stype() { }
+        protected duration_Stype() { init(); }
         public duration_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class float_DEtype
     {
-        protected float_DEtype() { }
+        protected float_DEtype() { init(); }
         public float_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "flt";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "flt";
-            //SetNames(elementName, elementPrefix);
-
         }
     }
 
     public partial class float_Stype
     {
-        protected float_Stype() { }
+        protected float_Stype() { init(); }
         public float_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "flt";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gDay_DEtype
     {
-        protected gDay_DEtype() { }
+        protected gDay_DEtype() { init(); }
         public gDay_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+        init();
+            //ElementPrefix = "day";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "day";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gDay_Stype
     {
-        protected gDay_Stype() { }
+        protected gDay_Stype() { init(); }
         public gDay_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "day";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gMonth_DEtype
     {
-        protected gMonth_DEtype() { }
+        protected gMonth_DEtype() { init(); }
         public gMonth_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "mon";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "mon";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gMonth_Stype
     {
-        protected gMonth_Stype() { }
+        protected gMonth_Stype() { init(); }
         public gMonth_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this.quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "mon";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gMonthDay_DEtype
     {
-        protected gMonthDay_DEtype() { }
+        protected gMonthDay_DEtype() { init(); }
         public gMonthDay_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "mday";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "mday";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gMonthDay_Stype
     {
-        protected gMonthDay_Stype() { }
+        protected gMonthDay_Stype() { init(); }
         public gMonthDay_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "mday";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gYear_DEtype
     {
-        protected gYear_DEtype() { }
+        protected gYear_DEtype() { init(); }
         public gYear_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "y";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "y";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gYear_Stype
     {
-        protected gYear_Stype() { }
+        protected gYear_Stype() { init(); }
         public gYear_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "y";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class gYearMonth_DEtype
     {
-        protected gYearMonth_DEtype() { }
+        protected gYearMonth_DEtype() { init(); }
         public gYearMonth_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "ym";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "ym";
-            //SetNames(elementName, elementPrefix);
         }
     }
     public partial class gYearMonth_Stype
     {
-        protected gYearMonth_Stype() { }
+        protected gYearMonth_Stype() { init(); }
         public gYearMonth_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "ym";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class hexBinary_DEtype
     {
-        protected hexBinary_DEtype() { }
+        protected hexBinary_DEtype() { init(); }
         public hexBinary_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             //ElementPrefix = "hexb";
             //SetNames(elementName, elementPrefix);
         }
+        private void init()
+        {
 
+        }
     }
 
     public partial class hexBinary_Stype
     {
         string _hexBinaryStringVal;
 
-        protected hexBinary_Stype() { }
+        protected hexBinary_Stype() { init(); }
         public hexBinary_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "hexb";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "hexb";
         }
 
         [System.Xml.Serialization.XmlAttributeAttribute(DataType = "string")] //changed to string
@@ -2115,81 +2322,104 @@ namespace SDC.Schema
 
     public partial class HTML_DEtype
     {
-        protected HTML_DEtype()
-        { this.Any = new List<System.Xml.XmlElement>(); }
+        protected HTML_DEtype() { init(); } 
         public HTML_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             //ElementPrefix = "html";
             //SetNames(elementName, elementPrefix);
             //this.Any = new List<System.Xml.XmlElement>();
+        }
+        private void init()
+        {
         }
     }
 
     public partial class HTML_Stype
     {
         protected HTML_Stype()
-        { this.Any = new List<System.Xml.XmlElement>(); }
+        {
+            init();
+        }
         public HTML_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "html";
+            init();            
             SetNames(elementName, elementPrefix);
-            //this.Any = new List<System.Xml.XmlElement>();
         }
-
+        private void init()
+        {
+            this.Any = new List<System.Xml.XmlElement>();  // #NeedsTest
+            this.AnyAttr = new List<System.Xml.XmlAttribute>();
+            ElementPrefix = "html";
+        }
     }
 
 
     public partial class int_DEtype
     {
-        protected int_DEtype() { }
+        protected int_DEtype() { init(); }
         public int_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "int";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "int";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class int_Stype
     {
-        protected int_Stype() { }
+        protected int_Stype() { init(); }
         public int_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "int";
-            SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected int_Stype() { }
     }
 
     public partial class integer_DEtype
     {
-        protected integer_DEtype() { }
+        protected integer_DEtype() { init(); }
         public integer_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;            //ElementPrefix = "intr";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class integer_Stype
     {
-        protected integer_Stype() { }
+        protected integer_Stype() { init(); }
         public integer_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "intr";
-            SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected integer_Stype() { }
 
 
         /// <summary>
@@ -2227,368 +2457,475 @@ namespace SDC.Schema
 
     public partial class long_DEtype
     {
-        protected long_DEtype() { }
+        protected long_DEtype() { init(); }
         public long_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "lng";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "lng";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class long_Stype
     {
-        protected long_Stype() { }
+        protected long_Stype() { init(); }
         public long_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "lng";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class negativeInteger_DEtype
     {
-        protected negativeInteger_DEtype() { }
+        protected negativeInteger_DEtype() { init(); }
         public negativeInteger_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "nint";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "nint";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class negativeInteger_Stype
     {
-        protected negativeInteger_Stype() { }
+        protected negativeInteger_Stype() { init(); }
         public negativeInteger_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "nint";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class nonNegativeInteger_DEtype
     {
-        protected nonNegativeInteger_DEtype() { }
+        protected nonNegativeInteger_DEtype() { init(); }
         public nonNegativeInteger_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "nnint";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "nnint";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class nonNegativeInteger_Stype
     {
-        protected nonNegativeInteger_Stype() { }
+        protected nonNegativeInteger_Stype() { init(); }
         public nonNegativeInteger_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "nnint";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class nonPositiveInteger_DEtype
     {
-        protected nonPositiveInteger_DEtype() { }
+        protected nonPositiveInteger_DEtype() { init(); }
         public nonPositiveInteger_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "npint";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "npint";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class nonPositiveInteger_Stype
     {
-        protected nonPositiveInteger_Stype() { }
+        protected nonPositiveInteger_Stype() { init(); }
         public nonPositiveInteger_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "npint";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class positiveInteger_DEtype
     {
-        protected positiveInteger_DEtype() { }
+        protected positiveInteger_DEtype() { init(); }
         public positiveInteger_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "pint";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "pint";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class positiveInteger_Stype
     {
-        protected positiveInteger_Stype() { }
+        protected positiveInteger_Stype() { init(); }
         public positiveInteger_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "pint";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class short_DEtype
     {
-        protected short_DEtype() { }
+        protected short_DEtype() { init(); }
         public short_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "sh";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "sh";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class short_Stype
     {
-        protected short_Stype() { }
+        protected short_Stype() { init(); }
         public short_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "sh";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class string_DEtype
     {
-        protected string_DEtype() { }
+        protected string_DEtype() { init(); }
         public string_DEtype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             //ElementPrefix = "str";
             //SetNames(elementName, elementPrefix);
         } //{if (elementName.Length > 0) ElementName = elementName; }
+        private void init()
+        {
+
+        }
     }
 
     public partial class string_Stype
     {
-        protected string_Stype() { }
+        protected string_Stype() { init(); }
         public string_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "str";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "str";
         }
     }
 
     public partial class time_DEtype
     {
-        protected time_DEtype() { }
+        protected time_DEtype() { init(); }
         public time_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "tim";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "tim";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class time_Stype
     {
-        protected time_Stype() { }
+        protected time_Stype() { init(); }
         public time_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "tim";
-            SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected time_Stype() { }
     }
 
     public partial class unsignedByte_DEtype
     {
-        protected unsignedByte_DEtype() { }
+        protected unsignedByte_DEtype() { init(); }
         public unsignedByte_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "ubyte";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "ubyte";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class unsignedByte_Stype
     {
-        protected unsignedByte_Stype() { }
+        protected unsignedByte_Stype() { init(); }
         public unsignedByte_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "ubyte";
-            SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected unsignedByte_Stype() { }
     }
 
     public partial class unsignedInt_DEtype
     {
-        protected unsignedInt_DEtype() { }
+        protected unsignedInt_DEtype() { init(); }
         public unsignedInt_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "unint";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "unint";
-            //SetNames(elementName, elementPrefix);
         }
 
     }
 
     public partial class unsignedInt_Stype
     {
-        protected unsignedInt_Stype() { }
+        protected unsignedInt_Stype() { init(); }
         public unsignedInt_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "uint";
-            SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected unsignedInt_Stype() { }
     }
 
     public partial class unsignedLong_DEtype
     {
-        protected unsignedLong_DEtype() { }
+        protected unsignedLong_DEtype() { init(); }
         public unsignedLong_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "ulng";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "ulng";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class unsignedLong_Stype
     {
-        protected unsignedLong_Stype() { }
+        protected unsignedLong_Stype() { init(); }
         public unsignedLong_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-
-            this._quantEnum = dtQuantEnum.EQ;
-            ElementPrefix = "ulng";
+            init();
             SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected unsignedLong_Stype() { }
+        private void init()
+        {
+            this._quantEnum = dtQuantEnum.EQ;
+            ElementPrefix = "ulng";
+        }
     }
 
     public partial class unsignedShort_DEtype
     {
-        protected unsignedShort_DEtype() { }
+        protected unsignedShort_DEtype() { init(); }
         public unsignedShort_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "ush";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-
-            //ElementPrefix = "ush";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class unsignedShort_Stype
     {
-        protected unsignedShort_Stype() { }
+        protected unsignedShort_Stype() { init(); }
         public unsignedShort_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-
-            this._quantEnum = dtQuantEnum.EQ;
-            ElementPrefix = "ush";
+            init();
             SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected unsignedShort_Stype() { }
+        private void init()
+        {
+            this._quantEnum = dtQuantEnum.EQ;
+            ElementPrefix = "ush";
+        }
     }
 
     public partial class XML_DEtype
     {
-        protected XML_DEtype() { }//this.Any = new List<XmlElement>(); }
+        protected XML_DEtype() { init(); }//this.Any = new List<XmlElement>(); }
         public XML_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             //ElementPrefix = "xml";
             //SetNames(elementName, elementPrefix);
             //this.Any = new List<XmlElement>();
+        }
+        private void init()
+        {
+
         }
     }
 
     public partial class XML_Stype
     {
         protected XML_Stype()
-        { this.Any = new List<XmlElement>(); }
+        {
+            init();
+        }
         public XML_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-
-            ElementPrefix = "xml";
+            init();
             SetNames(elementName, elementPrefix);
-            this.Any = new List<XmlElement>();
+        }
+        private void init()
+        {
+            this.Any = new List<System.Xml.XmlElement>();  // #NeedsTest
+            //this.AnyAttr = new List<System.Xml.XmlAttribute>(); // Add AnyAttr to Schema? #NeedsFix ?
+            ElementPrefix = "xml";
         }
     }
 
     public partial class yearMonthDuration_DEtype
     {
-        protected yearMonthDuration_DEtype() { }
+        protected yearMonthDuration_DEtype() { init(); }
         public yearMonthDuration_DEtype(DataTypes_DEType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            //ElementPrefix = "ymd";
+            //SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowGT = false;
             this._allowGTE = false;
             this._allowLT = false;
             this._allowLTE = false;
             this._allowAPPROX = false;
-            //ElementPrefix = "ymd";
-            //SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class yearMonthDuration_Stype
     {
-        protected yearMonthDuration_Stype() { }
+        protected yearMonthDuration_Stype() { init(); }
         public yearMonthDuration_Stype(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._quantEnum = dtQuantEnum.EQ;
             ElementPrefix = "ymd";
-            SetNames(elementName, elementPrefix);
         }
-        //!+Replaced in original class: protected yearMonthDuration_Stype() { }
     }
     #endregion
 
@@ -2596,83 +2933,117 @@ namespace SDC.Schema
 
     public partial class ItemNameType
     {
-        protected ItemNameType() { }
+        protected ItemNameType() { init(); }
         public ItemNameType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "itnm";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "itnm";
         }
     }
     public partial class ItemNameAttributeType
     {
-        protected ItemNameAttributeType() { }
+        protected ItemNameAttributeType() { init(); }
 
         public ItemNameAttributeType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._attributeName = "val";
         }
     }
     public partial class NameType
     {
-        protected NameType() { }
+        protected NameType() { init(); }
         public NameType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "nm";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "nm";
         }
     }
     public partial class TargetItemIDType
     {
-        protected TargetItemIDType() { }
+        protected TargetItemIDType() { init(); }
         public TargetItemIDType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "tiid";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "tiid";
         }
     }
     public partial class TargetItemNameType
     {
-        protected TargetItemNameType() { }
+        protected TargetItemNameType() { init(); }
         public TargetItemNameType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "tinm";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "tinm";
         }
     }
     public partial class TargetItemXPathType
     {
-        protected TargetItemXPathType() { }
+        protected TargetItemXPathType() { init(); }
         public TargetItemXPathType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "tixp";
+            init();
             SetNames(elementName, elementPrefix);
-        } //{if (elementName.Length > 0) ElementName = elementName; }
+        }
+        private void init()
+        {
+            ElementPrefix = "tixp";
+        }
+        //{if (elementName.Length > 0) ElementName = elementName; }
     }
     public partial class ListItemParameterType
     {
-        protected ListItemParameterType() { }
+        protected ListItemParameterType() { init(); }
         public ListItemParameterType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-
-            this._dataType = "string";
+            init();
             this._listItemAttribute = "associatedValue";
         }
-
+        private void init()
+        {
+            this._dataType = "string";
+        }
     }
     public partial class ParameterItemType
     {
-        protected ParameterItemType() { }
+        protected ParameterItemType() { init(); }
         public ParameterItemType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._dataType = "string";
             this._sourceItemAttribute = "val";
         }
-
     }
     public partial class PredAlternativesType
     {
-        public PredAlternativesType() { }
+        public PredAlternativesType() { init(); }
         public PredAlternativesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._not = false;
             this._minAnswered = 1;
@@ -2681,8 +3052,12 @@ namespace SDC.Schema
     }
     public partial class PredEvalAttribValuesType
     {
-        protected PredEvalAttribValuesType() { }
+        protected PredEvalAttribValuesType() { init(); }
         public PredEvalAttribValuesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }       
+        private void init()
         {
             this._not = false;
             this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
@@ -2690,24 +3065,36 @@ namespace SDC.Schema
     }
     public partial class PredGuardTypeSelectionSets
     {
-        protected PredGuardTypeSelectionSets() { }
+        protected PredGuardTypeSelectionSets() { init(); }
         public PredGuardTypeSelectionSets(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._not = false;
         }
     }
     public partial class PredSingleSelectionSetsType
     {
-        protected PredSingleSelectionSetsType() { }
+        protected PredSingleSelectionSetsType() { init(); }
         public PredSingleSelectionSetsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._maxSelections = ((short)(1));
         }
     }
     public partial class RuleAutoActivateType
     {
-        protected RuleAutoActivateType() { }
+        protected RuleAutoActivateType() { init(); }
         public RuleAutoActivateType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._onlyIf = false;
             this._setVisibility = toggleType.@true;
@@ -2718,63 +3105,94 @@ namespace SDC.Schema
     }
     public partial class RuleAutoSelectType
     {
-        protected RuleAutoSelectType() { }
+        protected RuleAutoSelectType() { init(); }
         public RuleAutoSelectType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._onlyIf = false;
         }
     }
     public partial class RuleListItemMatchTargetsType
     {
-        protected RuleListItemMatchTargetsType() { }
+        protected RuleListItemMatchTargetsType() { init(); }
         public RuleListItemMatchTargetsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._attributeToMatch = RuleListItemMatchTargetsTypeAttributeToMatch.associatedValue;
         }
     }
     public partial class SelectionSetsActionType
     {
-        protected SelectionSetsActionType() { }
+        protected SelectionSetsActionType() { init(); }
         public SelectionSetsActionType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._not = false;
         }
     }
     public partial class ValidationTypeSelectionSets
     {
-        protected ValidationTypeSelectionSets() { }
+        protected ValidationTypeSelectionSets() { init(); }
         public ValidationTypeSelectionSets(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._not = false;
         }
     }
     public partial class ValidationTypeSelectionTest
     {
-        protected ValidationTypeSelectionTest() { }
+        protected ValidationTypeSelectionTest() { init(); }
         public ValidationTypeSelectionTest(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._not = false;
         }
     }
     public partial class PredSelectionTestType
     {
-        protected PredSelectionTestType() { }
+        protected PredSelectionTestType() { init(); }
         public PredSelectionTestType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
-        { }
+        { init(); }
+        private void init()
+        {
+
+        }
     }
     public partial class CallFuncType
     {
-        protected CallFuncType() { }
+        protected CallFuncType() { init(); }
         public CallFuncType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._dataType = "string";
         }
-
     }
     partial class CallFuncBaseType
     {
-        protected CallFuncBaseType() { }
+        protected CallFuncBaseType() { init(); }
         public CallFuncBaseType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._returnList = false;
             this._listDelimiter = "|";
@@ -2783,8 +3201,12 @@ namespace SDC.Schema
     }
     partial class CallFuncBoolType
     {
-        protected CallFuncBoolType() { }
+        protected CallFuncBoolType() { init(); }
         public CallFuncBoolType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._not = false;
         }
@@ -2804,23 +3226,35 @@ namespace SDC.Schema
     public partial class MultiSelectionsActionType
     {
         protected MultiSelectionsActionType()
-        { }
+        { init(); }
         public MultiSelectionsActionType(BaseType parentNode) : base(parentNode)
-        { }
+        { init(); }
+        private void init()
+        {
+
+        }
     }
     public partial class SelectionTestActionType
     {
         protected SelectionTestActionType()
-        { }
+        { init(); }
         public SelectionTestActionType(BaseType parentNode) : base(parentNode)
-        { }
+        { init(); }
+        private void init()
+        {
+
+        }
     }
 
     public partial class PredMultiSelectionSetBoolType
     {
-        protected PredMultiSelectionSetBoolType() { }
+        protected PredMultiSelectionSetBoolType() { init(); }
         public PredMultiSelectionSetBoolType(BaseType parentNode) : base(parentNode)
-        { }
+        { init(); }
+        private void init()
+        {
+
+        }
     }
 
 
@@ -2829,16 +3263,27 @@ namespace SDC.Schema
 
     public partial class ActionsType : IActions
     {
-        protected ActionsType() {}
-        public ActionsType(ExtensionBaseType parentNode) : base(parentNode) { ElementName = "Actions"; ElementPrefix = "act"; }
-
-      
+        protected ActionsType() { init(); }
+        public ActionsType(ExtensionBaseType parentNode) : base(parentNode) {
+            init(); 
+        }
+        private void init()
+        {
+            ElementName = "Actions"; 
+            ElementPrefix = "act";
+        }
     }
     public partial class ActActionType
     {
-        protected ActActionType() { }
+        protected ActActionType() { init(); }
         public ActActionType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "Action"; }
+        {
+            init(); 
+        }
+        private void init()
+        {
+            ElementName = "Action";
+        }
         [XmlIgnore]
         public List<ExtensionBaseType> ActAction_Items
         {
@@ -2851,39 +3296,66 @@ namespace SDC.Schema
                 OnPropertyChanged(nameof(ActAction_Items), this);
             }
         }
-
     }
     public partial class RuleSelectMatchingListItemsType
     {
-        protected RuleSelectMatchingListItemsType() { }
+        protected RuleSelectMatchingListItemsType() { init(); }
         public RuleSelectMatchingListItemsType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "SelectMatchingListItems"; }
+        { 
+            init(); 
+        }
+        private void init()
+        {
+            ElementName = "SelectMatchingListItems";
+        }
     }
     public partial class ActAddCodeType
     {
-        protected ActAddCodeType() { }
+        protected ActAddCodeType() { init(); }
         public ActAddCodeType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "AddCode"; }
-
+        { 
+            init(); 
+        }
+        private void init()
+        {
+            ElementName = "AddCode";
+        }
     }
     public partial class ActInjectType : InjectFormType
     {
-        protected ActInjectType() { }
+        protected ActInjectType() { init(); }
         public ActInjectType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "Inject"; }
-
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "Inject";
+        }
     }
     public partial class ActSaveResponsesType
     {
-        protected ActSaveResponsesType() { }
+        protected ActSaveResponsesType() { init(); }
         public ActSaveResponsesType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "Save"; }
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "Save";
+        }
     }
     public partial class ActSendReportType
     {
-        protected ActSendReportType() { }
+        protected ActSendReportType() { init(); }
         public ActSendReportType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "SendReport"; }
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "SendReport";
+        }
 
         internal List<ExtensionBaseType> Email_Phone_WebSvc_List
         {
@@ -2893,9 +3365,15 @@ namespace SDC.Schema
     }
     public partial class ActSendMessageType
     {
-        protected ActSendMessageType() { }
-        public ActSendMessageType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "SendMessage"; } //"SendMessage111" in Schema
+        protected ActSendMessageType() { init(); }
+        public ActSendMessageType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        } //"SendMessage111" in Schema
+        private void init()
+        {
+            ElementName = "SendMessage";
+        }
 
         /// <summary>
         /// List&lt;BaseType> accepts: EmailAddressType, PhoneNumberType, WebServiceType
@@ -2908,24 +3386,36 @@ namespace SDC.Schema
     }
     public partial class ActSetAttributeType
     {
-        protected ActSetAttributeType() { }
+        protected ActSetAttributeType() { init(); }
         public ActSetAttributeType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "SetAttributeValue"; }
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "SetAttributeValue";
+        }
     }
     public partial class ActSetAttrValueScriptType
     {
-        protected ActSetAttrValueScriptType() { }
+        protected ActSetAttrValueScriptType() { init(); }
         public ActSetAttrValueScriptType(ActionsType parentNode) : base(parentNode) 
-        { ElementName = "SetAttributeValueScript"; }
+        {
+            init(); 
+        }
+        private void init()
+        {
+            ElementName = "SetAttributeValueScript";
+        }
     }
     public partial class ActSetBoolAttributeValueCodeType
     {
-        protected ActSetBoolAttributeValueCodeType()
-        {
-            ElementName = "SetBoolAttributeValueCode";
-            this._attributeName = "val";
-        }
+        protected ActSetBoolAttributeValueCodeType() { init(); }
         public ActSetBoolAttributeValueCodeType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             ElementName = "SetBoolAttributeValueCode";
             this._attributeName = "val";
@@ -2933,12 +3423,12 @@ namespace SDC.Schema
     }
     public partial class ScriptCodeBoolType
     {
-        protected ScriptCodeBoolType()
-        {
-            ElementName = "";
-            this._not = false;
-        }
+        protected ScriptCodeBoolType() { init(); }
         public ScriptCodeBoolType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             ElementName = "";
             this._not = false;
@@ -2946,52 +3436,91 @@ namespace SDC.Schema
     }
     public partial class ActShowFormType
     {
-        protected ActShowFormType() { }
-        public ActShowFormType(ActionsType parentNode) : base(parentNode) { ElementName = "ShowForm"; }
+        protected ActShowFormType() { init(); }
+        public ActShowFormType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "ShowForm";
+        }
     }
     public partial class ActShowMessageType
     {
-        protected ActShowMessageType() { }
-        public ActShowMessageType(ActionsType parentNode) : base(parentNode) { ElementName = "ShowMessage"; }
+        protected ActShowMessageType() { init(); }
+        public ActShowMessageType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "ShowMessage";
+        }
     }
     public partial class ActShowReportType
     {
-        protected ActShowReportType() { }
-        public ActShowReportType(ActionsType parentNode) : base(parentNode) { ElementName = "ShowReport"; }
+        protected ActShowReportType() { init(); }
+
+        public ActShowReportType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "ShowReport";
+        }
     }
     public partial class ActPreviewReportType
     {
-        protected ActPreviewReportType() { }
-        public ActPreviewReportType(ActionsType parentNode) : base(parentNode) { ElementName = "PreviewReport"; }
+        protected ActPreviewReportType() { init(); }
+        public ActPreviewReportType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "PreviewReport";
+        }
     }
     public partial class ActValidateFormType
     {
-        protected ActValidateFormType() { }
+        protected ActValidateFormType() { init(); }
         public ActValidateFormType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             ElementName = "ValidateForm";
             this._validateDataTypes = false;
             this._validateRules = false;
             this._validateCompleteness = false;
         }
-
         public ActValidateFormType Fill_ActValidateFormType()
         { return null; }
     }
 
     public partial class ScriptBoolFuncActionType
     {
-        protected ScriptBoolFuncActionType() { }
-        public ScriptBoolFuncActionType(ActionsType parentNode) : base(parentNode) { ElementName = "ScriptBoolFunc"; }
+        protected ScriptBoolFuncActionType() { init(); }
+        public ScriptBoolFuncActionType(ActionsType parentNode) : base(parentNode)
+        {
+            init();
+        }
+        private void init()
+        {
+            ElementName = "ScriptBoolFunc";
+        }
     }
 
     public partial class ScriptCodeAnyType
     {
         protected ScriptCodeAnyType()
-        {
-            this._dataType = "string";
-        }
+        { init(); }
         public ScriptCodeAnyType(ActionsType parentNode) : base(parentNode)
+        { init(); }
+        private void init()
         {
             ElementName = "RunCode";
             this._dataType = "string";
@@ -2999,15 +3528,10 @@ namespace SDC.Schema
     }
     public partial class ScriptCodeBaseType
     {
-        protected ScriptCodeBaseType()
-        {
-            ElementName = "";
-            this._returnList = false;
-            this._listDelimiter = "|";
-            this._allowNull = true;
-        }
-
+        protected ScriptCodeBaseType() { init(); }
         public ScriptCodeBaseType(ActionsType parentNode) : base(parentNode)
+        { init(); }
+        private void init()
         {
             ElementName = "";
             this._returnList = false;
@@ -3017,96 +3541,114 @@ namespace SDC.Schema
     }
     public partial class CallFuncActionType
     {
-        protected CallFuncActionType() { }
-        public CallFuncActionType(ActionsType parentNode) : base(parentNode) { ElementName = "CallFunction"; }
+        protected CallFuncActionType() { init(); }
+        public CallFuncActionType(ActionsType parentNode) : base(parentNode) 
+        { init(); }
+        private void init()
+        {
+            ElementName = "CallFunction";
+        }
     }
-
 
     public partial class CallFuncBoolActionType
     {
-        protected CallFuncBoolActionType() { }
-        public CallFuncBoolActionType(ActionsType parentNode) : base(parentNode) { ElementName = "CallBoolFunction"; }
+        protected CallFuncBoolActionType() { init(); }
+        public CallFuncBoolActionType(ActionsType parentNode) : base(parentNode)
+        { init(); }
+        private void init()
+        {
+            ElementName = "CallBoolFunction";
+        }
     }
-
-
-
-
-
-
-
-
-
 
     #endregion
     #region Events
     public partial class OnEventType : IDisplayedTypeMember
     {
-        protected OnEventType() { }
+        protected OnEventType() { init(); }
         public OnEventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "onev";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "onev";
         }
     }
 
     public partial class RulesType
     {
-        protected RulesType() { }
+        protected RulesType() { init(); }
         public RulesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "rul";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "rul";
         }
     }
 
     public partial class EventType : IDisplayedTypeMember
     {
-        protected EventType() { }
+        protected EventType() { init(); }
         public EventType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "evnt";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "evnt";
         }
     }
 
     public partial class PredGuardType : IDisplayedTypeMember
     {
 
-        protected PredGuardType() { }
+        protected PredGuardType() { init(); }
         public PredGuardType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+        }
+        private void init()
         {
             this._not = false;
             this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
         }
     }
 
-
-
-
     public partial class PredActionType
     {
-        protected PredActionType() { }
+        protected PredActionType() { init(); }
         public PredActionType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._not = false;
             this._boolOp = PredEvalAttribValuesTypeBoolOp.AND;
-
             ElementPrefix = "cga";
-            SetNames(elementName, elementPrefix);
         }
-
     }
 
     public partial class FuncBoolBaseType
     {
-        protected FuncBoolBaseType() { }
+        protected FuncBoolBaseType() { init(); }
         public FuncBoolBaseType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             this._allowNull = true;
             ElementPrefix = "fbb";
-            SetNames(elementName, elementPrefix);
         }
-
     }
 
 
@@ -3116,11 +3658,15 @@ namespace SDC.Schema
 
     public partial class ContactType : IDisplayedTypeMember, IAddPerson, IAddOrganization
     {
-        protected ContactType() { }
+        protected ContactType() { init(); }
         public ContactType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "cntct";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "cntct";
         }
 
         //public PersonType AddPerson()
@@ -3136,41 +3682,57 @@ namespace SDC.Schema
 
     public partial class OrganizationType
     {
-        protected OrganizationType() { }
+        protected OrganizationType() { init(); }
         public OrganizationType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "org";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "org";
         }
     }
 
     public partial class PersonType
     {
-        protected PersonType() { }
+        protected PersonType() { init(); }
         public PersonType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "pers";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "pers";
         }
     }
 
     public partial class AddressType
     {
-        protected AddressType() { }
+        protected AddressType() { init(); }
         public AddressType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "adrs";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "adrs";
         }
     }
 
     public partial class AreaCodeType
     {
-        protected AreaCodeType() { }
+        protected AreaCodeType() { init(); }
         public AreaCodeType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "arcd";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "arcd";
         }
     }
     #endregion
@@ -3178,13 +3740,16 @@ namespace SDC.Schema
     #region Resources
     public partial class RichTextType : IHtmlHelpers
     {
-        protected RichTextType() { }
+        protected RichTextType() { init(); }
         public RichTextType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "rtt";
+            init();
             SetNames(elementName, elementPrefix);
         }
-
+        private void init()
+        {
+            this.ElementPrefix = "rtt";
+        }
         IHtmlHelpers ihh { get => this; }
         public HTML_Stype AddHTML()
         {
@@ -3201,105 +3766,146 @@ namespace SDC.Schema
     #region RequestForm (Package)
     public partial class ComplianceRuleType
     {
-        protected ComplianceRuleType() { }
+        protected ComplianceRuleType() { init(); }
         public ComplianceRuleType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "cr";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "cr";
         }
     }
 
     public partial class SubmissionRuleType
     {
-        protected SubmissionRuleType() { }
+        protected SubmissionRuleType() { init(); }
         public SubmissionRuleType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "sr";
+            init();
             SetNames(elementName, elementPrefix);
         }
+        private void init()
+        {
+            this.ElementPrefix = "sr";
+        }
+
     }
 
 
     public partial class HashType
     {
-        protected HashType() { }
+        protected HashType() { init(); }
         public HashType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "hsh";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "hsh";
         }
     }
 
 
     public partial class IdentifierType
     {
-        protected IdentifierType() { }
+        protected IdentifierType() { init(); }
         public IdentifierType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "id";
+            init();
             SetNames(elementName, elementPrefix);
 
+        }
+        private void init()
+        {
+            this.ElementPrefix = "id";
         }
     }
 
     public partial class LanguageCodeISO6393_Type
     {
-        protected LanguageCodeISO6393_Type() { }
+        protected LanguageCodeISO6393_Type() { init(); }
         public LanguageCodeISO6393_Type(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "lc";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "lc";
         }
     }
 
     public partial class LanguageType
     {
-        protected LanguageType() { }
+        protected LanguageType() { init(); }
         public LanguageType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "lng";
+            init();
             SetNames(elementName, elementPrefix);
 
+        }
+        private void init()
+        {
+            this.ElementPrefix = "lng";
         }
     }
 
     public partial class ProvenanceType
     {
-        protected ProvenanceType() { }
+        protected ProvenanceType() { init(); }
         public ProvenanceType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "prv";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "prv";
         }
     }
 
     public partial class ReplacedIDsType
     {
-        protected ReplacedIDsType() { }
+        protected ReplacedIDsType() { init(); }
         public ReplacedIDsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "rid";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "rid";
         }
     }
 
     public partial class VersionType
     {
-        protected VersionType() { }
+        protected VersionType() { init(); }
         public VersionType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "ver";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "ver";
         }
     }
 
     public partial class VersionTypeChanges
     {
-        protected VersionTypeChanges() { }
+        protected VersionTypeChanges() { init(); }
         public VersionTypeChanges(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            this.ElementPrefix = "vch";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            this.ElementPrefix = "vch";
         }
     }
 
@@ -3310,64 +3916,89 @@ namespace SDC.Schema
 
     public partial class ContactsType
     {
-        protected ContactsType() { }
+        protected ContactsType() { init(); }
         public ContactsType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
+            init();
             this.ElementPrefix = "ctc";
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+
         }
     }
 
     public partial class CountryCodeType
     {
-        protected CountryCodeType() { }
+        protected CountryCodeType() { init(); }
         public CountryCodeType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "ctc";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "ctc";
         }
     }
 
     public partial class DestinationType
     {
-        protected DestinationType() { }
+        protected DestinationType() { init(); }
         public DestinationType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "dst";
+            init();
             SetNames(elementName, elementPrefix);
 
+        }
+        private void init()
+        {
+            ElementPrefix = "dst";
         }
     }
 
 
     public partial class PhoneNumberType
     {
-        protected PhoneNumberType() { }
+        protected PhoneNumberType() { init(); }
         public PhoneNumberType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "phn";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "phn";
         }
     }
 
     public partial class PhoneType
     {
-        protected PhoneType() { }
+        protected PhoneType() { init(); }
         public PhoneType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
+        {
+            init();
+            SetNames(elementName, elementPrefix);
+        }
+        private void init()
         {
             ElementName = "PhoneType";
             ElementPrefix = "pht";
-            SetNames(elementName, elementPrefix);
         }
     }
 
     public partial class JobType
     {
-        protected JobType() { }
+        protected JobType() { init(); }
         public JobType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "job";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "job";
         }
     }
     #endregion
@@ -3375,24 +4006,32 @@ namespace SDC.Schema
     #region  Email
     public partial class EmailAddressType
     {
-        protected EmailAddressType() { }
+        protected EmailAddressType() { init(); }
         public EmailAddressType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "emd";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "emd";
         }
     }
 
     public partial class EmailType
     {
-        protected EmailType() { }
+        protected EmailType() { init(); }
         public EmailType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "em";
+            init();
             SetNames(elementName, elementPrefix);
             //this.Usage = new string_Stype();
             //this.EmailClass = new string_Stype();
             //this.EmailAddress = new EmailAddressType();
+        }
+        private void init()
+        {
+            ElementPrefix = "em";
         }
     }
 
@@ -3403,71 +4042,99 @@ namespace SDC.Schema
 
     public partial class ApprovalType
     {
-        protected ApprovalType() { }
+        protected ApprovalType() { init(); }
         public ApprovalType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "app";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "app";
         }
     }
 
     public partial class AssociatedFilesType
     {
-        protected AssociatedFilesType() { }
+        protected AssociatedFilesType() { init(); }
         public AssociatedFilesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "asf";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "asf";
         }
     }
 
     public partial class AcceptabilityType
     {
-        protected AcceptabilityType() { }
+        protected AcceptabilityType() { init(); }
         public AcceptabilityType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "acc";
+            init();            
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "acc";
         }
     }
 
 
     public partial class FileDatesType
     {
-        protected FileDatesType() { }
+        protected FileDatesType() { init(); }
         public FileDatesType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "fld";
+            init();            
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "fld";
         }
     }
     public partial class FileHashType
     {
-        protected FileHashType() { }
+        protected FileHashType() { init(); }
         public FileHashType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "flh";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "flh";
         }
     }
 
     public partial class FileType
     {
-        protected FileType() { }
+        protected FileType() { init(); }
         public FileType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "fil";
+            init();
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "fil";
         }
     }
 
     public partial class FileUsageType
     {
-        protected FileUsageType() { }
+        protected FileUsageType() { init(); }
         public FileUsageType(BaseType parentNode, string elementName = "", string elementPrefix = "") : base(parentNode)
         {
-            ElementPrefix = "flu";
+            init();            
             SetNames(elementName, elementPrefix);
+        }
+        private void init()
+        {
+            ElementPrefix = "flu";
         }
     }
 
@@ -3478,7 +4145,6 @@ namespace SDC.Schema
     #region Registry Summary Types
 
     #endregion
-
 
 }
 

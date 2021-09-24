@@ -1255,7 +1255,12 @@ XmlElementName: {XmlElementName}
             }
         }
 
-
+        public static void AssignXmlElementAndOrder<T>(T bt) where T:notnull, BaseType
+        {
+            var pi = SdcUtil.GetPropertyInfo(bt);
+            bt.ElementName = pi.XmlElementName;
+            bt.ElementOrder = pi.XmlOrder;
+        }
         public static List<PropertyInfoOrdered> ReflectPropertyInfoList(BaseType bt)
         {
             return ReflectPropertyInfoElements(bt.GetType().GetTypeInfo());
@@ -1529,7 +1534,7 @@ XmlElementName: {XmlElementName}
 
 
         public static bool IsParentNodeAllowed(BaseType item, BaseType newParent, out object pObj, int newListIndex = -1)
-        { //reflect the object tree to determine if "this" can be attached to the SDC XML element represented by teh targetProperty object.   
+        { //reflect the object tree to determine if "item" can be attached to the SDC XML element represented by teh targetProperty object.   
             //We must find an exact match for the element and the data type in the targetProperty to allow the move.
 
             pObj = null;  //the object to which new nodes are attached; it may be an array or List<> or a non-List object.
@@ -2688,6 +2693,7 @@ XmlElementName: {XmlElementName}
             {
                 childItems = new ChildItemsType(T_Parent as BaseType);
                 T_Parent.ChildItemsNode = childItems;  //This may be null for the Header, Body and Footer  - need to check this
+                //SdcUtil.AssignXmlElementAndOrder(childItems);
             }
             else //(T_Parent.ChildItemsNode != null)
                 childItems = T_Parent.ChildItemsNode;
