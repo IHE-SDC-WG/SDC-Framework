@@ -86,6 +86,7 @@ namespace SDC.Schema.Tests
                 t => t.GetType() == typeof(QuestionItemType)).Where(
                 q => ((QuestionItemType)q).ID == "58218.100004300").FirstOrDefault();
 
+            Assert.IsTrue(Q.ListField_Item.maxSelections == 1, $"maxSelections must be '1', but returned '{Q.ListField_Item.maxSelections}'");  //check that correct default value (1) is set 
             var DI = Q.AddChildDisplayedItem("DDDDD");//should add to end of the <List>
             DI.name = DI.ID;
             DI.title = DI.ID;

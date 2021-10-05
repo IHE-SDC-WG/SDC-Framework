@@ -1313,6 +1313,9 @@
             <summary>
             Field to hold the ordinal position of an object (XML element) under an IdentifiedExtensionType (IET)-derived object.
             This number is used for creating the name attribute suffix.
+            //TODO: this will be a problem when moving nodes in the tree, since the counter will be incorrect; 
+            this will need to be calculated by walking up the parent tree to the closest IET ancestor.  
+            It should not have a setter
             </summary>
         </member>
         <member name="P:SDC.Schema.BaseType.DotLevel">
